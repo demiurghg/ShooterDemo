@@ -6,7 +6,7 @@
 HKEY_CURRENT_USER\Software\FusionEngine@ToolsDir
 
 [ContentDirectories]
-..\..\..\..\..\FusionContent
+..\..\..\..\FusionEngine\FusionContent
 HKEY_CURRENT_USER\Software\FusionEngine@ContentDir
 
 [Textures]

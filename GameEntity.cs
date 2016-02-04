@@ -26,8 +26,8 @@ namespace ShooterDemo {
 		static KeyValuePair<string,Type>[] Types;
 
 		//	public fields :
-		public readonly int ID;
-		public readonly byte TypeID;
+		public int ID { get; private set; }
+		public byte TypeID { get; private set; }
 
 
 		/// <summary>
@@ -67,13 +67,27 @@ namespace ShooterDemo {
 
 
 		/// <summary>
-		/// 
+		/// Server side entity creation
 		/// </summary>
 		/// <param name="typeId"></param>
 		/// <returns></returns>
 		public static GameEntity Spawn ( byte typeId )
 		{
 			return (GameEntity)Activator.CreateInstance( Types[typeId].Value );
+		}
+
+
+
+		/// <summary>
+		/// Client side entity creation
+		/// </summary>
+		/// <param name="typeId"></param>
+		/// <returns></returns>
+		public static GameEntity Replicate ( byte typeId, int id )
+		{
+			var ent = (GameEntity)Activator.CreateInstance( Types[typeId].Value );
+			ent.ID = id;
+			return ent;
 		}
 
 

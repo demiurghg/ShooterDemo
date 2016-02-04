@@ -20,7 +20,7 @@ using System.IO;
 namespace ShooterDemo.Entities {
 	class Player : GameEntity {
 
-		public string ClientID {
+		public Guid UserGuid {
 			get; private set;
 		}
 
@@ -46,13 +46,13 @@ namespace ShooterDemo.Entities {
 		/// 
 		/// </summary>
 		/// <param name="origin"></param>
-		public Player ( SpawnParameters parameters, string clientId )
+		public Player ( SpawnParameters parameters, Guid userGuid )
 		{
 			var world				=	Matrix.Identity;
 			world.TranslationVector	=	Vector3.Up * 4;
 			World	=	world;
 
-			this.ClientID	=	clientId;
+			this.UserGuid	=	userGuid;
 		}
 
 
@@ -63,8 +63,22 @@ namespace ShooterDemo.Entities {
 		/// <param name="gameTime"></param>
 		public override void Update ( GameTime gameTime )
 		{
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="userCmd"></param>
+		public void FeedCommand ( UserCommand userCmd )
+		{
+			if (userCmd.CtrlFlags.HasFlag( UserCtrlFlags.Forward )) {
+				World *= Matrix.Translation( Vector3.ForwardRH * 0.1f );
+			}
+		}
+
 
 
 		/// <summary>
@@ -73,7 +87,8 @@ namespace ShooterDemo.Entities {
 		/// <param name="reader"></param>
 		public override void Read ( BinaryReader reader )
 		{
-			ClientID	=	reader.ReadString();
+			UserGuid	=	new Guid(reader.ReadBytes(16));
+			World		=	reader.Read<Matrix>();
 		}
 
 
@@ -83,7 +98,8 @@ namespace ShooterDemo.Entities {
 		/// <param name="writer"></param>
 		public override void Write ( BinaryWriter writer )
 		{
-			writer.Write( ClientID );
+			writer.Write( UserGuid.ToByteArray() );
+			writer.Write<Matrix>( World );
 		}
 
 	}

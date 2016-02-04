@@ -12,6 +12,7 @@ using Fusion.Engine.Common;
 using Fusion.Engine.Server;
 using Fusion.Core.Content;
 using Fusion.Engine.Graphics;
+using ShooterDemo.Entities;
 
 namespace ShooterDemo {
 	partial class ShooterServer : GameServer {
@@ -91,6 +92,8 @@ namespace ShooterDemo {
 		/// <returns>Snapshot bytes</returns>
 		public override byte[] Update ( GameTime gameTime )
 		{
+			Thread.Sleep(50);
+
 			//	get entity array :
 			var ents = new GameEntity[ entities.Count ];
 			entities.CopyTo( ents, 0 );
@@ -118,6 +121,18 @@ namespace ShooterDemo {
 			if (!userCommand.Any()) {
 				return;
 			}
+
+			var player = GetPlayer(id);
+
+			if (player!=null) {
+				player.FeedCommand( UserCommand.FromBytes(userCommand) );
+			}
+		}
+
+
+		Player GetPlayer ( Guid guid )
+		{
+			return (Player)entities.SingleOrDefault( ent => ent is Player && ((Player)ent).UserGuid==guid );
 		}
 
 
@@ -155,6 +170,8 @@ namespace ShooterDemo {
 			NotifyClients( "CONNECTED: {0} - {1}", id, userInfo );
 			Log.Message( "CONNECTED: {0} - {1}", id, userInfo );
 			//state.Add( id, " --- " );
+
+			entities.Add( new Player( null, id ) );
 		}
 
 
@@ -167,6 +184,11 @@ namespace ShooterDemo {
 			NotifyClients( "DISCONNECTED: {0} - {1}", id, userInfo );
 			Log.Message( "DISCONNECTED: {0} - {1}", id, userInfo );
 			//state.Remove( id );
+			var player = entities.FirstOrDefault( e => e is Player && ((Player)e).UserGuid==id );
+
+			if (player!=null) {
+				entities.Remove( player );
+			}
 		}
 
 

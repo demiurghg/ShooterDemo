@@ -8,6 +8,7 @@ using Fusion;
 using Fusion.Core;
 using Fusion.Core.Mathematics;
 using Fusion.Engine.Common;
+using Fusion.Engine.Input;
 using Fusion.Engine.Client;
 using Fusion.Engine.Server;
 using Fusion.Engine.Graphics;
@@ -117,6 +118,21 @@ namespace ShooterDemo {
 			userCmd.Pitch		=	0;
 			userCmd.Roll		=	0;
 
+			if (Game.Keyboard.IsKeyDown(Keys.W)) {
+				userCmd.CtrlFlags |= UserCtrlFlags.Forward;
+			}
+
+
+			var player = GetPlayer();
+
+			if (player!=null) {
+				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( Matrix.Invert(player.World), MathUtil.Rad(90), 0.125f, 5000, 1, 0, 1 );
+			} else {
+				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( new Vector3(10,10,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, 1 );
+			}
+
+
+
 			return UserCommand.GetBytes( userCmd );
 		}
 
@@ -160,9 +176,9 @@ namespace ShooterDemo {
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		/*Player GetPlayer ()
+		Player GetPlayer ()
 		{
-			//entities.SingleOrDefault( ent => ent is Player && ((Player)ent).ClientID== 
-		} */
+			return (Player)entities.SingleOrDefault( ent => ent is Player && ((Player)ent).UserGuid==this.Guid );
+		}
 	}
 }

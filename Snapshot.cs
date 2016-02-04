@@ -65,7 +65,7 @@ namespace ShooterDemo {
 						var ent		=	entities[ id ];
 
 						if (ent==null) {
-							ent = GameEntity.Spawn( typeId );
+							ent = GameEntity.Replicate( typeId, id );
 							entities.Add( ent );
 						}
 
