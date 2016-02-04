@@ -74,8 +74,15 @@ namespace ShooterDemo {
 			}
 
 			rw.Camera.SetupCameraFov( new Vector3(10,10,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, 1 );
+
 			rw.HdrSettings.BloomAmount	= 0.2f;
-			rw.HdrSettings.DirtAmount	= 0.2f;
+			rw.HdrSettings.DirtAmount	= 0.0f;
+
+			rw.SkySettings.SunPosition			=	Vector3.One;
+			rw.SkySettings.SunLightIntensity	=	50;
+
+			rw.LightSet.DirectLight.Direction	=	rw.SkySettings.SunLightDirection;
+			rw.LightSet.DirectLight.Intensity	=	rw.SkySettings.SunLightColor;
 			rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(0,4,0), 1, 500 ) );
 
 			rw.RenderRadiance();
@@ -121,14 +128,18 @@ namespace ShooterDemo {
 			if (Game.Keyboard.IsKeyDown(Keys.W)) {
 				userCmd.CtrlFlags |= UserCtrlFlags.Forward;
 			}
+			if (Game.Keyboard.IsKeyDown(Keys.S)) {
+				userCmd.CtrlFlags |= UserCtrlFlags.Backward;
+			}
 
 
 			var player = GetPlayer();
+			var aspect = Game.RenderSystem.DisplayBounds.Width / (float)Game.RenderSystem.DisplayBounds.Height;
 
 			if (player!=null) {
-				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( Matrix.Invert(player.World), MathUtil.Rad(90), 0.125f, 5000, 1, 0, 1 );
+				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( Matrix.Invert(player.World), MathUtil.Rad(90), 0.125f, 5000, 1, 0, aspect );
 			} else {
-				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( new Vector3(10,10,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, 1 );
+				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( new Vector3(10,10,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
 			}
 
 

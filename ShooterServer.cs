@@ -92,7 +92,7 @@ namespace ShooterDemo {
 		/// <returns>Snapshot bytes</returns>
 		public override byte[] Update ( GameTime gameTime )
 		{
-			Thread.Sleep(50);
+			Thread.Sleep(1);
 
 			//	get entity array :
 			var ents = new GameEntity[ entities.Count ];

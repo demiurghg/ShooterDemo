@@ -77,6 +77,9 @@ namespace ShooterDemo.Entities {
 			if (userCmd.CtrlFlags.HasFlag( UserCtrlFlags.Forward )) {
 				World *= Matrix.Translation( Vector3.ForwardRH * 0.1f );
 			}
+			if (userCmd.CtrlFlags.HasFlag( UserCtrlFlags.Backward )) {
+				World *= Matrix.Translation( Vector3.BackwardRH * 0.1f );
+			}
 		}
 
 
