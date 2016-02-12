@@ -17,9 +17,7 @@ using ShooterDemo.Entities;
 namespace ShooterDemo {
 	partial class ShooterServer : GameServer {
 
-		string mapName;
-
-		GameEntityCollection	entities;
+		GameWorld	gameWorld;
 
 
 		/// <summary>
@@ -39,6 +37,7 @@ namespace ShooterDemo {
 		public override void Initialize ()
 		{
 		}
+
 
 
 		/// <summary>
@@ -61,14 +60,7 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override void LoadContent ( string map )
 		{
-			mapName	=	@"scenes\" + map;
-
-			var scene = Content.Load<Scene>( mapName );
-
-			InitializeStaticPhysWorld( scene );
-
-
-			entities	=	new GameEntityCollection();
+			gameWorld	=	new GameWorld( this, map );
 		}
 
 
@@ -79,7 +71,7 @@ namespace ShooterDemo {
 		/// </summary>
 		public override void UnloadContent ()
 		{
-			mapName		=	null;
+			gameWorld	=	null;
 			Content.Unload();
 		}
 
@@ -94,19 +86,11 @@ namespace ShooterDemo {
 		{
 			Thread.Sleep(1);
 
-			//	get entity array :
-			var ents = new GameEntity[ entities.Count ];
-			entities.CopyTo( ents, 0 );
-
-
-			//	update entities :
-			foreach ( var ent in entities ) {
-				ent.Update( gameTime );
-			}
-
+			gameWorld.Simulate( gameTime );
+			gameWorld.Think( gameTime );
 
 			//	write snapshot :
-			return Snapshot.WriteSnapshot( entities );
+			return Snapshot.WriteSnapshot( gameWorld.Entities );
 		}
 
 
@@ -122,17 +106,7 @@ namespace ShooterDemo {
 				return;
 			}
 
-			var player = GetPlayer(id);
-
-			if (player!=null) {
-				player.FeedCommand( UserCommand.FromBytes(userCommand) );
-			}
-		}
-
-
-		Player GetPlayer ( Guid guid )
-		{
-			return (Player)entities.SingleOrDefault( ent => ent is Player && ((Player)ent).UserGuid==guid );
+			gameWorld.Command( id, userCommand );
 		}
 
 
@@ -157,7 +131,7 @@ namespace ShooterDemo {
 		/// <returns></returns>
 		public override string ServerInfo ()
 		{
-			return mapName;
+			return gameWorld.Info;
 		}
 
 
@@ -169,9 +143,6 @@ namespace ShooterDemo {
 		{
 			NotifyClients( "CONNECTED: {0} - {1}", id, userInfo );
 			Log.Message( "CONNECTED: {0} - {1}", id, userInfo );
-			//state.Add( id, " --- " );
-
-			entities.Add( new Player( null, id ) );
 		}
 
 
@@ -183,12 +154,6 @@ namespace ShooterDemo {
 		{
 			NotifyClients( "DISCONNECTED: {0} - {1}", id, userInfo );
 			Log.Message( "DISCONNECTED: {0} - {1}", id, userInfo );
-			//state.Remove( id );
-			var player = entities.FirstOrDefault( e => e is Player && ((Player)e).UserGuid==id );
-
-			if (player!=null) {
-				entities.Remove( player );
-			}
 		}
 
 

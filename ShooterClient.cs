@@ -19,7 +19,8 @@ namespace ShooterDemo {
 	class ShooterClient : Fusion.Engine.Client.GameClient {
 
 
-		GameEntityCollection entities;
+		GameWorld	gameWorld;
+
 
 		/// <summary>
 		/// Ctor
@@ -62,14 +63,14 @@ namespace ShooterDemo {
 		/// <param name="loader"></param>
 		public override void FinalizeLoad ( GameLoader loader )
 		{
-			var gameLoader = (ShooterLoader)loader;
+			gameWorld	= ((ShooterLoader)loader).World;
 
 			var rw	=	Game.RenderSystem.RenderWorld;
 			rw.ClearWorld();
 
 			rw.Instances.Clear();
 
-			foreach ( var inst in gameLoader.StaticInstances ) {
+			foreach ( var inst in gameWorld.StaticMeshInstances ) {
 				rw.Instances.Add( inst );
 			}
 
@@ -88,9 +89,6 @@ namespace ShooterDemo {
 			rw.RenderRadiance();
 
 			Game.GetModule<ShooterInterface>().ShowMenu = false;
-
-
-			entities	=	new GameEntityCollection();
 		}
 
 
@@ -102,10 +100,11 @@ namespace ShooterDemo {
 		/// </summary>
 		public override void UnloadContent ()
 		{
-			entities	=	null;
+			gameWorld.KillAll();
+			gameWorld	=	null;
+			
+			Game.RenderSystem.RenderWorld.ClearWorld();
 
-			var rw	=	Game.RenderSystem.RenderWorld;
-			rw.ClearWorld();
 			Content.Unload();
 			Game.GetModule<ShooterInterface>().ShowMenu = true;
 		}
@@ -113,7 +112,7 @@ namespace ShooterDemo {
 
 
 		/// <summary>
-		/// Runs one step of client-side simulation and render world state.
+		/// Runs one step of client-side simulation and renders world state.
 		/// Do not close the stream.
 		/// </summary>
 		/// <param name="gameTime"></param>
@@ -133,13 +132,13 @@ namespace ShooterDemo {
 			}
 
 
-			var player = GetPlayer();
+			var player = (Player)null;//GetPlayer();
 			var aspect = Game.RenderSystem.DisplayBounds.Width / (float)Game.RenderSystem.DisplayBounds.Height;
 
 			if (player!=null) {
 				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( Matrix.Invert(player.World), MathUtil.Rad(90), 0.125f, 5000, 1, 0, aspect );
 			} else {
-				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( new Vector3(10,10,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
+				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( new Vector3(10,0,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
 			}
 
 
@@ -156,7 +155,7 @@ namespace ShooterDemo {
 		/// <param name="snapshot"></param>
 		public override void FeedSnapshot ( byte[] snapshot, bool initial )
 		{
-			Snapshot.ReadSnapshot( snapshot, entities );
+			Snapshot.ReadSnapshot( snapshot, gameWorld.Entities );
 		}
 
 
@@ -179,17 +178,6 @@ namespace ShooterDemo {
 		public override string UserInfo ()
 		{
 			return "Bob" + System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		Player GetPlayer ()
-		{
-			return (Player)entities.SingleOrDefault( ent => ent is Player && ((Player)ent).UserGuid==this.Guid );
 		}
 	}
 }

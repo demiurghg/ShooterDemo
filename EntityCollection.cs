@@ -21,17 +21,17 @@ namespace ShooterDemo {
 	/// <summary>
 	/// Represents collection of game entities.
 	/// </summary>
-	public class GameEntityCollection : ICollection<GameEntity> {
+	public class EntityCollection : ICollection<Entity> {
 
-		readonly HashSet<GameEntity> entities;
+		readonly HashSet<Entity> entities;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="capacity"></param>
-		public GameEntityCollection ()
+		public EntityCollection ()
 		{
-			entities	=	new HashSet<GameEntity>();
+			entities	=	new HashSet<Entity>();
 		}
 			
 
@@ -41,7 +41,7 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns>Null if collection does not contain entity with given ID.</returns>
-		public GameEntity this[ int id ] {
+		public Entity this[ int id ] {
 			get {
 				return entities.SingleOrDefault( e => e.ID == id );
 			}
@@ -88,7 +88,7 @@ namespace ShooterDemo {
 		/// This method is deferred. To apply call Commit.
 		/// </summary>
 		/// <param name="entity"></param>
-		public void Add ( GameEntity entity )
+		public void Add ( Entity entity )
 		{
 			if (!entities.Add( entity )) {
 				Log.Warning("Can not add entity, it is alrady added");
@@ -113,7 +113,7 @@ namespace ShooterDemo {
 		/// This method is deferred. To apply call Commit.
 		/// </summary>
 		/// <param name="entity"></param>
-		public bool Remove ( GameEntity entity )
+		public bool Remove ( Entity entity )
 		{
 			return entities.Remove( entity );
 		}
@@ -125,7 +125,7 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="entity"></param>
 		/// <returns></returns>
-		public bool Contains ( GameEntity entity )
+		public bool Contains ( Entity entity )
 		{
 			return entities.Contains( entity );
 		}
@@ -137,7 +137,7 @@ namespace ShooterDemo {
 		///</summary>
 		/// <param name="array"></param>
 		/// <param name="arrayIndex"></param>
-		public void CopyTo ( GameEntity[] array, int arrayIndex )
+		public void CopyTo ( Entity[] array, int arrayIndex )
 		{
 			entities.CopyTo( array, arrayIndex );
 		}
@@ -148,7 +148,7 @@ namespace ShooterDemo {
 		/// Returns an enumerator that iterates through a collection.
 		/// </summary>
 		/// <returns></returns>
-		public IEnumerator<GameEntity> GetEnumerator ()
+		public IEnumerator<Entity> GetEnumerator ()
 		{
 			return entities.GetEnumerator();
 		}

@@ -19,7 +19,7 @@ using Fusion.Engine.Input;
 using System.IO;
 
 namespace ShooterDemo {
-	public abstract class GameEntity {
+	public abstract class Entity {
 
 		//	static fields :
 		static int atomicCounter;
@@ -33,9 +33,9 @@ namespace ShooterDemo {
 		/// <summary>
 		/// Search assembly for game entity classes and add them to dicitionary.
 		/// </summary>
-		static GameEntity()
+		static Entity()
 		{
-			Types	=	Misc.GetAllSubclassesOf( typeof(GameEntity), false )
+			Types	=	Misc.GetAllSubclassesOf( typeof(Entity), false )
 							.Select( t => new KeyValuePair<string,Type>( t.Name, t ) )
 							.ToArray();
 
@@ -71,9 +71,9 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="typeId"></param>
 		/// <returns></returns>
-		public static GameEntity Spawn ( byte typeId )
+		public static Entity Spawn ( byte typeId )
 		{
-			return (GameEntity)Activator.CreateInstance( Types[typeId].Value );
+			return (Entity)Activator.CreateInstance( Types[typeId].Value );
 		}
 
 
@@ -83,9 +83,9 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="typeId"></param>
 		/// <returns></returns>
-		public static GameEntity Replicate ( byte typeId, int id )
+		public static Entity Replicate ( byte typeId, int id )
 		{
-			var ent = (GameEntity)Activator.CreateInstance( Types[typeId].Value );
+			var ent = (Entity)Activator.CreateInstance( Types[typeId].Value );
 			ent.ID = id;
 			return ent;
 		}
@@ -95,7 +95,7 @@ namespace ShooterDemo {
 		/// <summary>
 		/// 
 		/// </summary>
-		public GameEntity ()
+		public Entity ()
 		{
 			//	assign unique server side id and type id.
 			ID		= Interlocked.Increment( ref atomicCounter );
@@ -103,6 +103,10 @@ namespace ShooterDemo {
 		}
 
 
+		abstract public void Activate ();
+		abstract public void Deactivate ();
+		abstract public void Show ( RenderWorld rw );
+		abstract public void Hide ( RenderWorld rw );
 		abstract public void Update ( GameTime gameTime );
 		abstract public void Read ( BinaryReader reader );
 		abstract public void Write ( BinaryWriter writer );

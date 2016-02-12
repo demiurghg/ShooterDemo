@@ -16,7 +16,6 @@ using BEPUTransform = BEPUutilities.AffineTransform;
 namespace ShooterDemo {
 	partial class GameWorld {
 
-		List<MeshInstance>	instances;
 
 
 		/// <summary>

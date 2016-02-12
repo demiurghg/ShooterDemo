@@ -10,6 +10,8 @@ using Fusion.Engine.Graphics;
 using Fusion.Engine.Common;
 using Fusion.Engine.Server;
 using Fusion.Engine.Client;
+using BEPUVector3 = BEPUutilities.Vector3;
+using BEPUTransform = BEPUutilities.AffineTransform;
 
 namespace ShooterDemo {
 	partial class GameWorld {
@@ -17,47 +19,50 @@ namespace ShooterDemo {
 		/// <summary>
 		/// Gets entities.
 		/// </summary>
-		public GameEntityCollection Entities {
+		public EntityCollection Entities {
 			get { return entities; }
 		}
-		GameEntityCollection entities;
+		EntityCollection entities;
+
+
+		/// <summary>
+		/// Gets world's info.
+		/// </summary>
+		public string Info { get; private set; }
 
 
 		/// <summary>
 		/// Creates world
 		/// </summary>
 		/// <param name="map"></param>
-		public GameWorld ()
+		public GameWorld ( GameServer server, string map )
 		{
-			entities	=	new GameEntityCollection();
+			entities	=	new EntityCollection();
+			Info		=	@"scenes\" + map;
+
+			InitPhysSpace( 9.8f );
+
+			var scene	=	server.Content.Load<Scene>( Info );
+
+			ReadMapFromScene( server.Content, scene, false );
 		}
 
 
 
 		/// <summary>
-		/// Initializes world from map. Server side.
+		/// 
 		/// </summary>
-		/// <param name="map"></param>
-		public void InitializeFromMap ( GameServer server, string map )
-		{
-			var scene = server.Content.Load<Scene>( map );
-
-			InitStaticPhysWorld( scene );
-		}
-
-
-
-		/// <summary>
-		/// Initialized world from server info and snapshot. Client side.
-		/// </summary>
+		/// <param name="client"></param>
 		/// <param name="serverInfo"></param>
-		/// <param name="snapshot"></param>
-		public void InitializeFromServerInfo ( GameClient client, string serverInfo )
+		public GameWorld( GameClient client, string serverInfo )
 		{
-			//	load scene :
+			entities	=	new EntityCollection();
+
+			InitPhysSpace( 9.8f );
+
 			var scene	=	client.Content.Load<Scene>( serverInfo );
 
-			InitStaticModels( client, scene );
+			ReadMapFromScene( client.Content, scene, true );
 		}
 
 
@@ -65,40 +70,71 @@ namespace ShooterDemo {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="gameTime"></param>
-		public byte[] UpdateServer ( GameTime gameTime )
+		public void KillAll ()
 		{
-			var entityArray = new GameEntity[ Entities.Count ];
-			Entities.CopyTo( entityArray, 0 );
-			
-			foreach ( var entity in entityArray ) {
-				entity.Update( gameTime );
+			foreach ( var ent in entities ) {
+				ent.Deactivate();
 			}
-							
-			return new byte[0];
+		}
+
+
+
+		public void HideAll (RenderWorld rw)
+		{
+			foreach ( var ent in entities ) {
+				ent.Hide(rw);
+			}
 		}
 
 
 
 		/// <summary>
-		/// 
+		/// Update physics
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public void UpdateClient ( GameTime gameTime )
+		public void Simulate ( GameTime gameTime )
 		{
-		}
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="snapshot"></param>
-		public void FeedSnapshot ( GameClient client, byte[] snapshot, bool initial )
-		{
-			//if (
+			physSpace.Update( gameTime.ElapsedSec );
 		} 
 
 
 
+		/// <summary>
+		/// Update entities' logic
+		/// </summary>
+		/// <param name="gameTime"></param>
+		public void Think ( GameTime gameTime )
+		{
+			//	get entity array :
+			var ents = new Entity[ entities.Count ];
+			entities.CopyTo( ents, 0 );
+
+			//	update entities :
+			foreach ( var ent in entities ) {
+				ent.Update( gameTime );
+			}
+		}
+
+
+
+		/// <summary>
+		/// Draw
+		/// </summary>
+		/// <param name="gameTime"></param>
+		public void Present	( GameTime gameTime )
+		{
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="userGuid"></param>
+		/// <param name="command"></param>
+		public void Command ( Guid userGuid, byte[] command )
+		{
+		}
+		
 	}
 }

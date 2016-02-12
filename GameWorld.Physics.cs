@@ -18,50 +18,34 @@ namespace ShooterDemo {
 		Space physSpace;
 
 
+
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="scene"></param>
-		void InitStaticPhysWorld ( Scene scene )
+		/// <param name="gravity"></param>
+		void InitPhysSpace ( float gravity )
 		{
-			var transforms = new Matrix[ scene.Nodes.Count ];
-			scene.ComputeAbsoluteTransforms( transforms );
-
-			for ( int i=0; i<scene.Nodes.Count; i++ ) {
-
-				var node = scene.Nodes[i];
-
-				if (node.MeshIndex<0) {
-					continue;
-				}
-
-				var physMesh   = new PhysMeshData( scene.Meshes[node.MeshIndex], transforms[i] );
-
-				var staticMesh = new StaticMesh( physMesh.Vertices, physMesh.Indices );
-				physSpace.Add( staticMesh );
-			}
+			physSpace	=	new BEPUphysics.Space();
+			physSpace.ForceUpdater.Gravity	=	BEPUVector3.Down * gravity;
 		}
 
 
 
-		class PhysMeshData {
-			public int[]			Indices;
-			public BEPUVector3[]	Vertices;
-
-			public PhysMeshData( Mesh mesh, Matrix transform )
-			{
-				Indices		=	mesh.GetIndices();
-				Vertices	=	mesh.Vertices
-								.Select( v => Convert( v.Position, transform ) )
+		/// <summary>
+		/// Adds static mesh to phys space.
+		/// </summary>
+		/// <param name="mesh"></param>
+		/// <param name="transform"></param>
+		void AddStaticMesh ( Mesh mesh, Matrix transform )
+		{
+			var indices		=	mesh.GetIndices();
+			var vertices	=	mesh.Vertices
+								.Select( v1 => Vector3.TransformCoordinate( v1.Position, transform ) )
+								.Select( v2 => MathConverter.Convert( v2 ) )
 								.ToArray();
-			}
 
-
-			BEPUVector3 Convert ( Vector3 position, Matrix transform )
-			{
-				var tpos = Vector3.TransformCoordinate( position, transform );
-				return new BEPUVector3( tpos.X, tpos.Y, tpos.X );
-			}
+			var staticMesh = new StaticMesh( vertices, indices );
+			physSpace.Add( staticMesh );
 		}
 	}
 }

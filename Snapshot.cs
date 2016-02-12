@@ -19,7 +19,7 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static byte[] WriteSnapshot( GameEntityCollection entities )
+		public static byte[] WriteSnapshot( EntityCollection entities )
 		{
 			var ents = entities.OrderBy( e => e.ID ).ToArray();
 
@@ -48,7 +48,7 @@ namespace ShooterDemo {
 		/// 
 		/// </summary>
 		/// <param name="entities"></param>
-		public static void ReadSnapshot ( byte[] snapshot, GameEntityCollection entities )
+		public static void ReadSnapshot ( byte[] snapshot, EntityCollection entities )
 		{
 			using ( var ms = new MemoryStream(snapshot) ) { 
 				using ( var reader = new BinaryReader(ms) ) {
@@ -65,7 +65,7 @@ namespace ShooterDemo {
 						var ent		=	entities[ id ];
 
 						if (ent==null) {
-							ent = GameEntity.Replicate( typeId, id );
+							ent = Entity.Replicate( typeId, id );
 							entities.Add( ent );
 						}
 
