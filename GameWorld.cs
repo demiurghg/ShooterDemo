@@ -68,7 +68,7 @@ namespace ShooterDemo {
 
 
 		/// <summary>
-		/// 
+		/// Kills all entities.
 		/// </summary>
 		public void KillAll ()
 		{
@@ -79,6 +79,10 @@ namespace ShooterDemo {
 
 
 
+		/// <summary>
+		/// Hides all entities.
+		/// </summary>
+		/// <param name="rw"></param>
 		public void HideAll (RenderWorld rw)
 		{
 			foreach ( var ent in entities ) {
