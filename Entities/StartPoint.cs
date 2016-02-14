@@ -44,12 +44,12 @@ namespace ShooterDemo.Entities {
 		}
 
 
-		public override void Activate ()
+		public override void Activate ( GameWorld gameWorld )
 		{
 		}
 
 
-		public override void Deactivate ()
+		public override void Deactivate ( GameWorld gameWorld )
 		{
 		}
 

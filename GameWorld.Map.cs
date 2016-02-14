@@ -16,7 +16,7 @@ using Fusion.Core.Content;
 using ShooterDemo.Entities;
 
 namespace ShooterDemo {
-	partial class GameWorld {
+	public partial class GameWorld {
 
 		List<MeshInstance>	instances = new List<MeshInstance>();
 
@@ -37,7 +37,7 @@ namespace ShooterDemo {
 		void ReadMapFromScene ( ContentManager content, Scene scene, bool createRendMeshes )
 		{
 			//	create entity list :
-			entities	=	new EntityCollection();
+			entities	=	new EntityCollection(this);
 			instances	=	new List<MeshInstance>();
 
 			//	compute absolute transforms :

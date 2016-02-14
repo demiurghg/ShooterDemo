@@ -49,7 +49,8 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override GameLoader LoadContent ( string serverInfo )
 		{
-			Log.Message( "SERVER INFO : {0}", serverInfo );
+			Log.Message("");
+			Log.Message("---- Loading game: {0} ----", serverInfo );
 
 			return new ShooterLoader( this, serverInfo );
 		}
@@ -89,6 +90,9 @@ namespace ShooterDemo {
 			rw.RenderRadiance();
 
 			Game.GetModule<ShooterInterface>().ShowMenu = false;
+
+			Log.Message("---- Loading game completed ----");
+			Log.Message("");
 		}
 
 

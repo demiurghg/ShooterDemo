@@ -103,8 +103,8 @@ namespace ShooterDemo {
 		}
 
 
-		abstract public void Activate ();
-		abstract public void Deactivate ();
+		abstract public void Activate ( GameWorld gameWorld );
+		abstract public void Deactivate ( GameWorld gameWorld );
 		abstract public void Show ( RenderWorld rw );
 		abstract public void Hide ( RenderWorld rw );
 		abstract public void Update ( GameTime gameTime );

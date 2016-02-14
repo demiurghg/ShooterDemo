@@ -55,7 +55,6 @@
     <Compile Include="GameWorld.Map.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="GameWorld.Physics.cs" />
-    <Compile Include="GameWorld.Render.cs" />
     <Compile Include="MathConverter.cs" />
     <Compile Include="Entities\StartPoint.cs" />
     <Compile Include="Snapshot.cs" />

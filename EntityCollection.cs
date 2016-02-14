@@ -24,14 +24,17 @@ namespace ShooterDemo {
 	public class EntityCollection : ICollection<Entity> {
 
 		readonly HashSet<Entity> entities;
+		readonly GameWorld gameWorld;
+
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="capacity"></param>
-		public EntityCollection ()
-		{
-			entities	=	new HashSet<Entity>();
+		public EntityCollection ( GameWorld gameWorld )
+		{										 
+			this.gameWorld	=	gameWorld;
+			this.entities	=	new HashSet<Entity>();
 		}
 			
 
@@ -93,6 +96,7 @@ namespace ShooterDemo {
 			if (!entities.Add( entity )) {
 				Log.Warning("Can not add entity, it is alrady added");
 			}
+			entity.Activate( gameWorld );
 		}
 
 
@@ -115,7 +119,12 @@ namespace ShooterDemo {
 		/// <param name="entity"></param>
 		public bool Remove ( Entity entity )
 		{
-			return entities.Remove( entity );
+			if (entities.Remove(entity)) {
+				entity.Deactivate(gameWorld);
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 

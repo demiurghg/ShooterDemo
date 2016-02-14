@@ -14,7 +14,7 @@ using BEPUVector3 = BEPUutilities.Vector3;
 using BEPUTransform = BEPUutilities.AffineTransform;
 
 namespace ShooterDemo {
-	partial class GameWorld {
+	public partial class GameWorld {
 
 		/// <summary>
 		/// Gets entities.
@@ -37,7 +37,7 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public GameWorld ( GameServer server, string map )
 		{
-			entities	=	new EntityCollection();
+			entities	=	new EntityCollection(this);
 			Info		=	@"scenes\" + map;
 
 			InitPhysSpace( 9.8f );
@@ -56,7 +56,7 @@ namespace ShooterDemo {
 		/// <param name="serverInfo"></param>
 		public GameWorld( GameClient client, string serverInfo )
 		{
-			entities	=	new EntityCollection();
+			entities	=	new EntityCollection(this);
 
 			InitPhysSpace( 9.8f );
 
@@ -73,7 +73,7 @@ namespace ShooterDemo {
 		public void KillAll ()
 		{
 			foreach ( var ent in entities ) {
-				ent.Deactivate();
+				ent.Deactivate(this);
 			}
 		}
 

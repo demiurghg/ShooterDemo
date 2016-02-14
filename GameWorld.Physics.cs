@@ -13,7 +13,7 @@ using BEPUVector3 = BEPUutilities.Vector3;
 using BEPUTransform = BEPUutilities.AffineTransform;
 
 namespace ShooterDemo {
-	partial class GameWorld {
+	public partial class GameWorld {
 
 		Space physSpace;
 
