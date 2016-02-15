@@ -18,6 +18,16 @@ namespace ShooterDemo {
 		Space physSpace;
 
 
+		/// <summary>
+		/// Gets physical space
+		/// </summary>
+		public Space PhysSpace { 
+			get {
+				return physSpace;
+			}
+		}
+
+
 
 		/// <summary>
 		/// 

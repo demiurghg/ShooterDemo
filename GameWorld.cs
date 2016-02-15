@@ -12,6 +12,7 @@ using Fusion.Engine.Server;
 using Fusion.Engine.Client;
 using BEPUVector3 = BEPUutilities.Vector3;
 using BEPUTransform = BEPUutilities.AffineTransform;
+using ShooterDemo.Entities;
 
 namespace ShooterDemo {
 	public partial class GameWorld {
@@ -23,6 +24,9 @@ namespace ShooterDemo {
 			get { return entities; }
 		}
 		EntityCollection entities;
+
+
+		Random	rand = new Random();
 
 
 		/// <summary>
@@ -74,19 +78,6 @@ namespace ShooterDemo {
 		{
 			foreach ( var ent in entities ) {
 				ent.Deactivate(this);
-			}
-		}
-
-
-
-		/// <summary>
-		/// Hides all entities.
-		/// </summary>
-		/// <param name="rw"></param>
-		public void HideAll (RenderWorld rw)
-		{
-			foreach ( var ent in entities ) {
-				ent.Hide(rw);
 			}
 		}
 

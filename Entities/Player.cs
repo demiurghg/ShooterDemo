@@ -20,7 +20,7 @@ using System.IO;
 
 
 namespace ShooterDemo.Entities {
-	class Player : Entity {
+	public class Player : Entity {
 
 		public Guid UserGuid {
 			get; private set;
@@ -50,36 +50,31 @@ namespace ShooterDemo.Entities {
 		/// 
 		/// </summary>
 		/// <param name="origin"></param>
-		public Player ( Space physSpace, Guid userGuid, Matrix world )
+		public Player ( Guid userGuid, Matrix world )
 		{
 			UserGuid	=	userGuid;
 			World		=	world;
-
-			charCtrl	=	new CharacterController( MathConverter.Convert( world.TranslationVector ) );
-			physSpace.Add( charCtrl );
-		}
-
-
-		public override void Show ( RenderWorld rw )
-		{
-		}
-
-
-		public override void Hide ( RenderWorld rw )
-		{
 		}
 
 
 		public override void Activate ( GameWorld gameWorld )
 		{
+			charCtrl	=	new CharacterController( MathConverter.Convert(World.TranslationVector) );
+			gameWorld.PhysSpace.Add( charCtrl );
 		}
 
 
 		public override void Deactivate ( GameWorld gameWorld )
 		{
+			gameWorld.PhysSpace.Remove( charCtrl );
 		}
 
 
+
+		public void SetupCamera ( RenderWorld rw )
+		{
+			
+		}
 
 
 		/// <summary>
@@ -88,6 +83,9 @@ namespace ShooterDemo.Entities {
 		/// <param name="gameTime"></param>
 		public override void Update ( GameTime gameTime )
 		{
+			if (charCtrl!=null) {
+				World	=	MathConverter.Convert(charCtrl.Body.WorldTransform);
+			}
 			//throw new NotImplementedException();
 		}
 

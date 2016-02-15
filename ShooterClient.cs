@@ -136,7 +136,7 @@ namespace ShooterDemo {
 			}
 
 
-			var player = (Player)null;//GetPlayer();
+			var player = gameWorld.GetPlayer( Guid );
 			var aspect = Game.RenderSystem.DisplayBounds.Width / (float)Game.RenderSystem.DisplayBounds.Height;
 
 			if (player!=null) {

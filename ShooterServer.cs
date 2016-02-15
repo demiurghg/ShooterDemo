@@ -146,14 +146,25 @@ namespace ShooterDemo {
 		}
 
 
+		public override void ClientActivated ( Guid guid )
+		{
+			gameWorld.PlayerEntered( guid );
+		}
+
+
+		public override void ClientDeactivated ( Guid guid )
+		{
+			gameWorld.PlayerLeft( guid );
+		}
+
 
 		/// <summary>
 		/// Notifies server that client disconnected.
 		/// </summary>
-		public override void ClientDisconnected ( Guid id, string userInfo )
+		public override void ClientDisconnected ( Guid id )
 		{
-			NotifyClients( "DISCONNECTED: {0} - {1}", id, userInfo );
-			Log.Message( "DISCONNECTED: {0} - {1}", id, userInfo );
+			NotifyClients( "DISCONNECTED: {0}", id );
+			Log.Message( "DISCONNECTED: {0}", id );
 		}
 
 

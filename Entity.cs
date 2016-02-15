@@ -21,13 +21,36 @@ using System.IO;
 namespace ShooterDemo {
 	public abstract class Entity {
 
-		//	static fields :
-		static int atomicCounter;
-		static KeyValuePair<string,Type>[] Types;
-
 		//	public fields :
 		public int ID { get; private set; }
 		public byte TypeID { get; private set; }
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Entity ()
+		{
+			//	assign unique server side id and type id.
+			ID		= Interlocked.Increment( ref atomicCounter );
+			TypeID 	= GetTypeID(this.GetType());
+		}
+
+
+		abstract public void Activate ( GameWorld gameWorld );
+		abstract public void Deactivate ( GameWorld gameWorld );
+		abstract public void Update ( GameTime gameTime );
+		abstract public void Read ( BinaryReader reader );
+		abstract public void Write ( BinaryWriter writer );
+
+
+		/*-----------------------------------------------------------------------------------------
+		 *	Static stuff :
+		-----------------------------------------------------------------------------------------*/
+
+		//	static fields :
+		static int atomicCounter;
+		static KeyValuePair<string,Type>[] Types;
 
 
 		/// <summary>
@@ -53,7 +76,7 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		byte GetTypeID ( Type type )
+		static byte GetTypeID ( Type type )
 		{
 			for ( byte id = 0; id<(byte)Types.Length; id++ ) {
 				if (Types[id].Value==type) {
@@ -89,27 +112,6 @@ namespace ShooterDemo {
 			ent.ID = id;
 			return ent;
 		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public Entity ()
-		{
-			//	assign unique server side id and type id.
-			ID		= Interlocked.Increment( ref atomicCounter );
-			TypeID 	= GetTypeID(this.GetType());
-		}
-
-
-		abstract public void Activate ( GameWorld gameWorld );
-		abstract public void Deactivate ( GameWorld gameWorld );
-		abstract public void Show ( RenderWorld rw );
-		abstract public void Hide ( RenderWorld rw );
-		abstract public void Update ( GameTime gameTime );
-		abstract public void Read ( BinaryReader reader );
-		abstract public void Write ( BinaryWriter writer );
 
 	}
 }

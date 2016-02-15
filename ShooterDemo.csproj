@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameWorld.Player.cs" />
     <Compile Include="GameWorld.Map.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="GameWorld.Physics.cs" />

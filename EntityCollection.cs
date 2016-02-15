@@ -130,6 +130,27 @@ namespace ShooterDemo {
 
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="predicated"></param>
+		/// <returns></returns>
+		public int RemoveAll ( Func<Entity,bool> predicate )
+		{
+			var toRemove = entities.Where ( e => predicate(e) );
+			int count = 0;
+
+			foreach ( var ent in toRemove ) {
+				if (Remove( ent )) {
+					count ++;
+				}
+			}
+
+			return count;
+		}
+
+
+
+		/// <summary>
 		/// Determines whether the GameEntityCollection contains a specific value.
 		/// </summary>
 		/// <param name="entity"></param>

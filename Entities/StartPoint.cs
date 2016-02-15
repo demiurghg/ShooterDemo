@@ -54,16 +54,6 @@ namespace ShooterDemo.Entities {
 		}
 
 
-		public override void Show ( RenderWorld rw )
-		{
-		}
-
-
-		public override void Hide ( RenderWorld rw )
-		{
-		}
-
-
 		/// <summary>
 		/// 
 		/// </summary>
