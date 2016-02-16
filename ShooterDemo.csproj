@@ -52,6 +52,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Aggregator.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\Factory.cs" />
+    <Compile Include="Core\Processor.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="Entities\Player.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\StartPoint.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GameWorld.Player.cs" />
     <Compile Include="GameWorld.Map.cs" />
     <Compile Include="GameWorld.cs" />
@@ -59,7 +70,7 @@
     <Compile Include="MathConverter.cs" />
     <Compile Include="Snapshot.cs" />
     <Compile Include="EntityCollection.cs" />
-    <Compile Include="Entity.cs" />
+    <Compile Include="EntityOld.cs" />
     <Compile Include="ShooterLoader.cs" />
     <Compile Include="Common\Map.cs" />
     <Compile Include="ShooterClient.cs" />
@@ -71,7 +82,6 @@
     <Compile Include="Weapon\Machinegun.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Entities\" />
     <Folder Include="Physics\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
