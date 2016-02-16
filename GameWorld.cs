@@ -101,7 +101,7 @@ namespace ShooterDemo {
 		public void Think ( GameTime gameTime )
 		{
 			//	get entity array :
-			var ents = new Entity[ entities.Count ];
+			var ents = new EntityOld[ entities.Count ];
 			entities.CopyTo( ents, 0 );
 
 			//	update entities :

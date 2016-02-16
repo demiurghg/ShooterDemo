@@ -20,7 +20,7 @@ using System.IO;
 
 
 namespace ShooterDemo.Entities {
-	public class Player : Entity {
+	public class Player : EntityOld {
 
 		public Guid UserGuid {
 			get; private set;

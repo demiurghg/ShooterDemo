@@ -21,9 +21,9 @@ namespace ShooterDemo {
 	/// <summary>
 	/// Represents collection of game entities.
 	/// </summary>
-	public class EntityCollection : ICollection<Entity> {
+	public class EntityCollection : ICollection<EntityOld> {
 
-		readonly HashSet<Entity> entities;
+		readonly HashSet<EntityOld> entities;
 		readonly GameWorld gameWorld;
 
 
@@ -34,7 +34,7 @@ namespace ShooterDemo {
 		public EntityCollection ( GameWorld gameWorld )
 		{										 
 			this.gameWorld	=	gameWorld;
-			this.entities	=	new HashSet<Entity>();
+			this.entities	=	new HashSet<EntityOld>();
 		}
 			
 
@@ -44,7 +44,7 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns>Null if collection does not contain entity with given ID.</returns>
-		public Entity this[ int id ] {
+		public EntityOld this[ int id ] {
 			get {
 				return entities.SingleOrDefault( e => e.ID == id );
 			}
@@ -91,7 +91,7 @@ namespace ShooterDemo {
 		/// This method is deferred. To apply call Commit.
 		/// </summary>
 		/// <param name="entity"></param>
-		public void Add ( Entity entity )
+		public void Add ( EntityOld entity )
 		{
 			if (!entities.Add( entity )) {
 				Log.Warning("Can not add entity, it is alrady added");
@@ -117,7 +117,7 @@ namespace ShooterDemo {
 		/// This method is deferred. To apply call Commit.
 		/// </summary>
 		/// <param name="entity"></param>
-		public bool Remove ( Entity entity )
+		public bool Remove ( EntityOld entity )
 		{
 			if (entities.Remove(entity)) {
 				entity.Deactivate(gameWorld);
@@ -134,7 +134,7 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="predicated"></param>
 		/// <returns></returns>
-		public int RemoveAll ( Func<Entity,bool> predicate )
+		public int RemoveAll ( Func<EntityOld,bool> predicate )
 		{
 			var toRemove = entities.Where ( e => predicate(e) );
 			int count = 0;
@@ -155,7 +155,7 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="entity"></param>
 		/// <returns></returns>
-		public bool Contains ( Entity entity )
+		public bool Contains ( EntityOld entity )
 		{
 			return entities.Contains( entity );
 		}
@@ -167,7 +167,7 @@ namespace ShooterDemo {
 		///</summary>
 		/// <param name="array"></param>
 		/// <param name="arrayIndex"></param>
-		public void CopyTo ( Entity[] array, int arrayIndex )
+		public void CopyTo ( EntityOld[] array, int arrayIndex )
 		{
 			entities.CopyTo( array, arrayIndex );
 		}
@@ -178,7 +178,7 @@ namespace ShooterDemo {
 		/// Returns an enumerator that iterates through a collection.
 		/// </summary>
 		/// <returns></returns>
-		public IEnumerator<Entity> GetEnumerator ()
+		public IEnumerator<EntityOld> GetEnumerator ()
 		{
 			return entities.GetEnumerator();
 		}

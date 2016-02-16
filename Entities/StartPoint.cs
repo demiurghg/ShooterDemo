@@ -18,7 +18,7 @@ using System.IO;
 
 
 namespace ShooterDemo.Entities {
-	class StartPoint : Entity {
+	class StartPoint : EntityOld {
 
 		public Matrix World { get; set; }
 

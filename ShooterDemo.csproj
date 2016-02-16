@@ -57,10 +57,8 @@
     <Compile Include="GameWorld.cs" />
     <Compile Include="GameWorld.Physics.cs" />
     <Compile Include="MathConverter.cs" />
-    <Compile Include="Entities\StartPoint.cs" />
     <Compile Include="Snapshot.cs" />
     <Compile Include="EntityCollection.cs" />
-    <Compile Include="Entities\Player.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="ShooterLoader.cs" />
     <Compile Include="Common\Map.cs" />
@@ -73,6 +71,7 @@
     <Compile Include="Weapon\Machinegun.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Entities\" />
     <Folder Include="Physics\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
