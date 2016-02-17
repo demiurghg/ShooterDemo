@@ -12,12 +12,10 @@ using Fusion.Engine.Common;
 using Fusion.Engine.Server;
 using Fusion.Core.Content;
 using Fusion.Engine.Graphics;
-using ShooterDemo.Entities;
+using ShooterDemo.Core;
 
 namespace ShooterDemo {
 	partial class ShooterServer : GameServer {
-
-		GameWorld	gameWorld;
 
 
 		/// <summary>
@@ -60,7 +58,7 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override void LoadContent ( string map )
 		{
-			gameWorld	=	new GameWorld( this, map );
+			//gameWorld	=	new GameWorld( this, map );
 		}
 
 
@@ -71,7 +69,6 @@ namespace ShooterDemo {
 		/// </summary>
 		public override void UnloadContent ()
 		{
-			gameWorld	=	null;
 			Content.Unload();
 		}
 
@@ -86,11 +83,8 @@ namespace ShooterDemo {
 		{
 			Thread.Sleep(1);
 
-			gameWorld.Simulate( gameTime );
-			gameWorld.Think( gameTime );
-
 			//	write snapshot :
-			return Snapshot.WriteSnapshot( gameWorld.Entities );
+			return new byte[100];//Snapshot.WriteSnapshot( gameWorld.Entities );
 		}
 
 
@@ -106,7 +100,7 @@ namespace ShooterDemo {
 				return;
 			}
 
-			gameWorld.Command( id, userCommand );
+			//gameWorld.Command( id, userCommand );
 		}
 
 
@@ -131,7 +125,7 @@ namespace ShooterDemo {
 		/// <returns></returns>
 		public override string ServerInfo ()
 		{
-			return gameWorld.Info;
+			return "";
 		}
 
 
@@ -148,13 +142,13 @@ namespace ShooterDemo {
 
 		public override void ClientActivated ( Guid guid )
 		{
-			gameWorld.PlayerEntered( guid );
+			//gameWorld.PlayerEntered( guid );
 		}
 
 
 		public override void ClientDeactivated ( Guid guid )
 		{
-			gameWorld.PlayerLeft( guid );
+			//gameWorld.PlayerLeft( guid );
 		}
 
 

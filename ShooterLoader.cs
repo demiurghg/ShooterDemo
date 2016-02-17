@@ -21,13 +21,6 @@ namespace ShooterDemo {
 
 
 		/// <summary>
-		/// Gets loaded game world.
-		/// </summary>
-		public GameWorld World { get; private set; }
-
-
-
-		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="client"></param>
@@ -66,7 +59,6 @@ namespace ShooterDemo {
 		/// </summary>
 		void LoadingTask ( ShooterClient client, string serverInfo )
 		{
-			World	=	new GameWorld( client, serverInfo );
 		}
 	}
 }

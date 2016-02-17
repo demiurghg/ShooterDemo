@@ -12,14 +12,10 @@ using Fusion.Engine.Input;
 using Fusion.Engine.Client;
 using Fusion.Engine.Server;
 using Fusion.Engine.Graphics;
-using ShooterDemo.Entities;
 
 
 namespace ShooterDemo {
 	class ShooterClient : Fusion.Engine.Client.GameClient {
-
-
-		GameWorld	gameWorld;
 
 
 		/// <summary>
@@ -64,16 +60,7 @@ namespace ShooterDemo {
 		/// <param name="loader"></param>
 		public override void FinalizeLoad ( GameLoader loader )
 		{
-			gameWorld	= ((ShooterLoader)loader).World;
-
-			var rw	=	Game.RenderSystem.RenderWorld;
-			rw.ClearWorld();
-
-			rw.Instances.Clear();
-
-			foreach ( var inst in gameWorld.StaticMeshInstances ) {
-				rw.Instances.Add( inst );
-			}
+			var rw = Game.RenderSystem.RenderWorld;
 
 			rw.Camera.SetupCameraFov( new Vector3(10,10,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, 1 );
 
@@ -104,9 +91,6 @@ namespace ShooterDemo {
 		/// </summary>
 		public override void UnloadContent ()
 		{
-			gameWorld.KillAll();
-			gameWorld	=	null;
-			
 			Game.RenderSystem.RenderWorld.ClearWorld();
 
 			Content.Unload();
@@ -128,24 +112,6 @@ namespace ShooterDemo {
 			userCmd.Pitch		=	0;
 			userCmd.Roll		=	0;
 
-			if (Game.Keyboard.IsKeyDown(Keys.W)) {
-				userCmd.CtrlFlags |= UserCtrlFlags.Forward;
-			}
-			if (Game.Keyboard.IsKeyDown(Keys.S)) {
-				userCmd.CtrlFlags |= UserCtrlFlags.Backward;
-			}
-
-
-			var player = gameWorld.GetPlayer( Guid );
-			var aspect = Game.RenderSystem.DisplayBounds.Width / (float)Game.RenderSystem.DisplayBounds.Height;
-
-			if (player!=null) {
-				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( Matrix.Invert(player.World), MathUtil.Rad(90), 0.125f, 5000, 1, 0, aspect );
-			} else {
-				Game.RenderSystem.RenderWorld.Camera.SetupCameraFov( new Vector3(10,0,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
-			}
-
-
 
 			return UserCommand.GetBytes( userCmd );
 		}
@@ -159,7 +125,7 @@ namespace ShooterDemo {
 		/// <param name="snapshot"></param>
 		public override void FeedSnapshot ( byte[] snapshot, bool initial )
 		{
-			Snapshot.ReadSnapshot( snapshot, gameWorld.Entities );
+			//Snapshot.ReadSnapshot( snapshot, gameWorld.Entities );
 		}
 
 
