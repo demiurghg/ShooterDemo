@@ -9,7 +9,7 @@ using Fusion.Engine.Common;
 using System.IO;
 
 namespace ShooterDemo.Core {
-	public class Aggregator {
+	public class World {
 
 		/// <summary>
 		/// Gets aggregator factory.
