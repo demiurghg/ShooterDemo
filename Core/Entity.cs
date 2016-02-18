@@ -115,5 +115,12 @@ namespace ShooterDemo.Core {
 		public void Read ( BinaryReader reader )
 		{
 		}
+
+
+
+		public Matrix GetWorldMatrix ()
+		{
+			return Matrix.Translation( Position ) * Matrix.RotationYawPitchRoll( Angles.Yaw.Radians, Angles.Pitch.Radians, Angles.Roll.Radians );
+		}
 	}
 }

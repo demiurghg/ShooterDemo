@@ -14,6 +14,8 @@ using Fusion.Engine.Client;
 using Fusion.Engine.Server;
 using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
+using ShooterDemo.Views;
+using ShooterDemo.Controllers;
 
 namespace ShooterDemo {
 	public partial class MPWorld : World {
@@ -22,18 +24,29 @@ namespace ShooterDemo {
 		readonly string mapName;
 
 		
-		/// <summary>
-		/// 
-		/// </summary>
-		public MPWorld ( Game game, ContentManager content, bool server, string map ) : base(game)
+		public MPWorld( GameServer server, string map ) : base(server)
 		{
+			InitPhysSpace(9.8f);
 			this.mapName	=	map;
 
-			var scene	=	content.Load<Scene>(@"scenes\" + mapName);
+			AddController( new Characters(this, PhysSpace) );
 
+			var scene = Content.Load<Scene>(@"scenes\" + map );
+
+			ReadMapFromScene( Content, scene, IsClient );
+		}
+
+
+
+		public MPWorld( GameClient client, string serverInfo ) : base(client)
+		{
 			InitPhysSpace(9.8f);
 
-			ReadMapFromScene( content, scene, !server );
+			AddView( new ModelView(client, this) );
+
+			var scene = Content.Load<Scene>(@"scenes\" + serverInfo );
+
+			ReadMapFromScene( Content, scene, IsClient );
 		}
 
 

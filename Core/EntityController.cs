@@ -8,24 +8,26 @@ using Fusion.Engine.Common;
 
 namespace ShooterDemo.Core {
 	public abstract class EntityController {
+		
+		public readonly Game Game;
+		public readonly World World;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="game"></param>
+		public EntityController ( World world )
+		{
+			World	=	world;
+			Game	=	world.Game;
+		}
+
 
 		/// <summary>
 		/// Updates controller.
 		/// </summary>
 		/// <param name="gameTime"></param>
 		public abstract void Update ( GameTime gameTime );
-
-		/// <summary>
-		/// Gets indices of all controlled entities.
-		/// </summary>
-		/// <returns></returns>
-		public abstract uint[] GetIDs();
-
-		/// <summary>
-		/// Called on each controlled entity.
-		/// </summary>
-		/// <param name="entity"></param>
-		public abstract void Control ( GameTime gameTime, ref Entity entity );
 
 		/// <summary>
 		/// Called when entity has died.

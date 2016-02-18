@@ -61,7 +61,7 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override void LoadContent ( string map )
 		{
-			gameWorld	=	new MPWorld( Game, Content, true, map );
+			gameWorld	=	new MPWorld( this, map );
 		}
 
 
@@ -89,7 +89,7 @@ namespace ShooterDemo {
 			Thread.Sleep(1);
 
 			//	update world
-			gameWorld.Update( gameTime, true );
+			gameWorld.Update( gameTime );
 
 			//	write world to stream :
 			using ( var ms = new MemoryStream() ) { 

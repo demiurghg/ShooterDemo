@@ -9,23 +9,24 @@ using Fusion.Engine.Common;
 namespace ShooterDemo.Core {
 	public abstract class EntityView {
 
+		public readonly Game Game;
+		public readonly World World;
+
 		/// <summary>
-		/// Updates controller.
+		/// 
 		/// </summary>
-		/// <param name="gameTime"></param>
-		public abstract void Update ( GameTime gameTime );
+		/// <param name="game"></param>
+		public EntityView ( World world )
+		{
+			World	=	world;
+			Game	=	world.Game;
+		}
 
 		/// <summary>
 		/// Called on each viewable entity.
 		/// </summary>
 		/// <param name="entity"></param>
-		public abstract void Present ( GameTime gameTime, ref Entity entity );
-
-		/// <summary>
-		/// Gets indices of all controlled entities.
-		/// </summary>
-		/// <returns></returns>
-		public abstract uint[] GetIDs();
+		public abstract void Present ( GameTime gameTime );
 
 		/// <summary>
 		/// Called when entity has died.

@@ -34,6 +34,7 @@ namespace ShooterDemo {
 		public ShooterLoader ( ShooterClient client, string serverInfo )
 		{
 			loadingTask	=	new Task( ()=>LoadingTask(client, serverInfo) );
+
 			loadingTask.Start();
 		}
 
@@ -65,9 +66,14 @@ namespace ShooterDemo {
 		/// </summary>
 		void LoadingTask ( ShooterClient client, string serverInfo )
 		{
-			var world = new MPWorld( client.Game, client.Content, false, serverInfo );
+			try {
+				var world = new MPWorld( client, serverInfo );
+				World	=	world;
 
-			World	=	world;
+			} catch ( Exception e ) {
+				Log.Error("{0}", e.ToString());
+				throw;
+			}
 		}
 	}
 }

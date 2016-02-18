@@ -55,7 +55,7 @@ namespace ShooterDemo {
 				game.RenderSystem.Config.UseDebugDevice = false;
 
 				//	enable and disable object tracking :
-				game.TrackObjects = true;
+				game.TrackObjects = false;
 
 				//	set game title :
 				game.GameTitle = "ShooterDemo";

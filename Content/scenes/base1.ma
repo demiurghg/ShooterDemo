@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: base1.ma
-//Last modified: Thu, Feb 18, 2016 05:55:40 PM
+//Last modified: Thu, Feb 18, 2016 07:14:22 PM
 //Codeset: 1251
 requires maya "2015";
 currentUnit -l centimeter -a degree -t film;
@@ -17561,7 +17561,7 @@ createNode mesh -n "pCube110Shape" -p "pCube110";
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
 createNode transform -n "pCube111";
 	setAttr ".t" -type "double3" 11 6.9999999999999991 15.5 ;
-	setAttr ".r" -type "double3" -12.839520017602167 -27.169913182954716 22.114828614154298 ;
+	setAttr ".r" -type "double3" -12.839520017602172 -27.169913182954677 15.000000000000009 ;
 	setAttr ".s" -type "double3" 0.60224070660347628 0.60224070660347628 0.60224070660347628 ;
 createNode mesh -n "pCube111Shape" -p "pCube111";
 	setAttr -k off ".v";
@@ -17606,10 +17606,10 @@ createNode mesh -n "pCube111Shape" -p "pCube111";
 	setAttr ".cd" -type "dataPolyComponent" Index_Data Edge 0 ;
 	setAttr ".cvd" -type "dataPolyComponent" Index_Data Vertex 0 ;
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
-createNode transform -n "pCube112";
-	setAttr ".t" -type "double3" 10.180870065521859 9.8244038768009769 14.906898919952564 ;
-	setAttr ".r" -type "double3" -20.896036402096353 -21.801145646494238 41.380387255762997 ;
-	setAttr ".s" -type "double3" 0.46177166960180543 0.46177166960180543 0.46177166960180543 ;
+createNode transform -n "pCube112" -p "pCube111";
+	setAttr ".t" -type "double3" -3.5527136788005009e-015 4.981396918384065 1.2434497875801753e-014 ;
+	setAttr ".r" -type "double3" -1.6592265180818226e-014 -1.4518232033215945e-014 18.312823828846547 ;
+	setAttr ".s" -type "double3" 0.7667559906504996 0.7667559906504996 0.76675599065049949 ;
 createNode mesh -n "pCube112Shape" -p "pCube112";
 	setAttr -k off ".v";
 	setAttr ".vir" yes;
@@ -17653,10 +17653,10 @@ createNode mesh -n "pCube112Shape" -p "pCube112";
 	setAttr ".cd" -type "dataPolyComponent" Index_Data Edge 0 ;
 	setAttr ".cvd" -type "dataPolyComponent" Index_Data Vertex 0 ;
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
-createNode transform -n "pCube113";
-	setAttr ".t" -type "double3" 8.4199268928979016 11.882117279589133 13.808948276737464 ;
-	setAttr ".r" -type "double3" -27.723255011156397 -11.507317718963742 64.802535384008678 ;
-	setAttr ".s" -type "double3" 0.32568725474489996 0.32568725474489996 0.32568725474489996 ;
+createNode transform -n "pCube113" -p "pCube112";
+	setAttr ".t" -type "double3" -0.80470529304415805 6.2773672448851325 -1.0658141036401503e-014 ;
+	setAttr ".r" -type "double3" -4.0585593132978465e-014 -6.4260522460549217e-014 24.641210829029351 ;
+	setAttr ".s" -type "double3" 0.7052993420444057 0.70529934204440536 0.70529934204440548 ;
 createNode mesh -n "pCube113Shape" -p "pCube113";
 	setAttr -k off ".v";
 	setAttr ".vir" yes;
@@ -17702,16 +17702,16 @@ createNode mesh -n "pCube113Shape" -p "pCube113";
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 16.790849441938217 149.3857093485249 185.6286330956728 ;
-	setAttr ".r" -type "double3" -39.938352729111926 725.40000000001953 0 ;
+	setAttr ".t" -type "double3" 8.0513072563421098 19.924557990196973 -9.9848067237839029 ;
+	setAttr ".r" -type "double3" -26.738352729110673 906.59999999995523 0 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 232.70142689287678;
+	setAttr ".coi" 28.726544551810001;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
-	setAttr ".tp" -type "double3" 0 0 8 ;
+	setAttr ".tp" -type "double3" 11 6.9999999999999982 15.499999999999998 ;
 	setAttr ".hc" -type "string" "viewSet -p %camera";
 createNode transform -s -n "top";
 	setAttr ".v" no;

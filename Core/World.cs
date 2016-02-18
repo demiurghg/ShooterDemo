@@ -8,6 +8,8 @@ using Fusion;
 using Fusion.Core.Mathematics;
 using Fusion.Engine.Common;
 using Fusion.Core.Content;
+using Fusion.Engine.Server;
+using Fusion.Engine.Client;
 
 namespace ShooterDemo.Core {
 
@@ -17,6 +19,10 @@ namespace ShooterDemo.Core {
 	public abstract class World {
 
 		public readonly Game Game;
+
+		public readonly bool serverSide;
+
+		public readonly ContentManager Content;
 
 		const uint MaxEntities = 1024;
 		Entity[]	entities;
@@ -30,7 +36,7 @@ namespace ShooterDemo.Core {
 
 		class Prefab {
 			public string Name;
-			public Action<Entity> Construct;
+			public Action<Entity,bool> Construct;
 		}
 
 
@@ -42,16 +48,49 @@ namespace ShooterDemo.Core {
 		}
 
 
+		/// <summary>
+		/// Indicates that world is running on server side.
+		/// </summary>
+		public bool IsServer {
+			get { return serverSide; }
+		}
+
+
 
 		/// <summary>
-		/// 
+		/// Indicates that world is running on client side.
+		/// </summary>
+		public bool IsClient {
+			get { return !serverSide; }
+		}
+
+
+
+		/// <summary>
+		/// Initializes server-side world.
 		/// </summary>
 		/// <param name="maxPlayers"></param>
 		/// <param name="maxEntities"></param>
-		public World ( Game game )
+		public World ( GameServer server )
 		{
-			this.Game	=	game;
-			entities	=	new Entity[ MaxEntities ];
+			this.serverSide	=	true;
+			this.Game		=	server.Game;
+			Content			=	server.Content;
+			entities		=	new Entity[ MaxEntities ];
+		}
+
+
+
+		/// <summary>
+		/// Initializes client-side world.
+		/// </summary>
+		/// <param name="client"></param>
+		public World ( GameClient client )
+		{
+			this.serverSide	=	false;
+			this.Game		=	client.Game;
+			Content			=	client.Content;
+			entities		=	new Entity[ MaxEntities ];
 		}
 
 
@@ -60,8 +99,11 @@ namespace ShooterDemo.Core {
 		/// Adds view.
 		/// </summary>
 		/// <param name="view"></param>
-		void AddView( EntityView view )
+		public void AddView( EntityView view )
 		{
+			if (IsServer) {
+				throw new InvalidOperationException("Can not add EntityView to server-side world");
+			}
 			views.Add( view );
 		}
 
@@ -71,7 +113,7 @@ namespace ShooterDemo.Core {
 		/// Adds controller.
 		/// </summary>
 		/// <param name="controller"></param>
-		void AddController ( EntityController controller )
+		public void AddController ( EntityController controller )
 		{
 			controllers.Add( controller );
 		}
@@ -107,7 +149,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="prefabName"></param>
 		/// <param name="constructAction"></param>
-		public void AddPrefab ( string prefabName, Action<Entity> constructAction )
+		public void AddPrefab ( string prefabName, Action<Entity,bool> constructAction )
 		{
 			uint crc = Factory.GetPrefabID( prefabName );
 
@@ -126,7 +168,7 @@ namespace ShooterDemo.Core {
 		/// <param name="prefabId"></param>
 		void Construct ( Entity entity )
 		{
-			prefabs[ entity.PrefabID ].Construct(entity);
+			prefabs[ entity.PrefabID ].Construct(entity, IsServer);
 		}
 
 
@@ -150,37 +192,21 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public void Update ( GameTime gameTime, bool controllersOnly )
+		public void Update ( GameTime gameTime )
 		{
 			//
 			//	Control entities :
 			//
 			foreach ( var controller in controllers ) {
-				
 				controller.Update( gameTime );
-				
-				var ids = controller.GetIDs();
-
-				foreach ( var id in ids ) {
-					var index = GetIndex(id);
-					controller.Control( gameTime, ref entities[index] );
-				}
 			}
 
 			//
 			//	Present entities :
 			//
-			if (!controllersOnly) {
+			if (IsClient) {
 				foreach ( var view in views ) {
-
-					view.Update( gameTime );
-
-					var ids = view.GetIDs();
-
-					foreach ( var id in ids ) {
-						var index = GetIndex(id);
-						view.Present( gameTime, ref entities[index] );
-					}
+					view.Present( gameTime );
 				}
 			}
 		}
