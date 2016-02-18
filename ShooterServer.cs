@@ -17,6 +17,9 @@ using ShooterDemo.Core;
 namespace ShooterDemo {
 	partial class ShooterServer : GameServer {
 
+		
+		World	gameWorld;
+
 
 		/// <summary>
 		/// Ctor
@@ -58,7 +61,7 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override void LoadContent ( string map )
 		{
-			//gameWorld	=	new GameWorld( this, map );
+			gameWorld	=	new MPWorld( Game, Content, true, map );
 		}
 
 
@@ -69,6 +72,7 @@ namespace ShooterDemo {
 		/// </summary>
 		public override void UnloadContent ()
 		{
+			gameWorld.Cleanup();
 			Content.Unload();
 		}
 
@@ -81,10 +85,20 @@ namespace ShooterDemo {
 		/// <returns>Snapshot bytes</returns>
 		public override byte[] Update ( GameTime gameTime )
 		{
+			//	give some time to other threads :
 			Thread.Sleep(1);
 
-			//	write snapshot :
-			return new byte[100];//Snapshot.WriteSnapshot( gameWorld.Entities );
+			//	update world
+			gameWorld.Update( gameTime, true );
+
+			//	write world to stream :
+			using ( var ms = new MemoryStream() ) { 
+				using ( var writer = new BinaryWriter(ms) ) {
+					gameWorld.Write( writer );
+
+					return ms.GetBuffer();
+				}
+			}
 		}
 
 
@@ -125,7 +139,7 @@ namespace ShooterDemo {
 		/// <returns></returns>
 		public override string ServerInfo ()
 		{
-			return "";
+			return gameWorld.ServerInfo();
 		}
 
 

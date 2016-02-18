@@ -7,9 +7,14 @@ using System.IO;
 using Fusion;
 using Fusion.Core.Mathematics;
 using Fusion.Engine.Common;
+using Fusion.Core.Content;
 
 namespace ShooterDemo.Core {
-	public class World {
+
+	/// <summary>
+	/// World represents entire game state.
+	/// </summary>
+	public abstract class World {
 
 		public readonly Game Game;
 
@@ -25,7 +30,7 @@ namespace ShooterDemo.Core {
 
 		class Prefab {
 			public string Name;
-			public Action Construct;
+			public Action<Entity> Construct;
 		}
 
 
@@ -102,7 +107,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="prefabName"></param>
 		/// <param name="constructAction"></param>
-		public void AddPrefab ( string prefabName, Action constructAction )
+		public void AddPrefab ( string prefabName, Action<Entity> constructAction )
 		{
 			uint crc = Factory.GetPrefabID( prefabName );
 
@@ -113,6 +118,32 @@ namespace ShooterDemo.Core {
 			prefabs.Add( crc, new Prefab(){ Name = prefabName, Construct = constructAction } );
 		}
 
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="prefabId"></param>
+		void Construct ( Entity entity )
+		{
+			prefabs[ entity.PrefabID ].Construct(entity);
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="entity"></param>
+		void Destruct ( Entity entity )
+		{
+			foreach ( var controller in controllers ) {
+				controller.Kill( entity.UniqueID );
+			}
+			foreach ( var view in views ) {
+				view.Kill( entity.UniqueID );
+			}
+		}
 
 
 		/// <summary>
@@ -152,28 +183,6 @@ namespace ShooterDemo.Core {
 					}
 				}
 			}
-		}
-
-
-
-		/// <summary>
-		/// Called when player enetered.
-		/// </summary>
-		/// <param name="guid"></param>
-		public void PlayerEntered ( Guid guid )
-		{
-			throw new NotImplementedException("Event!");
-		}
-
-
-
-		/// <summary>
-		/// Called when player left.
-		/// </summary>
-		/// <param name="guid"></param>
-		public void PlayerLeft ( Guid guid )
-		{
-			throw new NotImplementedException("Event!");
 		}
 
 
@@ -277,20 +286,94 @@ namespace ShooterDemo.Core {
 
 
 
+
 		/// <summary>
-		/// 
+		/// Called when player enetered.
 		/// </summary>
-		/// <param name="writer"></param>
-		public void Write ( BinaryWriter writer )
-		{
-		}
+		/// <param name="guid"></param>
+		public abstract void PlayerEntered ( Guid guid );
+
+		/// <summary>
+		/// Called when player left.
+		/// </summary>
+		/// <param name="guid"></param>
+		public abstract void PlayerLeft ( Guid guid );
+
+
+		/// <summary>
+		/// Called when server started.
+		/// </summary>
+		/// <param name="content"></param>
+		/// <param name="mapName"></param>
+		//public abstract void LoadMapServer ( ContentManager content, string mapName );
+
+
+		/// <summary>
+		/// Called when client started.
+		/// Server info is provided.
+		/// This method could be called in separate thread.
+		/// </summary>
+		/// <param name="content"></param>
+		/// <param name="mapName"></param>
+		//public abstract void LoadMapClient ( ContentManager content, string serverInfo );
+
+
+		/// <summary>
+		/// This method called in main thread to complete non-thread safe operations.
+		/// </summary>
+		public abstract void FinalizeLoad (); 
+
+
+		/// <summary>
+		/// Returns server info.
+		/// </summary>
+		public abstract string ServerInfo (); 
+
+
+		/// <summary>
+		/// Called when client or server is 
+		/// </summary>
+		public abstract void Cleanup ();
+		
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="writer"></param>
-		public void Read ( BinaryReader reader )
+		public virtual void Write ( BinaryWriter writer )
 		{
+			for ( int i=0; i<MaxEntities; i++ ) {
+				entities[i].Write( writer );
+			}
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="writer"></param>
+		public virtual void Read ( BinaryReader reader )
+		{
+			for ( int i=0; i<MaxEntities; i++ ) {
+
+				//	track spawn/kill on remoter server side
+				var oldId = entities[i].UniqueID;
+
+				entities[i].Read( reader );
+
+				var newId = entities[i].UniqueID;
+
+				if (oldId != newId) {
+
+					if (newId!=0) {
+						Construct( entities[i] );
+					} else {
+						Destruct( entities[i] );
+					}
+
+				}
+			}
 		}
 	}
 }

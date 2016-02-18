@@ -52,14 +52,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MPWorld.Map.cs" />
+    <Compile Include="MPWorld.Physics.cs" />
     <Compile Include="Core\Angles.cs" />
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\EntityController.cs" />
     <Compile Include="Core\EntityView.cs" />
     <Compile Include="Core\Factory.cs" />
-    <Compile Include="Core\MapReader.cs" />
     <Compile Include="Core\World.cs" />
     <Compile Include="MathConverter.cs" />
+    <Compile Include="MPWorld.cs" />
     <Compile Include="ShooterLoader.cs" />
     <Compile Include="ShooterClient.cs" />
     <Compile Include="ShooterServer.cs" />

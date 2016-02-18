@@ -12,12 +12,18 @@ using Fusion.Engine.Common;
 using Fusion.Engine.Client;
 using Fusion.Engine.Server;
 using Fusion.Engine.Graphics;
+using ShooterDemo.Core;
 
 
 namespace ShooterDemo {
 	class ShooterLoader : GameLoader {
 
 		Task loadingTask;
+
+		/// <summary>
+		/// Loaded world.
+		/// </summary>
+		public World World { get; private set; }
 
 
 		/// <summary>
@@ -59,6 +65,9 @@ namespace ShooterDemo {
 		/// </summary>
 		void LoadingTask ( ShooterClient client, string serverInfo )
 		{
+			var world = new MPWorld( client.Game, client.Content, false, serverInfo );
+
+			World	=	world;
 		}
 	}
 }

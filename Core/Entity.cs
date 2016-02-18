@@ -52,6 +52,16 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		public float LerpFactor;
 
+		/// <summary>
+		/// Linear object velocity
+		/// </summary>
+		public Vector3 LinearVelocity;
+
+		/// <summary>
+		/// Angular object velocity
+		/// </summary>
+		public Vector3 AngularVelocity;
+
 
 		/// <summary>
 		/// 

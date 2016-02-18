@@ -12,10 +12,13 @@ using Fusion.Engine.Input;
 using Fusion.Engine.Client;
 using Fusion.Engine.Server;
 using Fusion.Engine.Graphics;
+using ShooterDemo.Core;
 
 
 namespace ShooterDemo {
 	class ShooterClient : Fusion.Engine.Client.GameClient {
+
+		World gameWorld;
 
 
 		/// <summary>
@@ -60,9 +63,17 @@ namespace ShooterDemo {
 		/// <param name="loader"></param>
 		public override void FinalizeLoad ( GameLoader loader )
 		{
+			var shooterLoader = (ShooterLoader)loader;
+
+			gameWorld = shooterLoader.World;
+
+			gameWorld.FinalizeLoad();
+
+
+
 			var rw = Game.RenderSystem.RenderWorld;
 
-			rw.Camera.SetupCameraFov( new Vector3(10,10,10), Vector3.Zero, Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, 1 );
+			rw.Camera.SetupCameraFov( new Vector3(10,4,10), new Vector3(0,4,0), Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, 1 );
 
 			rw.HdrSettings.BloomAmount	= 0.2f;
 			rw.HdrSettings.DirtAmount	= 0.0f;
