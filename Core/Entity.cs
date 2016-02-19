@@ -3,33 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fusion;
+using Fusion.Core;
+using Fusion.Core.Utils;
 using Fusion.Core.Mathematics;
 using System.IO;
 
 namespace ShooterDemo.Core {
-	public struct Entity {
-
-		/// <summary>
-		///	Gets non-zero unique entity's ID.
-		///	Zero ID idicates that entity is dead.
-		/// </summary>
-		public uint UniqueID;// { get; private set; }
+	public class Entity {
 
 		/// <summary>
 		/// Players guid. Zero if no player.
 		/// </summary>
 		public Guid UserGuid;// { get; private set; }
 
+		public readonly uint ID;
+
 		/// <summary>
 		///	Gets parent's ID. 
 		///	Zero value means no parent.
 		/// </summary>
-		public uint ParentID;// { get; private set; }
+		public uint ParentID { get; private set; }
 
 		/// <summary>
 		/// Gets prefab ID.
 		/// </summary>
-		public uint PrefabID;// { get; private set; }
+		public uint PrefabID { get; private set; }
 
 
 		/// <summary>
@@ -63,14 +62,25 @@ namespace ShooterDemo.Core {
 		public Vector3 AngularVelocity;
 
 
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="id"></param>
-		public void Initialize ( uint prefabId, uint id, uint parentId, Vector3 position, Angles angles )
+		public Entity ( uint id )
 		{
+			ID	=	id;
+		}
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="id"></param>
+		public Entity ( uint id, uint prefabId, uint parentId, Vector3 position, Angles angles )
+		{
+			this.ID		=	id;
 			UserGuid	=	new Guid();
-			UniqueID	=	id;
 			PrefabID	=	prefabId;
 			ParentID	=	parentId;
 
@@ -82,28 +92,22 @@ namespace ShooterDemo.Core {
 
 
 
-
-		public void Kill ()
-		{
-			UserGuid	=	new Guid();
-			UniqueID	=	0;
-			PrefabID	=	0;
-			ParentID	=	0;
-
-			Angles		=	new Angles();
-			Position	=	Vector3.Zero;
-			PositionOld	=	Vector3.Zero;
-			LerpFactor	=	0;
-		}
-
-
-
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="writer"></param>
 		public void Write ( BinaryWriter writer )
 		{
+			writer.Write( UserGuid.ToByteArray() );
+			writer.Write( ParentID );
+			writer.Write( PrefabID );
+
+			writer.Write( Position );
+			writer.Write( PositionOld );
+			writer.Write( Angles );
+			writer.Write( LerpFactor );
+			writer.Write( LinearVelocity );
+			writer.Write( AngularVelocity );
 		}
 
 
@@ -114,10 +118,25 @@ namespace ShooterDemo.Core {
 		/// <param name="writer"></param>
 		public void Read ( BinaryReader reader )
 		{
+			UserGuid			=	new Guid( reader.ReadBytes(16) );
+									
+			ParentID			=	reader.ReadUInt32();
+			PrefabID			=	reader.ReadUInt32();
+
+			Position			=	reader.Read<Vector3>();
+			PositionOld			=	reader.Read<Vector3>();	
+			Angles				=	reader.Read<Angles>();	
+			LerpFactor			=	reader.ReadSingle();
+			LinearVelocity		=	reader.Read<Vector3>();
+			AngularVelocity		=	reader.Read<Vector3>();	
 		}
 
 
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public Matrix GetWorldMatrix ()
 		{
 			return Matrix.Translation( Position ) * Matrix.RotationYawPitchRoll( Angles.Yaw.Radians, Angles.Pitch.Radians, Angles.Roll.Radians );

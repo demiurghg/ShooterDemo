@@ -19,32 +19,21 @@ namespace ShooterDemo.Core {
 	public abstract class World {
 
 		public readonly Game Game;
-
-		public readonly bool serverSide;
-
 		public readonly ContentManager Content;
-
-		const uint MaxEntities = 1024;
-		Entity[]	entities;
-		uint counter	=	MaxEntities - 1;
+		readonly bool serverSide;
 
 		List<IEntityView> views = new List<IEntityView>();
 		List<IEntityController> controllers = new List<IEntityController>();
 
 		Dictionary<uint, Prefab> prefabs = new Dictionary<uint,Prefab>();
 
+		Dictionary<uint, Entity> entities;
+		uint idCounter = 1;
+
 
 		class Prefab {
 			public string Name;
 			public Action<Entity,bool> Construct;
-		}
-
-
-		/// <summary>
-		/// Gets entities.
-		/// </summary>
-		public Entity[] Entities {
-			get { return entities; }
 		}
 
 
@@ -76,7 +65,7 @@ namespace ShooterDemo.Core {
 			this.serverSide	=	true;
 			this.Game		=	server.Game;
 			Content			=	server.Content;
-			entities		=	new Entity[ MaxEntities ];
+			entities		=	new Dictionary<uint,Entity>();
 		}
 
 
@@ -90,7 +79,7 @@ namespace ShooterDemo.Core {
 			this.serverSide	=	false;
 			this.Game		=	client.Game;
 			Content			=	client.Content;
-			entities		=	new Entity[ MaxEntities ];
+			entities		=	new Dictionary<uint,Entity>();
 		}
 
 
@@ -166,7 +155,7 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="prefabId"></param>
-		void Construct ( Entity entity )
+		void ConstructEntity ( Entity entity )
 		{
 			prefabs[ entity.PrefabID ].Construct(entity, IsServer);
 		}
@@ -179,12 +168,14 @@ namespace ShooterDemo.Core {
 		/// <param name="entity"></param>
 		void Destruct ( Entity entity )
 		{
-			foreach ( var controller in controllers ) {
-				controller.Kill( entity.UniqueID );
-			}
-			foreach ( var view in views ) {
-				view.Kill( entity.UniqueID );
-			}
+			throw new NotImplementedException();
+
+			//foreach ( var controller in controllers ) {
+			//	controller.Kill( entity.UniqueID );
+			//}
+			//foreach ( var view in views ) {
+			//	view.Kill( entity.UniqueID );
+			//}
 		}
 
 
@@ -223,48 +214,26 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public uint Spawn ( string prefab, uint parentId, Vector3 origin, Angles angles )
 		{
+			//	get ID :
+			uint id = idCounter;
+
+			idCounter++;
+
+			if (idCounter==0) {
+				//	this actually will never happen, about 103 day of intense playing.
+				throw new InvalidOperationException("Too much entities were spawned");
+			}
+
+
 			uint prefabId = Factory.GetPrefabID( prefab );
 
+			var entity = new Entity(id, prefabId, parentId, origin, angles);
 
-			//	search for empty entity slot :
-			for (uint i=0; i<(uint)MaxEntities; i++) {
+			entities.Add( id, entity );
 
-				//	increase counter
-				counter++;
+			ConstructEntity( entity );
 
-				//	skip zero value:
-				if (counter==0) counter=1;
-
-				uint index = counter % MaxEntities;
-
-				if (entities[i].UniqueID==0) {
-
-					entities[i].Initialize( prefabId, counter, parentId, origin, angles );
-
-					return counter;
-				}
-			}
-
-
-			Log.Warning("Can not spawn entity: {0}", prefab );
-
-			return 0;
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		public uint GetIndex ( uint id )
-		{
-			if (id==0) {
-				throw new ArgumentException("Entity ID is zero", "id");
-			}
-
-			return id % MaxEntities;
+			return id;
 		}
 
 
@@ -276,7 +245,7 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public bool IsAlive ( uint id )
 		{
-			return entities[ GetIndex(id) ].UniqueID != 0;
+			return entities.ContainsKey( id );
 		}
 
 
@@ -289,10 +258,7 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public Entity GetEntity ( uint id )
 		{
-			if (!IsAlive(id)) {
-				throw new InvalidOperationException(string.Format("Entity #{0} is dead", id));
-			}
-			return entities[ GetIndex(id) ];
+			return entities[ id ];
 		}
 
 
@@ -307,7 +273,18 @@ namespace ShooterDemo.Core {
 				return;
 			}
 
-			entities[ GetIndex(id) ].Kill();
+			Entity ent;
+
+			if ( entities.TryGetValue(id, out ent)) {
+				
+				entities.Remove( id );
+				Destruct( ent );
+
+			} else {
+				
+				Log.Warning("Entity #{0} does not exist", id);
+			
+			}
 		}
 
 
@@ -324,25 +301,6 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="guid"></param>
 		public abstract void PlayerLeft ( Guid guid );
-
-
-		/// <summary>
-		/// Called when server started.
-		/// </summary>
-		/// <param name="content"></param>
-		/// <param name="mapName"></param>
-		//public abstract void LoadMapServer ( ContentManager content, string mapName );
-
-
-		/// <summary>
-		/// Called when client started.
-		/// Server info is provided.
-		/// This method could be called in separate thread.
-		/// </summary>
-		/// <param name="content"></param>
-		/// <param name="mapName"></param>
-		//public abstract void LoadMapClient ( ContentManager content, string serverInfo );
-
 
 		/// <summary>
 		/// This method called in main thread to complete non-thread safe operations.
@@ -363,42 +321,67 @@ namespace ShooterDemo.Core {
 		
 
 		/// <summary>
-		/// 
+		/// Writes world state to stream writer.
 		/// </summary>
 		/// <param name="writer"></param>
 		public virtual void Write ( BinaryWriter writer )
 		{
-			for ( int i=0; i<MaxEntities; i++ ) {
-				entities[i].Write( writer );
+			var entArray = entities.OrderBy( pair => pair.Key ).ToArray();
+
+			writer.WriteFourCC("ENT0");
+
+			writer.Write( entArray.Length );
+
+			foreach ( var ent in entArray ) {
+				writer.Write( ent.Key );
+				ent.Value.Write( writer );
 			}
 		}
 
 
 
 		/// <summary>
-		/// 
+		/// Reads world state from stream reader.
 		/// </summary>
 		/// <param name="writer"></param>
 		public virtual void Read ( BinaryReader reader )
 		{
-			for ( int i=0; i<MaxEntities; i++ ) {
+			reader.ExpectFourCC("ENT0", "Bad snapshot");
 
-				//	track spawn/kill on remoter server side
-				var oldId = entities[i].UniqueID;
+			int length	=	reader.ReadInt32();
+			var oldIDs	=	entities.Select( pair => pair.Key ).ToArray();
+			var newIDs	=	new uint[length];
 
-				entities[i].Read( reader );
 
-				var newId = entities[i].UniqueID;
+			for ( int i=0; i<length; i++ ) {
 
-				if (oldId != newId) {
+				uint id		=	reader.ReadUInt32();
+				newIDs[i]	=	id;
 
-					if (newId!=0) {
-						Construct( entities[i] );
-					} else {
-						Destruct( entities[i] );
-					}
+				if ( entities.ContainsKey(id) ) {
+		
+					//	Entity with given ID exists.
+					//	Just update internal state.
+					entities[id].Read( reader );
 
+				} else {
+					
+					//	Entity does not exist.
+					//	Create new one.
+					var ent = new Entity(id);
+
+					ent.Read( reader );
+					entities.Add( id, ent );
+
+					ConstructEntity( ent );
 				}
+			}
+
+			//	Kill all stale entities :
+			var staleIDs = oldIDs.Except( newIDs );
+
+			foreach ( var id in staleIDs ) {
+				Kill( id );
 			}
 		}
 	}

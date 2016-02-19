@@ -52,10 +52,10 @@ namespace ShooterDemo.Controllers {
 		/// <param name="id"></param>
 		public override void Kill ( uint id )
 		{
-			CharacterController controller;
-			if ( RemoveObject( id, out controller ) ) {
+			//CharacterController controller;
+			/*if ( RemoveObject( id, out controller ) ) {
 				space.Remove( controller );
-			}
+			} */
 		}
 
 
@@ -105,7 +105,8 @@ namespace ShooterDemo.Controllers {
 
 			space.Add( controller );
 
-			AddObject( entity.UniqueID, controller );
+			throw new NotImplementedException();
+			//AddObject( entity.UniqueID, controller );
 		}
 	}
 }

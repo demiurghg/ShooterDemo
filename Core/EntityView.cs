@@ -19,7 +19,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="entity"></param>
 		/// <param name="obj"></param>
-		protected delegate void IterateAction ( ref Entity entity, T obj );
+		protected delegate void IterateAction ( Entity entity, T obj );
 
 
 		/// <summary>
@@ -70,7 +70,7 @@ namespace ShooterDemo.Core {
 		protected void IterateObjects ( IterateAction action )
 		{
 			foreach ( var item in dictionary ) {
-				action( ref World.Entities[item.Key], item.Value );
+				action( World.GetEntity(item.Key), item.Value );
 			}
 		}
 

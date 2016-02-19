@@ -63,7 +63,7 @@ namespace ShooterDemo.Views {
 
 			var instance = new MeshInstance( rs, scene, mesh, materials );
 
-			AddObject( entity.UniqueID, instance ); 
+			AddObject( entity.ID, instance ); 
 
 			Game.RenderSystem.RenderWorld.Instances.Add( instance );
 		} 
@@ -76,17 +76,10 @@ namespace ShooterDemo.Views {
 		/// <param name="gameTime"></param>
 		public override void Present ( GameTime gameTime )
 		{
-			IterateObjects( Iterate );
-		}
-
-
-
-		void Iterate ( ref Entity entity, MeshInstance instance )
-		{
-			var wm	=	entity.GetWorldMatrix();
-
-			instance.World = wm;
-			instance.Visible = true;
+			IterateObjects( (e,i) => {
+				i.World		=	e.GetWorldMatrix();
+				i.Visible	=	true;
+			});
 		}
 
 

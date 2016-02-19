@@ -19,7 +19,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="entity"></param>
 		/// <param name="obj"></param>
-		protected delegate void IterateAction ( ref Entity entity, T obj );
+		protected delegate void IterateAction ( Entity entity, T obj );
 
 
 		/// <summary>
@@ -40,9 +40,10 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="obj"></param>
-		protected void AddObject ( uint id, T obj )
+		protected void AddObject ( Entity entity, T obj )
 		{
-			dictionary.Add( id, obj );
+			throw new NotImplementedException();
+			//dictionary.Add( id, obj );
 		}
 
 
@@ -51,13 +52,14 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		protected bool RemoveObject ( uint id, out T item )
+		protected bool RemoveObject ( Entity entity, out T item )
 		{
-			if (dictionary.TryGetValue( id, out item )) {
+			throw new NotImplementedException();
+			/*if (dictionary.TryGetValue( id, out item )) {
 				return dictionary.Remove( id );
 			} else {
 				return false;
-			}
+			}  */
 		}
 
 
@@ -68,9 +70,10 @@ namespace ShooterDemo.Core {
 		/// <param name="?"></param>
 		protected void IterateObjects ( IterateAction action )
 		{
-			foreach ( var item in dictionary ) {
-				action( ref World.Entities[item.Key], item.Value );
-			}
+			throw new NotImplementedException();
+			/*foreach ( var item in dictionary ) {
+				//action( ref World.Entities[item.Key], item.Value );
+			} */
 		}
 
 
