@@ -18,7 +18,7 @@ using BEPUphysics;
 
 
 namespace ShooterDemo.Controllers {
-	public class RigidBody : EntityController {
+	public class RigidBody : EntityController<object> {
 
 		/// <summary>
 		/// 

@@ -17,12 +17,10 @@ using ShooterDemo.Core;
 
 
 namespace ShooterDemo.Views {
-	public class ModelView : EntityView {
+	public class ModelView : EntityView<MeshInstance> {
 
 		GameClient gameClient;
 
-		Dictionary<uint, MeshInstance> instances = new Dictionary<uint,MeshInstance>();
-		
 
 		/// <summary>
 		/// 
@@ -65,7 +63,7 @@ namespace ShooterDemo.Views {
 
 			var instance = new MeshInstance( rs, scene, mesh, materials );
 
-			instances.Add( entity.UniqueID, instance ); 
+			AddObject( entity.UniqueID, instance ); 
 
 			Game.RenderSystem.RenderWorld.Instances.Add( instance );
 		} 
@@ -78,13 +76,17 @@ namespace ShooterDemo.Views {
 		/// <param name="gameTime"></param>
 		public override void Present ( GameTime gameTime )
 		{
-			foreach ( var item in instances ) {
-				var ent =	World.GetEntity( item.Key );
-				var wm	=	ent.GetWorldMatrix();
+			IterateObjects( Iterate );
+		}
 
-				item.Value.World = wm;
-				item.Value.Visible = true;
-			}
+
+
+		void Iterate ( ref Entity entity, MeshInstance instance )
+		{
+			var wm	=	entity.GetWorldMatrix();
+
+			instance.World = wm;
+			instance.Visible = true;
 		}
 
 
@@ -97,11 +99,8 @@ namespace ShooterDemo.Views {
 		{	
 			MeshInstance instance;
 
-			if (instances.TryGetValue( id, out instance )) {
+			if ( RemoveObject( id, out instance ) ) {
 				Game.RenderSystem.RenderWorld.Instances.Remove( instance );
-				instances.Remove( id );
-			} else {
-				Log.Warning("ModelView: can not remove entity #{0}", id );
 			}
 		}
 

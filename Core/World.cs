@@ -28,8 +28,8 @@ namespace ShooterDemo.Core {
 		Entity[]	entities;
 		uint counter	=	MaxEntities - 1;
 
-		List<EntityView> views = new List<EntityView>();
-		List<EntityController> controllers = new List<EntityController>();
+		List<IEntityView> views = new List<IEntityView>();
+		List<IEntityController> controllers = new List<IEntityController>();
 
 		Dictionary<uint, Prefab> prefabs = new Dictionary<uint,Prefab>();
 
@@ -99,7 +99,7 @@ namespace ShooterDemo.Core {
 		/// Adds view.
 		/// </summary>
 		/// <param name="view"></param>
-		public void AddView( EntityView view )
+		public void AddView( IEntityView view )
 		{
 			if (IsServer) {
 				throw new InvalidOperationException("Can not add EntityView to server-side world");
@@ -113,7 +113,7 @@ namespace ShooterDemo.Core {
 		/// Adds controller.
 		/// </summary>
 		/// <param name="controller"></param>
-		public void AddController ( EntityController controller )
+		public void AddController ( IEntityController controller )
 		{
 			controllers.Add( controller );
 		}
@@ -125,7 +125,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T GetView<T>() where T: EntityView 
+		public T GetView<T>() where T: IEntityView 
 		{
 			return (T)views.FirstOrDefault( v => v is T );
 		}
@@ -137,7 +137,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T GetController<T>() where T: EntityController 
+		public T GetController<T>() where T: IEntityController 
 		{
 			return (T)controllers.FirstOrDefault( c => c is T );
 		}

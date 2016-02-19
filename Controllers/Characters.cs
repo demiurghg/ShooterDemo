@@ -19,9 +19,9 @@ using BEPUphysics.Character;
 
 
 namespace ShooterDemo.Controllers {
-	public class Characters : EntityController {
+	public class Characters : EntityController<CharacterController> {
 
-		Dictionary<uint, CharacterController> controllers; 
+		readonly Space space;
 
 		/// <summary>
 		/// 
@@ -30,7 +30,7 @@ namespace ShooterDemo.Controllers {
 		/// <param name="space"></param>
 		public Characters ( World world, Space space ) : base(world)
 		{
-			controllers = new Dictionary<uint,CharacterController>();
+			this.space	=	space;
 		}
 
 
@@ -41,15 +41,7 @@ namespace ShooterDemo.Controllers {
 		/// <param name="gameTime"></param>
 		public override void Update ( GameTime gameTime )
 		{
-			foreach ( var controller in controllers ) {
-				
-				var index = World.GetIndex( controller.Key );
-				
-				World.Entities[index].Position	=	MathConverter.Convert( controller.Value.Body.Position );
-				
-				//	Add control here from entities user command flags...
-				//	...
-			}
+			//IterateObjects( (ref e,c) => e.Position == MathConverter.Convert( c.Body.Position ) );
 		}
 
 
@@ -60,7 +52,10 @@ namespace ShooterDemo.Controllers {
 		/// <param name="id"></param>
 		public override void Kill ( uint id )
 		{
-			throw new NotImplementedException();
+			CharacterController controller;
+			if ( RemoveObject( id, out controller ) ) {
+				space.Remove( controller );
+			}
 		}
 
 
@@ -107,6 +102,10 @@ namespace ShooterDemo.Controllers {
 					jumpSpeed				, 
 					slidingJumpSpeed		,
 					maximumGlueForce		);
+
+			space.Add( controller );
+
+			AddObject( entity.UniqueID, controller );
 		}
 	}
 }

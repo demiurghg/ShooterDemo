@@ -7,10 +7,20 @@ using Fusion.Engine.Common;
 
 
 namespace ShooterDemo.Core {
-	public abstract class EntityView {
+	public abstract class EntityView<T> : IEntityView {
 
 		public readonly Game Game;
 		public readonly World World;
+
+		Dictionary<uint, T> dictionary;
+
+		/// <summary>
+		/// Delegate used for object iteration.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <param name="obj"></param>
+		protected delegate void IterateAction ( ref Entity entity, T obj );
+
 
 		/// <summary>
 		/// 
@@ -20,18 +30,61 @@ namespace ShooterDemo.Core {
 		{
 			World	=	world;
 			Game	=	world.Game;
+
+			dictionary	=	new Dictionary<uint,T>();
 		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="obj"></param>
+		protected void AddObject ( uint id, T obj )
+		{
+			dictionary.Add( id, obj );
+		}
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		protected bool RemoveObject ( uint id, out T item )
+		{
+			if (dictionary.TryGetValue( id, out item )) {
+				return dictionary.Remove( id );
+			} else {
+				return false;
+			}
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="?"></param>
+		protected void IterateObjects ( IterateAction action )
+		{
+			foreach ( var item in dictionary ) {
+				action( ref World.Entities[item.Key], item.Value );
+			}
+		}
+
 
 		/// <summary>
 		/// Called on each viewable entity.
 		/// </summary>
 		/// <param name="entity"></param>
-		public abstract void Present ( GameTime gameTime );
+		public virtual void Present ( GameTime gameTime ) {}
 
 		/// <summary>
 		/// Called when entity has died.
 		/// </summary>
 		/// <param name="id"></param>
-		public abstract void Kill ( uint id );
+		public virtual void Kill ( uint id ) {}
 	}
 }
