@@ -41,7 +41,7 @@ namespace ShooterDemo.Controllers {
 		/// <param name="gameTime"></param>
 		public override void Update ( GameTime gameTime )
 		{
-			//IterateObjects( (ref e,c) => e.Position == MathConverter.Convert( c.Body.Position ) );
+			IterateObjects( (e,c) => e.Position = MathConverter.Convert( c.Body.Position ) );
 		}
 
 
@@ -52,10 +52,11 @@ namespace ShooterDemo.Controllers {
 		/// <param name="id"></param>
 		public override void Kill ( uint id )
 		{
-			//CharacterController controller;
-			/*if ( RemoveObject( id, out controller ) ) {
+			CharacterController controller;
+			
+			if ( RemoveObject( id, out controller ) ) {
 				space.Remove( controller );
-			} */
+			}
 		}
 
 
@@ -105,8 +106,7 @@ namespace ShooterDemo.Controllers {
 
 			space.Add( controller );
 
-			throw new NotImplementedException();
-			//AddObject( entity.UniqueID, controller );
+			AddObject( entity.ID, controller );
 		}
 	}
 }

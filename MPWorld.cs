@@ -29,11 +29,13 @@ namespace ShooterDemo {
 			InitPhysSpace(9.8f);
 			this.mapName	=	map;
 
+			InitializePrefabs();
+
 			AddController( new Characters(this, PhysSpace) );
 
 			var scene = Content.Load<Scene>(@"scenes\" + map );
 
-			ReadMapFromScene( Content, scene, IsClient );
+			ReadMapFromScene( Content, scene, IsClientSide );
 		}
 
 
@@ -42,11 +44,13 @@ namespace ShooterDemo {
 		{
 			InitPhysSpace(9.8f);
 
+			InitializePrefabs();
+
 			AddView( new ModelView(client, this) );
 
 			var scene = Content.Load<Scene>(@"scenes\" + serverInfo );
 
-			ReadMapFromScene( Content, scene, IsClient );
+			ReadMapFromScene( Content, scene, IsClientSide );
 		}
 
 
@@ -73,14 +77,14 @@ namespace ShooterDemo {
 
 		public override void PlayerEntered ( Guid guid )
 		{
-			throw new NotImplementedException();
+			PlayerEnteredInternal( guid );
 		}
 
 
 
 		public override void PlayerLeft ( Guid guid )
 		{
-			throw new NotImplementedException();
+			PlayerLeftInternal( guid );
 		}
 
 

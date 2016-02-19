@@ -16,7 +16,7 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public static uint GetPrefabID ( string prefabName )
 		{
-			return Crc32.ComputeChecksum( Encoding.ASCII.GetBytes(prefabName) );
+			return Crc32.ComputeChecksum( Encoding.ASCII.GetBytes(prefabName.ToLowerInvariant()) );
 		}
 
 	}

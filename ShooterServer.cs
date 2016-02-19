@@ -156,13 +156,13 @@ namespace ShooterDemo {
 
 		public override void ClientActivated ( Guid guid )
 		{
-			//gameWorld.PlayerEntered( guid );
+			gameWorld.PlayerEntered( guid );
 		}
 
 
 		public override void ClientDeactivated ( Guid guid )
 		{
-			//gameWorld.PlayerLeft( guid );
+			gameWorld.PlayerLeft( guid );
 		}
 
 

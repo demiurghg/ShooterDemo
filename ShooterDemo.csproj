@@ -53,8 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Characters.cs" />
-    <Compile Include="Controllers\PlayerController.cs" />
+    <Compile Include="Controllers\Camera.cs" />
+    <Compile Include="Controllers\Players.cs" />
     <Compile Include="Controllers\RigidBody.cs" />
+    <Compile Include="MPWorld.Prefabs.cs" />
+    <Compile Include="MPWorld.Players.cs" />
     <Compile Include="Core\IEntityView.cs" />
     <Compile Include="Core\IEntityController.cs" />
     <Compile Include="MPWorld.Map.cs" />

@@ -18,9 +18,13 @@ namespace ShooterDemo.Core {
 	/// </summary>
 	public abstract class World {
 
+		public readonly Guid UserGuid;
+
 		public readonly Game Game;
 		public readonly ContentManager Content;
 		readonly bool serverSide;
+
+		public delegate void EntityConstructor ( World world, Entity entity );
 
 		List<IEntityView> views = new List<IEntityView>();
 		List<IEntityController> controllers = new List<IEntityController>();
@@ -33,14 +37,14 @@ namespace ShooterDemo.Core {
 
 		class Prefab {
 			public string Name;
-			public Action<Entity,bool> Construct;
+			public EntityConstructor Construct;
 		}
 
 
 		/// <summary>
 		/// Indicates that world is running on server side.
 		/// </summary>
-		public bool IsServer {
+		public bool IsServerSide {
 			get { return serverSide; }
 		}
 
@@ -49,7 +53,7 @@ namespace ShooterDemo.Core {
 		/// <summary>
 		/// Indicates that world is running on client side.
 		/// </summary>
-		public bool IsClient {
+		public bool IsClientSide {
 			get { return !serverSide; }
 		}
 
@@ -62,8 +66,10 @@ namespace ShooterDemo.Core {
 		/// <param name="maxEntities"></param>
 		public World ( GameServer server )
 		{
+			Log.Verbose("world: server");
 			this.serverSide	=	true;
 			this.Game		=	server.Game;
+			this.UserGuid	=	new Guid();
 			Content			=	server.Content;
 			entities		=	new Dictionary<uint,Entity>();
 		}
@@ -76,8 +82,10 @@ namespace ShooterDemo.Core {
 		/// <param name="client"></param>
 		public World ( GameClient client )
 		{
+			Log.Verbose("world: client");
 			this.serverSide	=	false;
 			this.Game		=	client.Game;
+			this.UserGuid	=	client.Guid;
 			Content			=	client.Content;
 			entities		=	new Dictionary<uint,Entity>();
 		}
@@ -90,7 +98,7 @@ namespace ShooterDemo.Core {
 		/// <param name="view"></param>
 		public void AddView( IEntityView view )
 		{
-			if (IsServer) {
+			if (IsServerSide) {
 				throw new InvalidOperationException("Can not add EntityView to server-side world");
 			}
 			views.Add( view );
@@ -138,7 +146,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="prefabName"></param>
 		/// <param name="constructAction"></param>
-		public void AddPrefab ( string prefabName, Action<Entity,bool> constructAction )
+		public void AddPrefab ( string prefabName, EntityConstructor constructAction )
 		{
 			uint crc = Factory.GetPrefabID( prefabName );
 
@@ -157,7 +165,7 @@ namespace ShooterDemo.Core {
 		/// <param name="prefabId"></param>
 		void ConstructEntity ( Entity entity )
 		{
-			prefabs[ entity.PrefabID ].Construct(entity, IsServer);
+			prefabs[ entity.PrefabID ].Construct(this, entity);
 		}
 
 
@@ -168,14 +176,12 @@ namespace ShooterDemo.Core {
 		/// <param name="entity"></param>
 		void Destruct ( Entity entity )
 		{
-			throw new NotImplementedException();
-
-			//foreach ( var controller in controllers ) {
-			//	controller.Kill( entity.UniqueID );
-			//}
-			//foreach ( var view in views ) {
-			//	view.Kill( entity.UniqueID );
-			//}
+			foreach ( var controller in controllers ) {
+				controller.Kill( entity.ID );
+			}
+			foreach ( var view in views ) {
+				view.Kill( entity.ID );
+			}
 		}
 
 
@@ -195,7 +201,7 @@ namespace ShooterDemo.Core {
 			//
 			//	Present entities :
 			//
-			if (IsClient) {
+			if (IsClientSide) {
 				foreach ( var view in views ) {
 					view.Present( gameTime );
 				}
@@ -212,7 +218,7 @@ namespace ShooterDemo.Core {
 		/// <param name="origin"></param>
 		/// <param name="angles"></param>
 		/// <returns></returns>
-		public uint Spawn ( string prefab, uint parentId, Vector3 origin, Angles angles )
+		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, Angles angles )
 		{
 			//	get ID :
 			uint id = idCounter;
@@ -233,7 +239,9 @@ namespace ShooterDemo.Core {
 
 			ConstructEntity( entity );
 
-			return id;
+			Log.Verbose("spawn: {0} - #{1}", prefab, id );
+
+			return entity;
 		}
 
 
@@ -264,6 +272,34 @@ namespace ShooterDemo.Core {
 
 
 		/// <summary>
+		/// Gets entity with current id.
+		/// If entity is dead -> exception...
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public Entity GetEntityOrNull ( Func<Entity,bool> predicate )
+		{
+			return entities.FirstOrDefault( pair => predicate( pair.Value ) ).Value;
+		}
+
+
+
+		/// <summary>
+		/// Gets entity with current id.
+		/// If entity is dead -> exception...
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public IEnumerable<Entity> GetEntities ( string prefabName )
+		{
+			uint prefabId = Factory.GetPrefabID( prefabName );
+
+			return entities.Where( pair => pair.Value.PrefabID == prefabId ).Select( pair1 => pair1.Value );
+		}
+
+
+
+		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="id"></param>
@@ -272,6 +308,8 @@ namespace ShooterDemo.Core {
 			if (id==0) {
 				return;
 			}
+
+			Log.Verbose("kill: #{0}", id );
 
 			Entity ent;
 
