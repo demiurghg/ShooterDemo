@@ -64,6 +64,31 @@ namespace ShooterDemo.Controllers {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="moveVector"></param>
+		public void Move ( uint id, UserCommand userCommand )
+		{
+			var move = Vector3.Zero;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Forward )) move += Vector3.ForwardRH;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Backward )) move += Vector3.BackwardRH;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.StrafeLeft )) move += Vector3.Left;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.StrafeRight )) move += Vector3.Right;
+
+			var controller = GetObject(id);
+
+			if (controller==null) {
+				return;
+			}
+
+			controller.HorizontalMotionConstraint.MovementDirection = new BEPUutilities.Vector2( move.X, -move.Z );
+			controller.HorizontalMotionConstraint.TargetSpeed	=	8.0f;
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <param name="entity"></param>
 		public void AddCharacter ( Entity entity, 
 			float height = 1.7f, 

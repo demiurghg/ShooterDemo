@@ -52,8 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ShowWorldState.cs" />
     <Compile Include="Controllers\Characters.cs" />
-    <Compile Include="Controllers\Camera.cs" />
+    <Compile Include="Views\CameraView.cs" />
     <Compile Include="Controllers\Players.cs" />
     <Compile Include="Controllers\RigidBody.cs" />
     <Compile Include="MPWorld.Prefabs.cs" />

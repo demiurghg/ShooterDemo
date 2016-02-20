@@ -20,6 +20,10 @@ namespace ShooterDemo {
 		
 		World	gameWorld;
 
+		public World World {
+			get { return gameWorld; }
+		}
+
 
 		/// <summary>
 		/// Ctor
@@ -114,7 +118,7 @@ namespace ShooterDemo {
 				return;
 			}
 
-			//gameWorld.Command( id, userCommand );
+			gameWorld.PlayerCommand( id, userCommand );
 		}
 
 

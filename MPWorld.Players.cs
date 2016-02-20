@@ -23,11 +23,25 @@ namespace ShooterDemo {
 		Random rand = new Random();
 
 
+		public override void PlayerCommand ( Guid guid, byte[] command )
+		{
+			var userCmd =	UserCommand.FromBytes( command );
+
+			var player	=	GetEntityOrNull( e => e.Is("player") && e.UserGuid == guid );
+
+			if (player==null) {
+				return;
+			}
+
+			GetController<Characters>().Move( player.ID, userCmd );
+		}
+
+
 		/// <summary>
 		/// Called internally when player entered.
 		/// </summary>
 		/// <param name="guid"></param>
-		void PlayerEnteredInternal ( Guid guid )
+		public override void PlayerEntered ( Guid guid )
 		{
 			Log.Verbose("player entered: {0}", guid );
 
@@ -48,7 +62,7 @@ namespace ShooterDemo {
 		/// Called internally when player left.
 		/// </summary>
 		/// <param name="guid"></param>
-		void PlayerLeftInternal ( Guid guid )
+		public override void PlayerLeft ( Guid guid )
 		{
 			Log.Verbose("player left: {0}", guid );
 

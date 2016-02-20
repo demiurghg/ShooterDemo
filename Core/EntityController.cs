@@ -65,6 +65,22 @@ namespace ShooterDemo.Core {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		protected T GetObject ( uint id )
+		{
+			T obj;
+			if (dictionary.TryGetValue(id, out obj)) {
+				return obj;
+			} else {
+				return default(T);
+			}
+		}
+
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <param name="?"></param>
 		protected void IterateObjects ( IterateAction action )
 		{

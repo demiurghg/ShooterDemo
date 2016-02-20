@@ -20,6 +20,9 @@ namespace ShooterDemo {
 
 		World gameWorld;
 
+		public World World {
+			get { return gameWorld; }
+		}
 
 		/// <summary>
 		/// Ctor
@@ -117,12 +120,22 @@ namespace ShooterDemo {
 		/// <param name="gameTime"></param>
 		public override byte[] Update ( GameTime gameTime )
 		{
+			gameWorld.Update( gameTime );
+
+			var flags = UserCtrlFlags.None;
+
+			if (Game.Keyboard.IsKeyDown( Keys.S			)) flags |= UserCtrlFlags.Forward;
+			if (Game.Keyboard.IsKeyDown( Keys.Z			)) flags |= UserCtrlFlags.Backward;
+			if (Game.Keyboard.IsKeyDown( Keys.A			)) flags |= UserCtrlFlags.StrafeLeft;
+			if (Game.Keyboard.IsKeyDown( Keys.X			)) flags |= UserCtrlFlags.StrafeRight;
+			if (Game.Keyboard.IsKeyDown( Keys.Space		)) flags |= UserCtrlFlags.Jump;
+			if (Game.Keyboard.IsKeyDown( Keys.LeftAlt	)) flags |= UserCtrlFlags.Crouch;
+
 			var userCmd = new UserCommand();
-			userCmd.CtrlFlags	=	UserCtrlFlags.None;
+			userCmd.CtrlFlags	=	flags;
 			userCmd.Yaw			=	0;
 			userCmd.Pitch		=	0;
 			userCmd.Roll		=	0;
-
 
 			return UserCommand.GetBytes( userCmd );
 		}
@@ -136,7 +149,11 @@ namespace ShooterDemo {
 		/// <param name="snapshot"></param>
 		public override void FeedSnapshot ( byte[] snapshot, bool initial )
 		{
-			//Snapshot.ReadSnapshot( snapshot, gameWorld.Entities );
+			using ( var ms = new MemoryStream(snapshot) ) {
+				using ( var reader = new BinaryReader(ms) ) { 
+					gameWorld.Read( reader );
+				}
+			}
 		}
 
 
@@ -159,6 +176,16 @@ namespace ShooterDemo {
 		public override string UserInfo ()
 		{
 			return "Bob" + System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public void PrintState ()
+		{
+			
 		}
 	}
 }

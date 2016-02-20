@@ -63,6 +63,7 @@ namespace ShooterDemo {
 								.ToArray();
 
 			var staticMesh = new StaticMesh( vertices, indices );
+			staticMesh.Sidedness = BEPUutilities.TriangleSidedness.Clockwise;
 			physSpace.Add( staticMesh );
 		}
 	}

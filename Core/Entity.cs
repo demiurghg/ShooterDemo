@@ -136,6 +136,18 @@ namespace ShooterDemo.Core {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="prefabName"></param>
+		/// <returns></returns>
+		public bool Is ( string prefabName )
+		{
+			return ( PrefabID == Factory.GetPrefabID(prefabName) );
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <returns></returns>
 		public Matrix GetWorldMatrix ()
 		{

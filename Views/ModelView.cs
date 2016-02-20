@@ -19,16 +19,13 @@ using ShooterDemo.Core;
 namespace ShooterDemo.Views {
 	public class ModelView : EntityView<MeshInstance> {
 
-		GameClient gameClient;
-
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="game"></param>
-		public ModelView ( GameClient gameClient, World world ) : base(world)
+		public ModelView ( World world ) : base(world)
 		{
-			this.gameClient	=	gameClient;
 		}
 
 
@@ -41,7 +38,7 @@ namespace ShooterDemo.Views {
 		public void AddModel ( Entity entity, string scenePath, string nodeName, Matrix preTransform )
 		{
 			var rs		= Game.RenderSystem;	  
-			var content	= gameClient.Content;
+			var content	= World.Content;
 
 			var scene = content.Load<Scene>( scenePath );
 			var node  = scene.Nodes.FirstOrDefault( n => n.Name == nodeName );
@@ -74,7 +71,7 @@ namespace ShooterDemo.Views {
 		/// Updates visible meshes
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Present ( GameTime gameTime )
+		public override void Update ( GameTime gameTime )
 		{
 			IterateObjects( (e,i) => {
 				i.World		=	e.GetWorldMatrix();

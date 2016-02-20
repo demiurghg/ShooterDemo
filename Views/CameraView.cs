@@ -18,19 +18,16 @@ using BEPUphysics;
 using BEPUphysics.Character;
 
 
-namespace ShooterDemo.Controllers {
-	public class Camera : EntityController<object> {
-
-		readonly Space space;
+namespace ShooterDemo.Views {
+	public class CameraView : EntityView<object> {
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="game"></param>
 		/// <param name="space"></param>
-		public Camera ( World world, Space space ) : base(world)
+		public CameraView ( World world ) : base(world)
 		{
-			this.space	=	space;
 		}
 
 
@@ -41,6 +38,26 @@ namespace ShooterDemo.Controllers {
 		/// <param name="gameTime"></param>
 		public override void Update ( GameTime gameTime )
 		{
+			var rw = Game.RenderSystem.RenderWorld;
+			var vp = Game.RenderSystem.DisplayBounds;
+
+			var aspect	=	(vp.Width) / (float)vp.Height;
+		
+			rw.Camera.SetupCameraFov( new Vector3(10,4,10), new Vector3(0,4,0), Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
+
+			var player	=	World.GetEntityOrNull( e => e.Is("player") && e.UserGuid == World.UserGuid );
+
+			if (player==null) {
+				return;
+			}
+
+
+			var pos	=	player.Position;
+			var fwd	=	pos + Vector3.ForwardRH;
+			var up	=	Vector3.Up;
+
+			rw.Camera.SetupCameraFov( pos, fwd, up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
+
 		}
 
 

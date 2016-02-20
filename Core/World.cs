@@ -58,6 +58,31 @@ namespace ShooterDemo.Core {
 		}
 
 
+		/// <summary>
+		/// Gets server
+		/// </summary>
+		public GameServer GameServer {
+			get { 
+				if (!IsServerSide) {
+					throw new System.Security.SecurityException("World is not server-side");
+				}
+				return Game.GameServer;
+			}
+		}
+
+
+		/// <summary>
+		/// Gets server
+		/// </summary>
+		public GameClient GameClient {
+			get { 
+				if (!IsClientSide) {
+					throw new System.Security.SecurityException("World is nor client-side");
+				}
+				return Game.GameClient;
+			}
+		}
+
 
 		/// <summary>
 		/// Initializes server-side world.
@@ -99,8 +124,9 @@ namespace ShooterDemo.Core {
 		public void AddView( IEntityView view )
 		{
 			if (IsServerSide) {
-				throw new InvalidOperationException("Can not add EntityView to server-side world");
-			}
+				return;
+				//throw new InvalidOperationException("Can not add EntityView to server-side world");
+			} 
 			views.Add( view );
 		}
 
@@ -189,13 +215,15 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public void Update ( GameTime gameTime )
+		public virtual void Update ( GameTime gameTime )
 		{
 			//
 			//	Control entities :
 			//
-			foreach ( var controller in controllers ) {
-				controller.Update( gameTime );
+			if (IsServerSide) {
+				foreach ( var controller in controllers ) {
+					controller.Update( gameTime );
+				}
 			}
 
 			//
@@ -203,7 +231,7 @@ namespace ShooterDemo.Core {
 			//
 			if (IsClientSide) {
 				foreach ( var view in views ) {
-					view.Present( gameTime );
+					view.Update( gameTime );
 				}
 			}
 		}
@@ -341,6 +369,12 @@ namespace ShooterDemo.Core {
 		public abstract void PlayerLeft ( Guid guid );
 
 		/// <summary>
+		/// Called when player left.
+		/// </summary>
+		/// <param name="guid"></param>
+		public abstract void PlayerCommand ( Guid guid, byte[] command );
+
+		/// <summary>
 		/// This method called in main thread to complete non-thread safe operations.
 		/// </summary>
 		public abstract void FinalizeLoad (); 
@@ -356,6 +390,32 @@ namespace ShooterDemo.Core {
 		/// Called when client or server is 
 		/// </summary>
 		public abstract void Cleanup ();
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public void PrintState ()
+		{		
+			var ents = entities.Select( pair => pair.Value ).OrderBy( e => e.ID ).ToArray();
+
+			Log.Message("");
+			Log.Message("---- {0} World state ---- ", IsServerSide ? "Server side" : "Client side" );
+
+			foreach ( var ent in ents ) {
+				
+				var id		=	ent.ID;
+				var parent	=	ent.ParentID;
+				var prefab	=	prefabs[ ent.PrefabID ].Name;
+				var guid	=	ent.UserGuid;
+
+				Log.Message("{0:X8} {1:X8} {2} {3,-32}", id, parent, guid, prefab );
+			}
+
+			Log.Message("----------------" );
+			Log.Message("");
+		}
+
 		
 
 		/// <summary>

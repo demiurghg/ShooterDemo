@@ -26,6 +26,12 @@ namespace ShooterDemo {
 		/// </summary>
 		void InitializePrefabs ()
 		{
+			AddController( new Characters(this, PhysSpace) );
+
+			AddView( new ModelView(this) );
+			AddView( new CameraView(this) );
+
+
 			AddPrefab( "startPoint"	, PrefabDummy	);
 			AddPrefab( "player"		, PrefabPlayer	);
 		}

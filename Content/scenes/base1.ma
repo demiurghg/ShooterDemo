@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: base1.ma
-//Last modified: Thu, Feb 18, 2016 07:14:22 PM
+//Last modified: Sat, Feb 20, 2016 03:31:55 PM
 //Codeset: 1251
 requires maya "2015";
 currentUnit -l centimeter -a degree -t film;
@@ -17702,12 +17702,12 @@ createNode mesh -n "pCube113Shape" -p "pCube113";
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 8.0513072563421098 19.924557990196973 -9.9848067237839029 ;
-	setAttr ".r" -type "double3" -26.738352729110673 906.59999999995523 0 ;
+	setAttr ".t" -type "double3" 107.84557425149534 73.42302143700897 199.18397614058864 ;
+	setAttr ".r" -type "double3" -17.738352729088184 1107.8000000000463 8.9888737452541534e-016 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 28.726544551810001;
+	setAttr ".coi" 218.01579328053421;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -39300,14 +39300,14 @@ createNode mesh -n "pSphere34Shape" -p "pSphere34";
 	setAttr ".cvd" -type "dataPolyComponent" Index_Data Vertex 0 ;
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
 createNode transform -n "startPoint";
-	setAttr ".t" -type "double3" 0 3.2839218398965384 48.323568661428141 ;
+	setAttr ".t" -type "double3" 0 12.992980367343876 48.323568661428148 ;
 createNode locator -n "startPointShape" -p "startPoint";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
 	setAttr ".ovc" 18;
 createNode transform -n "startPoint2";
 	setAttr ".ovlod" 1;
-	setAttr ".t" -type "double3" 15.579057831605873 3.2839218398965389 48.323568661428148 ;
+	setAttr ".t" -type "double3" 15.579057831605873 12.992980367343876 48.323568661428155 ;
 createNode locator -n "startPoint2Shape" -p "startPoint2";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;

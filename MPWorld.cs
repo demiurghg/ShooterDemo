@@ -31,8 +31,6 @@ namespace ShooterDemo {
 
 			InitializePrefabs();
 
-			AddController( new Characters(this, PhysSpace) );
-
 			var scene = Content.Load<Scene>(@"scenes\" + map );
 
 			ReadMapFromScene( Content, scene, IsClientSide );
@@ -45,8 +43,6 @@ namespace ShooterDemo {
 			InitPhysSpace(9.8f);
 
 			InitializePrefabs();
-
-			AddView( new ModelView(client, this) );
 
 			var scene = Content.Load<Scene>(@"scenes\" + serverInfo );
 
@@ -75,16 +71,13 @@ namespace ShooterDemo {
 
 
 
-		public override void PlayerEntered ( Guid guid )
+		public override void Update ( GameTime gameTime )
 		{
-			PlayerEnteredInternal( guid );
-		}
+			if (IsServerSide) {
+				physSpace.Update( gameTime.ElapsedSec );
+			}
 
-
-
-		public override void PlayerLeft ( Guid guid )
-		{
-			PlayerLeftInternal( guid );
+			base.Update( gameTime );
 		}
 
 
