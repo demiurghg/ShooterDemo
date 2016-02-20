@@ -17,7 +17,14 @@ using ShooterDemo.Core;
 
 
 namespace ShooterDemo.Views {
-	public class ModelView : EntityView<MeshInstance> {
+	public class ModelView : EntityView<ModelView.Model> {
+
+		
+		public class Model {
+			public Matrix PreTransform;
+			public Matrix PostTransform;
+			public MeshInstance Instance;
+		}
 
 
 		/// <summary>
@@ -35,7 +42,7 @@ namespace ShooterDemo.Views {
 		/// <param name="scenePath"></param>
 		/// <param name="nodeName"></param>
 		/// <param name="preTransform"></param>
-		public void AddModel ( Entity entity, string scenePath, string nodeName, Matrix preTransform )
+		public void AddModel ( Entity entity, string scenePath, string nodeName, Matrix preTransform, Matrix postTransform )
 		{
 			var rs		= Game.RenderSystem;	  
 			var content	= World.Content;
@@ -60,7 +67,7 @@ namespace ShooterDemo.Views {
 
 			var instance = new MeshInstance( rs, scene, mesh, materials );
 
-			AddObject( entity.ID, instance ); 
+			AddObject( entity.ID, new Model{ Instance = instance, PreTransform = preTransform, PostTransform = postTransform } ); 
 
 			Game.RenderSystem.RenderWorld.Instances.Add( instance );
 		} 
@@ -73,9 +80,9 @@ namespace ShooterDemo.Views {
 		/// <param name="gameTime"></param>
 		public override void Update ( GameTime gameTime )
 		{
-			IterateObjects( (e,i) => {
-				i.World		=	e.GetWorldMatrix();
-				i.Visible	=	true;
+			IterateObjects( (e,m) => {
+				m.Instance.World	=	m.PreTransform * e.GetWorldMatrix() * m.PostTransform;
+				m.Instance.Visible	=	e.UserGuid != World.GameClient.Guid;
 			});
 		}
 
@@ -87,10 +94,10 @@ namespace ShooterDemo.Views {
 		/// <param name="id"></param>
 		public override void Kill ( uint id )
 		{	
-			MeshInstance instance;
+			Model model;
 
-			if ( RemoveObject( id, out instance ) ) {
-				Game.RenderSystem.RenderWorld.Instances.Remove( instance );
+			if ( RemoveObject( id, out model ) ) {
+				Game.RenderSystem.RenderWorld.Instances.Remove( model.Instance );
 			}
 		}
 

@@ -152,10 +152,14 @@ namespace ShooterDemo {
 			//	Q3A: 16200 dot per 360 turn:
 			var vp = Game.RenderSystem.DisplayBounds;
 
-			UserCommand.CtrlFlags	=	flags;
-			UserCommand.Yaw			-=	2 * MathUtil.Pi * Config.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
-			UserCommand.Pitch		-=	2 * MathUtil.Pi * Config.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
-			UserCommand.Roll		=	0;
+			var ui = Game.GameInterface as ShooterInterface;
+
+			if (!ui.Console.Show) {
+				UserCommand.CtrlFlags	=	flags;
+				UserCommand.Yaw			-=	2 * MathUtil.Pi * Config.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
+				UserCommand.Pitch		-=	2 * MathUtil.Pi * Config.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
+				UserCommand.Roll		=	0;
+			}
 
 			return UserCommand.GetBytes( UserCommand );
 		}

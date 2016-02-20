@@ -97,9 +97,9 @@ namespace ShooterDemo {
 
 			if (ShowMenu) {
 
-				Game.Mouse.IsMouseCentered	=	true;
-				Game.Mouse.IsMouseClipped	=	true;
-				Game.Mouse.IsMouseHidden	=	true;
+				Game.Mouse.IsMouseCentered	=	false;
+				Game.Mouse.IsMouseClipped	=	false;
+				Game.Mouse.IsMouseHidden	=	false;
 
 				var vp = Game.RenderSystem.DisplayBounds;
 
@@ -117,9 +117,16 @@ namespace ShooterDemo {
 				textFont.DrawString( uiLayer, "   - Enter \"killserver\" to stop the game.", 100,vp.Height/2 + h*3, new Color(242,242,242) );
 				textFont.DrawString( uiLayer, "   - Enter \"connect <IP:port>\" to connect to the remote game.", 100,vp.Height/2 + h*4, new Color(242,242,242) );
 			} else {
-				Game.Mouse.IsMouseCentered	=	true;
-				Game.Mouse.IsMouseClipped	=	true;
-				Game.Mouse.IsMouseHidden	=	true;
+
+				if (!console.Show) {
+					Game.Mouse.IsMouseCentered	=	true;
+					Game.Mouse.IsMouseClipped	=	true;
+					Game.Mouse.IsMouseHidden	=	true;
+				} else {
+					Game.Mouse.IsMouseCentered	=	false;
+					Game.Mouse.IsMouseClipped	=	false;
+					Game.Mouse.IsMouseHidden	=	false;
+				}
 			}
 		}
 

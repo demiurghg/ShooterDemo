@@ -151,7 +151,7 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public Matrix GetWorldMatrix ()
 		{
-			return Matrix.Translation( Position ) * Matrix.RotationYawPitchRoll( Angles.Yaw.Radians, Angles.Pitch.Radians, Angles.Roll.Radians );
+			return Matrix.RotationYawPitchRoll( Angles.Yaw.Radians, Angles.Pitch.Radians, Angles.Roll.Radians ) * Matrix.Translation( Position );
 		}
 	}
 }
