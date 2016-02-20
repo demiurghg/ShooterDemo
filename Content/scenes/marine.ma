@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: marine.ma
-//Last modified: Sat, Feb 20, 2016 05:23:50 PM
+//Last modified: Sat, Feb 20, 2016 06:05:21 PM
 //Codeset: 1251
 requires maya "2015";
 requires -nodeType "HIKSolverNode" -nodeType "HIKCharacterNode" -nodeType "HIKSkeletonGeneratorNode"
@@ -18,18 +18,18 @@ fileInfo "osv" "Microsoft Windows 8 Enterprise Edition, 64-bit  (Build 9200)\n";
 fileInfo "license" "education";
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" -49.846562844531107 33.734738843473657 44.759420150782233 ;
-	setAttr ".r" -type "double3" -13.799999999992384 3552.399999999901 -1.1792019203975506e-015 ;
+	setAttr ".t" -type "double3" -0.014233945729576982 19.16356555326437 10.458166914081325 ;
+	setAttr ".r" -type "double3" -8.399999999999979 3959.5999999974679 6.2121722484910093e-018 ;
 	setAttr ".rpt" -type "double3" -6.4240341102525937e-015 -1.499434654141866e-015 
 		8.0968927846820575e-016 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999979;
-	setAttr ".coi" 71.397790927651187;
+	setAttr ".coi" 10.179227073827366;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
-	setAttr ".tp" -type "double3" 0 19.232070078261902 -0.073893964290618896 ;
+	setAttr ".tp" -type "double3" 0 10.463717177510262 1.4531180858612061 ;
 	setAttr ".hc" -type "string" "viewSet -p %camera";
 createNode transform -s -n "top";
 	setAttr ".v" no;
