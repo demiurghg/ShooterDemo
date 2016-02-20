@@ -90,7 +90,7 @@ namespace ShooterDemo {
 		public override byte[] Update ( GameTime gameTime )
 		{
 			//	give some time to other threads :
-			Thread.Sleep(1);
+			Thread.Sleep(16);
 
 			//	update world
 			gameWorld.Update( gameTime );

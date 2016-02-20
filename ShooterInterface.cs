@@ -96,6 +96,11 @@ namespace ShooterDemo {
 			uiLayer.Clear();
 
 			if (ShowMenu) {
+
+				Game.Mouse.IsMouseCentered	=	true;
+				Game.Mouse.IsMouseClipped	=	true;
+				Game.Mouse.IsMouseHidden	=	true;
+
 				var vp = Game.RenderSystem.DisplayBounds;
 
 				uiLayer.Draw( background, 0,0, vp.Width, vp.Height, Color.White );
@@ -111,6 +116,10 @@ namespace ShooterDemo {
 				textFont.DrawString( uiLayer, "   - Enter \"map base1\" to start the game.", 100,vp.Height/2 + h*2, new Color(242,242,242) );
 				textFont.DrawString( uiLayer, "   - Enter \"killserver\" to stop the game.", 100,vp.Height/2 + h*3, new Color(242,242,242) );
 				textFont.DrawString( uiLayer, "   - Enter \"connect <IP:port>\" to connect to the remote game.", 100,vp.Height/2 + h*4, new Color(242,242,242) );
+			} else {
+				Game.Mouse.IsMouseCentered	=	true;
+				Game.Mouse.IsMouseClipped	=	true;
+				Game.Mouse.IsMouseHidden	=	true;
 			}
 		}
 

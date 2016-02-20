@@ -33,6 +33,10 @@ namespace ShooterDemo {
 				return;
 			}
 
+			player.Angles.Yaw.Radians	=	userCmd.Yaw;
+			player.Angles.Pitch.Radians	=	userCmd.Pitch;
+			player.Angles.Roll.Radians	=	userCmd.Roll;
+
 			GetController<Characters>().Move( player.ID, userCmd );
 		}
 
@@ -43,7 +47,7 @@ namespace ShooterDemo {
 		/// <param name="guid"></param>
 		public override void PlayerEntered ( Guid guid )
 		{
-			Log.Verbose("player entered: {0}", guid );
+			LogTrace("player entered: {0}", guid );
 
 			var sp = GetEntities("startPoint").OrderBy( e => rand.Next() ).FirstOrDefault();
 
@@ -64,7 +68,7 @@ namespace ShooterDemo {
 		/// <param name="guid"></param>
 		public override void PlayerLeft ( Guid guid )
 		{
-			Log.Verbose("player left: {0}", guid );
+			LogTrace("player left: {0}", guid );
 
 			var ent = GetEntityOrNull( e => e.UserGuid == guid );
 

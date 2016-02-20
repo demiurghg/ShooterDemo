@@ -68,11 +68,16 @@ namespace ShooterDemo.Controllers {
 		/// <param name="moveVector"></param>
 		public void Move ( uint id, UserCommand userCommand )
 		{
+			var uc	=	userCommand;
+			var m	= 	Matrix.RotationYawPitchRoll( uc.Yaw, 0*uc.Pitch, 0*uc.Roll );
+
 			var move = Vector3.Zero;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Forward )) move += Vector3.ForwardRH;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Backward )) move += Vector3.BackwardRH;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.StrafeLeft )) move += Vector3.Left;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.StrafeRight )) move += Vector3.Right;
+			var jump = false;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Forward )) move += m.Forward;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Backward )) move += m.Backward;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.StrafeLeft )) move += m.Left;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.StrafeRight )) move += m.Right;
+			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Jump )) jump = true;
 
 			var controller = GetObject(id);
 
@@ -82,6 +87,10 @@ namespace ShooterDemo.Controllers {
 
 			controller.HorizontalMotionConstraint.MovementDirection = new BEPUutilities.Vector2( move.X, -move.Z );
 			controller.HorizontalMotionConstraint.TargetSpeed	=	8.0f;
+
+			if (jump) {
+				controller.Jump();
+			}
 		}
 
 

@@ -25,6 +25,7 @@ namespace ShooterDemo.Core {
 		readonly bool serverSide;
 
 		public delegate void EntityConstructor ( World world, Entity entity );
+		public delegate void EntityEventHandler ( object sender, EntityEventArgs e );
 
 		List<IEntityView> views = new List<IEntityView>();
 		List<IEntityController> controllers = new List<IEntityController>();
@@ -33,6 +34,9 @@ namespace ShooterDemo.Core {
 
 		Dictionary<uint, Entity> entities;
 		uint idCounter = 1;
+
+		public event EntityEventHandler ReplicaSpawned;
+		public event EntityEventHandler ReplicaKilled;
 
 
 		class Prefab {
@@ -113,6 +117,21 @@ namespace ShooterDemo.Core {
 			this.UserGuid	=	client.Guid;
 			Content			=	client.Content;
 			entities		=	new Dictionary<uint,Entity>();
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="frmt"></param>
+		/// <param name="args"></param>
+		protected void LogTrace ( string frmt, params object[] args )
+		{
+			var s = string.Format( frmt, args );
+
+			if (IsClientSide) Log.Verbose("cl: " + s );
+			if (IsServerSide) Log.Verbose("sv: " + s );
 		}
 
 
@@ -267,7 +286,7 @@ namespace ShooterDemo.Core {
 
 			ConstructEntity( entity );
 
-			Log.Verbose("spawn: {0} - #{1}", prefab, id );
+			LogTrace("spawn: {0} - #{1}", prefab, id );
 
 			return entity;
 		}
@@ -337,11 +356,15 @@ namespace ShooterDemo.Core {
 				return;
 			}
 
-			Log.Verbose("kill: #{0}", id );
+			LogTrace("kill: #{0}", id );
 
 			Entity ent;
 
 			if ( entities.TryGetValue(id, out ent)) {
+
+				if (IsClientSide && ReplicaKilled!=null) {
+					ReplicaKilled( this, new EntityEventArgs(ent) );
+				}
 				
 				entities.Remove( id );
 				Destruct( ent );
@@ -472,6 +495,10 @@ namespace ShooterDemo.Core {
 					entities.Add( id, ent );
 
 					ConstructEntity( ent );
+
+					if (ReplicaSpawned!=null) {
+						ReplicaSpawned( this, new EntityEventArgs(ent) );
+					}
 				}
 			}
 

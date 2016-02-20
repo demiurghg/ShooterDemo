@@ -7,6 +7,7 @@ using System.IO;
 using Fusion;
 using Fusion.Core;
 using Fusion.Core.Mathematics;
+using Fusion.Core.Configuration;
 using Fusion.Engine.Common;
 using Fusion.Engine.Input;
 using Fusion.Engine.Client;
@@ -24,6 +25,11 @@ namespace ShooterDemo {
 			get { return gameWorld; }
 		}
 
+
+		[Config]
+		public ShooterClientConfig Config { get; set; }
+
+
 		/// <summary>
 		/// Ctor
 		/// </summary>
@@ -31,6 +37,7 @@ namespace ShooterDemo {
 		public ShooterClient ( Game game )
 			: base( game )
 		{
+			this.Config	=	new ShooterClientConfig();
 		}
 
 
@@ -72,6 +79,12 @@ namespace ShooterDemo {
 
 			gameWorld.FinalizeLoad();
 
+			gameWorld.ReplicaSpawned += (s,e) => { 
+				UserCommand.Yaw			=	e.Entity.Angles.Yaw.Radians;
+				UserCommand.Pitch		=	e.Entity.Angles.Pitch.Radians;
+				UserCommand.Roll		=	e.Entity.Angles.Roll.Radians;
+				UserCommand.CtrlFlags	=	UserCtrlFlags.None;
+			};
 
 
 			var rw = Game.RenderSystem.RenderWorld;
@@ -113,6 +126,9 @@ namespace ShooterDemo {
 
 
 
+		public UserCommand	UserCommand;
+
+
 		/// <summary>
 		/// Runs one step of client-side simulation and renders world state.
 		/// Do not close the stream.
@@ -123,21 +139,25 @@ namespace ShooterDemo {
 			gameWorld.Update( gameTime );
 
 			var flags = UserCtrlFlags.None;
+			
 
-			if (Game.Keyboard.IsKeyDown( Keys.S			)) flags |= UserCtrlFlags.Forward;
-			if (Game.Keyboard.IsKeyDown( Keys.Z			)) flags |= UserCtrlFlags.Backward;
-			if (Game.Keyboard.IsKeyDown( Keys.A			)) flags |= UserCtrlFlags.StrafeLeft;
-			if (Game.Keyboard.IsKeyDown( Keys.X			)) flags |= UserCtrlFlags.StrafeRight;
-			if (Game.Keyboard.IsKeyDown( Keys.Space		)) flags |= UserCtrlFlags.Jump;
-			if (Game.Keyboard.IsKeyDown( Keys.LeftAlt	)) flags |= UserCtrlFlags.Crouch;
+			if (Game.Keyboard.IsKeyDown( Keys.S				)) flags |= UserCtrlFlags.Forward;
+			if (Game.Keyboard.IsKeyDown( Keys.Z				)) flags |= UserCtrlFlags.Backward;
+			if (Game.Keyboard.IsKeyDown( Keys.A				)) flags |= UserCtrlFlags.StrafeLeft;
+			if (Game.Keyboard.IsKeyDown( Keys.X				)) flags |= UserCtrlFlags.StrafeRight;
+			if (Game.Keyboard.IsKeyDown( Keys.RightButton	)) flags |= UserCtrlFlags.Jump;
+			if (Game.Keyboard.IsKeyDown( Keys.LeftAlt		)) flags |= UserCtrlFlags.Crouch;
 
-			var userCmd = new UserCommand();
-			userCmd.CtrlFlags	=	flags;
-			userCmd.Yaw			=	0;
-			userCmd.Pitch		=	0;
-			userCmd.Roll		=	0;
+			//	http://eliteownage.com/mousesensitivity.html 
+			//	Q3A: 16200 dot per 360 turn:
+			var vp = Game.RenderSystem.DisplayBounds;
 
-			return UserCommand.GetBytes( userCmd );
+			UserCommand.CtrlFlags	=	flags;
+			UserCommand.Yaw			-=	2 * MathUtil.Pi * Config.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
+			UserCommand.Pitch		-=	2 * MathUtil.Pi * Config.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
+			UserCommand.Roll		=	0;
+
+			return UserCommand.GetBytes( UserCommand );
 		}
 
 

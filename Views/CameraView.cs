@@ -52,9 +52,13 @@ namespace ShooterDemo.Views {
 			}
 
 
+			var uc	=	(World.GameClient as ShooterClient).UserCommand;
+
+			var m	= 	Matrix.RotationYawPitchRoll( uc.Yaw, uc.Pitch, uc.Roll );
+
 			var pos	=	player.Position;
-			var fwd	=	pos + Vector3.ForwardRH;
-			var up	=	Vector3.Up;
+			var fwd	=	pos + m.Forward;
+			var up	=	m.Up;
 
 			rw.Camera.SetupCameraFov( pos, fwd, up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
 

@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="Commands\ShowWorldState.cs" />
     <Compile Include="Controllers\Characters.cs" />
+    <Compile Include="Core\EntityEventArgs.cs" />
+    <Compile Include="ShooterClientConfig.cs" />
     <Compile Include="Views\CameraView.cs" />
     <Compile Include="Controllers\Players.cs" />
     <Compile Include="Controllers\RigidBody.cs" />
