@@ -21,9 +21,56 @@ namespace ShooterDemo.Views {
 
 		
 		public class Model {
-			public Matrix PreTransform;
-			public Matrix PostTransform;
+			readonly public string ScenePath;
+			readonly public string NodeName;
+			readonly public Matrix PreTransform;
+			readonly public Matrix PostTransform;
 			public MeshInstance Instance;
+
+			public Model ( string scenePath, string nodeName, Matrix preTransform, Matrix postTransform )
+			{
+				 ScenePath		=	scenePath;
+				 NodeName		=	nodeName;
+				 PreTransform	=	preTransform;
+				 PostTransform	=	postTransform;
+			}
+
+
+			public void Reload ( RenderSystem rs, ContentManager content )
+			{
+				if (Instance!=null) {
+					if (!rs.RenderWorld.Instances.Remove( Instance )) {
+						Log.Warning("Failed to remove {0}|{1}", ScenePath, NodeName );
+					}
+				}
+
+				var scene = content.Load<Scene>( ScenePath, (Scene)null );
+
+				if (scene==null) {
+					return;
+				}
+
+				var node  = scene.Nodes.FirstOrDefault( n => n.Name == NodeName );
+
+				if (node==null) {
+					Log.Warning("Scene '{0}' does not contain node '{1}'", ScenePath, NodeName );
+					return;
+				}
+
+				if (node.MeshIndex<0) {
+					Log.Warning("Node '{0}|{1}' does not contain mesh", ScenePath, NodeName );
+					return;
+				}
+
+				var mesh		=	scene.Meshes[node.MeshIndex];
+
+				var defMtrl		=	rs.DefaultMaterial;
+				var materials	=	scene.Materials.Select( m => content.Load<MaterialInstance>( m.Name, defMtrl ) ).ToArray();
+
+				Instance		= new MeshInstance( rs, scene, mesh, materials );
+
+				rs.RenderWorld.Instances.Add( Instance );
+			}
 		}
 
 
@@ -33,7 +80,18 @@ namespace ShooterDemo.Views {
 		/// <param name="game"></param>
 		public ModelView ( World world ) : base(world)
 		{
+			Game.Reloading += Game_Reloading;
 		}
+
+
+
+		void Game_Reloading ( object sender, EventArgs e )
+		{
+			IterateObjects( (ent,m) => m.Reload(Game.RenderSystem, World.Content) );
+		}
+
+
+
 
 
 		/// <summary>
@@ -44,32 +102,11 @@ namespace ShooterDemo.Views {
 		/// <param name="preTransform"></param>
 		public void AddModel ( Entity entity, string scenePath, string nodeName, Matrix preTransform, Matrix postTransform )
 		{
-			var rs		= Game.RenderSystem;	  
-			var content	= World.Content;
+			var model = new Model( scenePath, nodeName, preTransform, postTransform ); 
 
-			var scene = content.Load<Scene>( scenePath );
-			var node  = scene.Nodes.FirstOrDefault( n => n.Name == nodeName );
+			model.Reload( Game.RenderSystem, World.Content );
 
-			if (node==null) {
-				Log.Warning("Scene '{0}' does not contain node '{1}'", scenePath, nodeName );
-				return;
-			}
-
-			if (node.MeshIndex<0) {
-				Log.Warning("Node '{0}|{1}' does not contain mesh", scenePath, nodeName );
-				return;
-			}
-
-			var mesh	=	scene.Meshes[node.MeshIndex];
-
-			var defMtrl		=	rs.DefaultMaterial;
-			var materials	=	scene.Materials.Select( m => content.Load<MaterialInstance>( m.Name, defMtrl ) ).ToArray();
-
-			var instance = new MeshInstance( rs, scene, mesh, materials );
-
-			AddObject( entity.ID, new Model{ Instance = instance, PreTransform = preTransform, PostTransform = postTransform } ); 
-
-			Game.RenderSystem.RenderWorld.Instances.Add( instance );
+			AddObject( entity.ID, model ); 
 		} 
 
 

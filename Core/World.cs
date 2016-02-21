@@ -255,10 +255,28 @@ namespace ShooterDemo.Core {
 			}
 		}
 
+		
+		
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="prefab"></param>
+		/// <param name="parentId"></param>
+		/// <param name="origin"></param>
+		/// <param name="angles"></param>
+		/// <returns></returns>
+		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, float angle )
+		{	
+			var a = new Angles();
+			a.Yaw.Degrees = angle;
+			return Spawn( prefab, parentId, origin, a );
+		}
+
 
 
 		/// <summary>
-		/// 
+		/// When called on client-side returns null.
 		/// </summary>
 		/// <param name="prefab"></param>
 		/// <param name="parent"></param>
@@ -267,6 +285,10 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, Angles angles )
 		{
+			if (IsClientSide) {
+				return null;
+			}
+
 			//	get ID :
 			uint id = idCounter;
 

@@ -65,7 +65,7 @@ namespace ShooterDemo {
 			world.GetController<Characters>().AddCharacter( entity );
 
 			if (world.IsClientSide) {
-				world.GetView<ModelView>().AddModel( entity, @"scenes\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) );
+				world.GetView<ModelView>().AddModel( entity, @"scenes\characters\marine\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) );
 			}
 		}
 

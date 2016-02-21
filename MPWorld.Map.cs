@@ -86,6 +86,11 @@ namespace ShooterDemo {
 					}
 				}
 			}
+
+			Spawn("player", 0, Vector3.Up * 4 + Vector3.BackwardRH * 48, 45 );
+			Spawn("player", 0, Vector3.Up * 4 + Vector3.BackwardRH * 48 + Vector3.Right * 2, 90 );
+			Spawn("player", 0, Vector3.Up * 4 + Vector3.BackwardRH * 50, 135 );
+			Spawn("player", 0, Vector3.Up * 4 + Vector3.BackwardRH * 50 + Vector3.Right * 2, 180 );
 		}
 
 	}
