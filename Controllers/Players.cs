@@ -41,7 +41,7 @@ namespace ShooterDemo.Controllers {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( GameTime gameTime )
+		public override void Update ( GameTime gameTime, bool dirty )
 		{
 		}
 

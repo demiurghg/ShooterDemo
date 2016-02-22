@@ -36,8 +36,7 @@ namespace ShooterDemo {
 			player.Angles.Yaw.Radians	=	userCmd.Yaw;
 			player.Angles.Pitch.Radians	=	userCmd.Pitch;
 			player.Angles.Roll.Radians	=	userCmd.Roll;
-
-			GetController<Characters>().Move( player.ID, userCmd );
+			player.UserCtrlFlags		=	userCmd.CtrlFlags;
 		}
 
 

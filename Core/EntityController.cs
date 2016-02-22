@@ -19,7 +19,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="entity"></param>
 		/// <param name="obj"></param>
-		protected delegate void IterateAction ( Entity entity, T obj );
+		protected delegate void IterateAction ( bool dirty, Entity entity, T obj );
 
 
 		/// <summary>
@@ -82,10 +82,10 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="?"></param>
-		protected void IterateObjects ( IterateAction action )
+		protected void IterateObjects ( bool dirty, IterateAction action )
 		{
 			foreach ( var item in dictionary ) {
-				action( World.GetEntity(item.Key), item.Value );
+				action( dirty, World.GetEntity(item.Key), item.Value );
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace ShooterDemo.Core {
 		/// Updates controller.
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public virtual void Update ( GameTime gameTime ) {}
+		public virtual void Update ( GameTime gameTime, bool dirty ) {}
 
 		/// <summary>
 		/// Called when entity has died.

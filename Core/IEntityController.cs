@@ -13,7 +13,8 @@ namespace ShooterDemo.Core {
 		/// Updates controller.
 		/// </summary>
 		/// <param name="gameTime"></param>
-		void Update ( GameTime gameTime );
+		/// <param name="dirty">Entity state is newer than one in controller</param>
+		void Update ( GameTime gameTime, bool dirty );
 
 		/// <summary>
 		/// Called when entity has died.

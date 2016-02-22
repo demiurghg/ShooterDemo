@@ -11,6 +11,7 @@ using Fusion.Engine.Client;
 using Fusion.Engine.Common;
 using Fusion.Engine.Server;
 using Fusion.Core.Content;
+using Fusion.Core.Configuration;
 using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
 
@@ -26,12 +27,20 @@ namespace ShooterDemo {
 
 
 		/// <summary>
+		/// 
+		/// </summary>
+		[Config]
+		public ShooterServerConfig	Config { get; set; }
+
+
+		/// <summary>
 		/// Ctor
 		/// </summary>
 		/// <param name="engine"></param>
 		public ShooterServer ( Game game )
 			: base( game )
 		{
+			Config	=	new ShooterServerConfig();
 		}
 
 
@@ -90,7 +99,7 @@ namespace ShooterDemo {
 		public override byte[] Update ( GameTime gameTime )
 		{
 			//	give some time to other threads :
-			Thread.Sleep(16);
+			Thread.Sleep(Config.ServerSleepTime);
 
 			//	update world
 			gameWorld.Update( gameTime );
@@ -106,6 +115,13 @@ namespace ShooterDemo {
 		}
 
 
+		class BufferedCommand {
+			public Guid UserGuid;
+			public byte[] UserCommand;
+		}
+
+
+		Queue<BufferedCommand> delayBuffer = new Queue<BufferedCommand>();
 
 		/// <summary>
 		/// Feed client commands from particular client.
@@ -118,7 +134,15 @@ namespace ShooterDemo {
 				return;
 			}
 
-			gameWorld.PlayerCommand( id, userCommand );
+
+			delayBuffer.Enqueue( new BufferedCommand { UserGuid = id, UserCommand = userCommand } );
+
+			while (delayBuffer.Count>Config.SimulateDelay) {
+				var bc = delayBuffer.Dequeue();
+				gameWorld.PlayerCommand( bc.UserGuid, bc.UserCommand );
+			}
+
+
 		}
 
 

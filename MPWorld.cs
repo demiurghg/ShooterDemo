@@ -75,9 +75,8 @@ namespace ShooterDemo {
 
 		public override void Update ( GameTime gameTime )
 		{
-			if (IsServerSide) {
-				physSpace.Update( gameTime.ElapsedSec );
-			}
+			physSpace.TimeStepSettings.MaximumTimeStepsPerFrame = 10;
+			physSpace.Update( gameTime.ElapsedSec );
 
 			base.Update( gameTime );
 		}

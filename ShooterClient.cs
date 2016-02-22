@@ -89,8 +89,9 @@ namespace ShooterDemo {
 
 			var rw = Game.RenderSystem.RenderWorld;
 
-			rw.HdrSettings.BloomAmount	= 0.2f;
+			rw.HdrSettings.BloomAmount	= 0.1f;
 			rw.HdrSettings.DirtAmount	= 0.0f;
+			rw.HdrSettings.KeyValue		= 0.18f;
 
 			rw.SkySettings.SunPosition			=	Vector3.One;
 			rw.SkySettings.SunLightIntensity	=	50;
@@ -159,7 +160,11 @@ namespace ShooterDemo {
 				UserCommand.Roll		=	0;
 			}
 
-			return UserCommand.GetBytes( UserCommand );
+			var cmdBytes = UserCommand.GetBytes( UserCommand );
+
+			gameWorld.PlayerCommand( this.Guid, cmdBytes );
+
+			return cmdBytes;
 		}
 
 

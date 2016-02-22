@@ -39,6 +39,13 @@ namespace ShooterDemo.Core {
 		public event EntityEventHandler ReplicaKilled;
 
 
+		/// <summary>
+		/// We just received snapshot.
+		/// Need to update client-side controllers.
+		/// </summary>
+		public bool snapshotDirty = false;
+
+
 		class Prefab {
 			public string Name;
 			public EntityConstructor Construct;
@@ -239,11 +246,11 @@ namespace ShooterDemo.Core {
 			//
 			//	Control entities :
 			//
-			if (IsServerSide) {
-				foreach ( var controller in controllers ) {
-					controller.Update( gameTime );
-				}
+			foreach ( var controller in controllers ) {
+				controller.Update( gameTime, snapshotDirty && IsClientSide );
 			}
+
+			snapshotDirty = false;
 
 			//
 			//	Present entities :
@@ -502,10 +509,18 @@ namespace ShooterDemo.Core {
 				newIDs[i]	=	id;
 
 				if ( entities.ContainsKey(id) ) {
-		
+
+					var clPos	=	entities[id].Position;
+
 					//	Entity with given ID exists.
 					//	Just update internal state.
 					entities[id].Read( reader );
+
+					var error = Vector3.Distance( clPos, entities[id].Position );
+					if (error>0.1f) {
+						Log.Warning("Position error : {0}", error );
+					}
+
 
 				} else {
 					
@@ -523,6 +538,8 @@ namespace ShooterDemo.Core {
 					}
 				}
 			}
+
+			//snapshotDirty	=	false;
 
 			//	Kill all stale entities :
 			var staleIDs = oldIDs.Except( newIDs );

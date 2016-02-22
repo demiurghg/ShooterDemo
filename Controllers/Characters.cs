@@ -39,9 +39,17 @@ namespace ShooterDemo.Controllers {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( GameTime gameTime )
+		public override void Update ( GameTime gameTime, bool dirty )
 		{
-			IterateObjects( (e,c) => e.Position = MathConverter.Convert( c.Body.Position ) );
+			IterateObjects( dirty, (d,e,c) => {
+				if (d) {
+					c.Body.Position = MathConverter.Convert(e.Position);
+				} else {
+					Move( c, e );
+
+					e.Position = MathConverter.Convert( c.Body.Position ); 
+				}
+			});
 		}
 
 
@@ -66,20 +74,17 @@ namespace ShooterDemo.Controllers {
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="moveVector"></param>
-		public void Move ( uint id, UserCommand userCommand )
+		void Move ( CharacterController controller, Entity ent )
 		{
-			var uc	=	userCommand;
-			var m	= 	Matrix.RotationYawPitchRoll( uc.Yaw, 0*uc.Pitch, 0*uc.Roll );
+			var m	= 	Matrix.RotationYawPitchRoll( ent.Angles.Yaw.Radians, 0*ent.Angles.Yaw.Radians, 0*ent.Angles.Yaw.Radians );
 
 			var move = Vector3.Zero;
 			var jump = false;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Forward )) move += m.Forward;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Backward )) move += m.Backward;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.StrafeLeft )) move += m.Left;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.StrafeRight )) move += m.Right;
-			if (userCommand.CtrlFlags.HasFlag( UserCtrlFlags.Jump )) jump = true;
-
-			var controller = GetObject(id);
+			if (ent.UserCtrlFlags.HasFlag( UserCtrlFlags.Forward )) move += m.Forward;
+			if (ent.UserCtrlFlags.HasFlag( UserCtrlFlags.Backward )) move += m.Backward;
+			if (ent.UserCtrlFlags.HasFlag( UserCtrlFlags.StrafeLeft )) move += m.Left;
+			if (ent.UserCtrlFlags.HasFlag( UserCtrlFlags.StrafeRight )) move += m.Right;
+			if (ent.UserCtrlFlags.HasFlag( UserCtrlFlags.Jump )) jump = true;
 
 			if (controller==null) {
 				return;

@@ -47,6 +47,11 @@ namespace ShooterDemo.Core {
 		public Angles Angles;
 
 		/// <summary>
+		/// Control flags.
+		/// </summary>
+		public UserCtrlFlags UserCtrlFlags;
+
+		/// <summary>
 		/// Movement lerp factor
 		/// </summary>
 		public float LerpFactor;
@@ -84,10 +89,11 @@ namespace ShooterDemo.Core {
 			PrefabID	=	prefabId;
 			ParentID	=	parentId;
 
-			Angles		=	angles;
-			Position	=	position;
-			PositionOld	=	position;
-			LerpFactor	=	0;
+			Angles			=	angles;
+			UserCtrlFlags	=	UserCtrlFlags.None;
+			Position		=	position;
+			PositionOld		=	position;
+			LerpFactor		=	0;
 		}
 
 
@@ -105,6 +111,7 @@ namespace ShooterDemo.Core {
 			writer.Write( Position );
 			writer.Write( PositionOld );
 			writer.Write( Angles );
+			writer.Write( (int)UserCtrlFlags );
 			writer.Write( LerpFactor );
 			writer.Write( LinearVelocity );
 			writer.Write( AngularVelocity );
@@ -126,6 +133,7 @@ namespace ShooterDemo.Core {
 			Position			=	reader.Read<Vector3>();
 			PositionOld			=	reader.Read<Vector3>();	
 			Angles				=	reader.Read<Angles>();	
+			UserCtrlFlags		=	(UserCtrlFlags)reader.ReadInt32();
 			LerpFactor			=	reader.ReadSingle();
 			LinearVelocity		=	reader.Read<Vector3>();
 			AngularVelocity		=	reader.Read<Vector3>();	
