@@ -149,9 +149,8 @@ namespace ShooterDemo {
 
 			//	http://eliteownage.com/mousesensitivity.html 
 			//	Q3A: 16200 dot per 360 turn:
-			var vp = Game.RenderSystem.DisplayBounds;
-
-			var ui = Game.GameInterface as ShooterInterface;
+			var vp		=	Game.RenderSystem.DisplayBounds;
+			var ui		=	Game.GameInterface as ShooterInterface;
 
 			if (!ui.Console.Show) {
 				UserCommand.CtrlFlags	=	flags;
@@ -160,9 +159,10 @@ namespace ShooterDemo {
 				UserCommand.Roll		=	0;
 			}
 
+
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
 
-			gameWorld.PlayerCommand( this.Guid, cmdBytes );
+			gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
 
 			return cmdBytes;
 		}

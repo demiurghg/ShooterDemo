@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.IO;
+using Fusion.Core.Mathematics;
 
 namespace ShooterDemo {
 

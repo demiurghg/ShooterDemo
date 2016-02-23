@@ -57,6 +57,10 @@ namespace ShooterDemo.Views {
 			var m	= 	Matrix.RotationYawPitchRoll( uc.Yaw, uc.Pitch, uc.Roll );
 
 			var pos	=	player.Position + Vector3.Up * 1.0f;
+
+			//filteredPos = Vector3.Lerp( filteredPos, pos, 0.3f );
+			//pos = filteredPos;
+
 			var fwd	=	pos + m.Forward;
 			var up	=	m.Up;
 

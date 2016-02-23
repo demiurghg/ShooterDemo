@@ -42,13 +42,31 @@ namespace ShooterDemo.Controllers {
 		public override void Update ( GameTime gameTime, bool dirty )
 		{
 			IterateObjects( dirty, (d,e,c) => {
-				if (d) {
-					c.Body.Position = MathConverter.Convert(e.Position);
-				} else {
+
+				var delta	=	MathConverter.Convert( c.Body.LinearVelocity ) * e.Lag;
+
+				if(true) {
 					Move( c, e );
 
-					e.Position = MathConverter.Convert( c.Body.Position ); 
+					e.Position			= MathConverter.Convert( c.Body.Position ); 
+					e.LinearVelocity	= MathConverter.Convert( c.Body.LinearVelocity );
+					e.AngularVelocity	= MathConverter.Convert( c.Body.AngularVelocity );
 				}
+
+				if (e.RemoteEntity!=null) {
+
+					var dist 	= Vector3.Distance( e.Position, e.RemoteEntity.Position );
+					Log.Message("error - {0}", dist );
+
+					if (dist<0.1f) {
+
+						e.RemoteEntity = null;
+					} else {
+						var re			=	e.RemoteEntity;
+						var pos			= Vector3.Lerp(e.Position - delta, re.Position - re.LinearVelocity * re.Lag, 0.5f );
+						c.Body.Position = MathConverter.Convert( pos );
+					}
+				} 
 			});
 		}
 

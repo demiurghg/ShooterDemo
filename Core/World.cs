@@ -424,7 +424,7 @@ namespace ShooterDemo.Core {
 		/// Called when player left.
 		/// </summary>
 		/// <param name="guid"></param>
-		public abstract void PlayerCommand ( Guid guid, byte[] command );
+		public abstract void PlayerCommand ( Guid guid, byte[] command, float lag );
 
 		/// <summary>
 		/// This method called in main thread to complete non-thread safe operations.
@@ -510,16 +510,15 @@ namespace ShooterDemo.Core {
 
 				if ( entities.ContainsKey(id) ) {
 
-					var clPos	=	entities[id].Position;
-
 					//	Entity with given ID exists.
 					//	Just update internal state.
-					entities[id].Read( reader );
+					entities[id].RemoteEntity = new Entity(id);
+					entities[id].RemoteEntity.Read( reader );
 
-					var error = Vector3.Distance( clPos, entities[id].Position );
-					if (error>0.1f) {
-						Log.Warning("Position error : {0}", error );
-					}
+					//var error = Vector3.Distance( clPos, entities[id].Position );
+					//if (error>0.1f) {
+					//	Log.Warning("Position error : {0}", error );
+					//}
 
 
 				} else {
@@ -539,7 +538,7 @@ namespace ShooterDemo.Core {
 				}
 			}
 
-			//snapshotDirty	=	false;
+			//snapshotDirty	=	true;
 
 			//	Kill all stale entities :
 			var staleIDs = oldIDs.Except( newIDs );

@@ -12,12 +12,23 @@ using System.IO;
 namespace ShooterDemo.Core {
 	public class Entity {
 
+		public Entity RemoteEntity = null;
+
+		/// <summary>
+		/// Entity ID
+		/// </summary>
+		public readonly uint ID;
+
+		/// <summary>
+		/// Client's lag.
+		/// </summary>
+		public float Lag = 0;
+
 		/// <summary>
 		/// Players guid. Zero if no player.
 		/// </summary>
 		public Guid UserGuid;// { get; private set; }
 
-		public readonly uint ID;
 
 		/// <summary>
 		///	Gets parent's ID. 
@@ -37,11 +48,6 @@ namespace ShooterDemo.Core {
 		public Vector3 Position;
 
 		/// <summary>
-		///	Entity old position
-		/// </summary>
-		public Vector3 PositionOld;
-
-		/// <summary>
 		/// Entity's angle
 		/// </summary>
 		public Angles Angles;
@@ -50,11 +56,6 @@ namespace ShooterDemo.Core {
 		/// Control flags.
 		/// </summary>
 		public UserCtrlFlags UserCtrlFlags;
-
-		/// <summary>
-		/// Movement lerp factor
-		/// </summary>
-		public float LerpFactor;
 
 		/// <summary>
 		/// Linear object velocity
@@ -92,8 +93,6 @@ namespace ShooterDemo.Core {
 			Angles			=	angles;
 			UserCtrlFlags	=	UserCtrlFlags.None;
 			Position		=	position;
-			PositionOld		=	position;
-			LerpFactor		=	0;
 		}
 
 
@@ -104,15 +103,14 @@ namespace ShooterDemo.Core {
 		/// <param name="writer"></param>
 		public void Write ( BinaryWriter writer )
 		{
+			writer.Write( Lag );
 			writer.Write( UserGuid.ToByteArray() );
 			writer.Write( ParentID );
 			writer.Write( PrefabID );
 
 			writer.Write( Position );
-			writer.Write( PositionOld );
 			writer.Write( Angles );
 			writer.Write( (int)UserCtrlFlags );
-			writer.Write( LerpFactor );
 			writer.Write( LinearVelocity );
 			writer.Write( AngularVelocity );
 		}
@@ -125,16 +123,15 @@ namespace ShooterDemo.Core {
 		/// <param name="writer"></param>
 		public void Read ( BinaryReader reader )
 		{
+			Lag					=	reader.ReadSingle();
 			UserGuid			=	new Guid( reader.ReadBytes(16) );
 									
 			ParentID			=	reader.ReadUInt32();
 			PrefabID			=	reader.ReadUInt32();
 
-			Position			=	reader.Read<Vector3>();
-			PositionOld			=	reader.Read<Vector3>();	
+			Position			=	reader.Read<Vector3>();	
 			Angles				=	reader.Read<Angles>();	
 			UserCtrlFlags		=	(UserCtrlFlags)reader.ReadInt32();
-			LerpFactor			=	reader.ReadSingle();
 			LinearVelocity		=	reader.Read<Vector3>();
 			AngularVelocity		=	reader.Read<Vector3>();	
 		}

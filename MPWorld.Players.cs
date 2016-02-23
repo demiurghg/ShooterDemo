@@ -23,7 +23,8 @@ namespace ShooterDemo {
 		Random rand = new Random();
 
 
-		public override void PlayerCommand ( Guid guid, byte[] command )
+		
+		public override void PlayerCommand ( Guid guid, byte[] command, float lag )
 		{
 			var userCmd =	UserCommand.FromBytes( command );
 
@@ -33,6 +34,7 @@ namespace ShooterDemo {
 				return;
 			}
 
+			player.Lag					=	lag;
 			player.Angles.Yaw.Radians	=	userCmd.Yaw;
 			player.Angles.Pitch.Radians	=	userCmd.Pitch;
 			player.Angles.Roll.Radians	=	userCmd.Roll;

@@ -19,42 +19,4 @@ using BEPUphysics.Character;
 
 
 namespace ShooterDemo.Controllers {
-	class Players : EntityController<Players.PlayerState> {
-		
-		public class PlayerState {
-			public Guid Guid;
-		}
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="game"></param>
-		/// <param name="space"></param>
-		public Players ( World world ) : base(world)
-		{
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="gameTime"></param>
-		public override void Update ( GameTime gameTime, bool dirty )
-		{
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="id"></param>
-		public override void Kill ( uint id )
-		{
-			
-		}
-
-	}
 }

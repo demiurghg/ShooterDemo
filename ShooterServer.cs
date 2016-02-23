@@ -128,21 +128,22 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="clientId"></param>
-		public override void FeedCommand ( Guid id, byte[] userCommand )
+		public override void FeedCommand ( Guid id, byte[] userCommand, float lag )
 		{
 			if (!userCommand.Any()) {
 				return;
 			}
 
+			//Log.Message("Lag : {0} ms", lag * 1000);
 
-			delayBuffer.Enqueue( new BufferedCommand { UserGuid = id, UserCommand = userCommand } );
+			gameWorld.PlayerCommand( id, userCommand, lag );
+
+			/*delayBuffer.Enqueue( new BufferedCommand { UserGuid = id, UserCommand = userCommand } );
 
 			while (delayBuffer.Count>Config.SimulateDelay) {
 				var bc = delayBuffer.Dequeue();
 				gameWorld.PlayerCommand( bc.UserGuid, bc.UserCommand );
-			}
-
-
+			} */
 		}
 
 
