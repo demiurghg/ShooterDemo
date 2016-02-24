@@ -128,13 +128,13 @@ namespace ShooterDemo {
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="clientId"></param>
-		public override void FeedCommand ( Guid id, byte[] userCommand, float lag )
+		public override void FeedCommand ( Guid id, byte[] userCommand, uint commandID, float lag )
 		{
 			if (!userCommand.Any()) {
 				return;
 			}
 
-			//Log.Message("Lag : {0} ms", lag * 1000);
+			//Log.Message("Lag : {0} ms / Cmd : {1}", lag * 1000, commandID);
 
 			gameWorld.PlayerCommand( id, userCommand, lag );
 

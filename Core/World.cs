@@ -512,8 +512,8 @@ namespace ShooterDemo.Core {
 
 					//	Entity with given ID exists.
 					//	Just update internal state.
-					entities[id].RemoteEntity = new Entity(id);
-					entities[id].RemoteEntity.Read( reader );
+					//entities[id].RemoteEntity = new Entity(id);
+					entities[id].Read( reader );
 
 					//var error = Vector3.Distance( clPos, entities[id].Position );
 					//if (error>0.1f) {

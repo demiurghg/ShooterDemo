@@ -127,18 +127,22 @@ namespace ShooterDemo {
 
 		public UserCommand	UserCommand;
 
+		uint commandCounter = 0;
+
 
 		/// <summary>
 		/// Runs one step of client-side simulation and renders world state.
 		/// Do not close the stream.
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override byte[] Update ( GameTime gameTime )
+		public override byte[] Update ( GameTime gameTime, uint sentCommandID )
 		{
 			gameWorld.Update( gameTime );
 
 			var flags = UserCtrlFlags.None;
 			
+			UserCommand.Counter		=	commandCounter;
+			commandCounter++;
 
 			if (Game.Keyboard.IsKeyDown( Keys.S				)) flags |= UserCtrlFlags.Forward;
 			if (Game.Keyboard.IsKeyDown( Keys.Z				)) flags |= UserCtrlFlags.Backward;
@@ -174,8 +178,10 @@ namespace ShooterDemo {
 		/// Called when fresh snapshot arrived.
 		/// </summary>
 		/// <param name="snapshot"></param>
-		public override void FeedSnapshot ( byte[] snapshot, bool initial )
+		public override void FeedSnapshot ( byte[] snapshot, uint ackCommandID )
 		{
+			//Log.Warning("Ack cmd : {0}", ackCommandID );
+
 			using ( var ms = new MemoryStream(snapshot) ) {
 				using ( var reader = new BinaryReader(ms) ) { 
 					gameWorld.Read( reader );
