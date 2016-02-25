@@ -31,6 +31,8 @@ namespace ShooterDemo.Views {
 		}
 
 
+		Vector3 filteredPos = Vector3.Zero;
+
 
 		/// <summary>
 		/// 
@@ -58,8 +60,8 @@ namespace ShooterDemo.Views {
 
 			var pos	=	player.Position + Vector3.Up * 1.0f;
 
-			//filteredPos = Vector3.Lerp( filteredPos, pos, 0.3f );
-			//pos = filteredPos;
+			/*filteredPos = Vector3.Lerp( filteredPos, pos, 0.3f );
+			pos = filteredPos;*/
 
 			var fwd	=	pos + m.Forward;
 			var up	=	m.Up;

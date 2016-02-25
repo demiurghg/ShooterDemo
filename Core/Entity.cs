@@ -45,6 +45,11 @@ namespace ShooterDemo.Core {
 		/// <summary>
 		/// Entity position
 		/// </summary>
+		public Vector3 PositionError;
+
+		/// <summary>
+		/// Entity position
+		/// </summary>
 		public Vector3 Position;
 
 		/// <summary>
@@ -93,6 +98,8 @@ namespace ShooterDemo.Core {
 			Angles			=	angles;
 			UserCtrlFlags	=	UserCtrlFlags.None;
 			Position		=	position;
+
+			PositionError	=	Vector3.Zero;
 		}
 
 

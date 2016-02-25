@@ -58,6 +58,8 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override GameLoader LoadContent ( string serverInfo )
 		{
+			latestSnapshot	=	null;
+
 			Log.Message("");
 			Log.Message("---- Loading game: {0} ----", serverInfo );
 
@@ -94,7 +96,7 @@ namespace ShooterDemo {
 			rw.HdrSettings.KeyValue		= 0.18f;
 
 			rw.SkySettings.SunPosition			=	Vector3.One;
-			rw.SkySettings.SunLightIntensity	=	50;
+			rw.SkySettings.SunLightIntensity	=	100;
 
 			rw.LightSet.DirectLight.Direction	=	rw.SkySettings.SunLightDirection;
 			rw.LightSet.DirectLight.Intensity	=	rw.SkySettings.SunLightColor;
@@ -117,6 +119,8 @@ namespace ShooterDemo {
 		/// </summary>
 		public override void UnloadContent ()
 		{
+			latestSnapshot	=	null;
+
 			Game.RenderSystem.RenderWorld.ClearWorld();
 
 			Content.Unload();
@@ -127,7 +131,8 @@ namespace ShooterDemo {
 
 		public UserCommand	UserCommand;
 
-		uint commandCounter = 0;
+		uint ackCommandID;
+		byte[] latestSnapshot = null;
 
 
 		/// <summary>
@@ -139,9 +144,6 @@ namespace ShooterDemo {
 		{
 			var flags = UserCtrlFlags.None;
 			
-			UserCommand.Counter		=	commandCounter;
-			commandCounter++;
-
 			if (Game.Keyboard.IsKeyDown( Keys.S				)) flags |= UserCtrlFlags.Forward;
 			if (Game.Keyboard.IsKeyDown( Keys.Z				)) flags |= UserCtrlFlags.Backward;
 			if (Game.Keyboard.IsKeyDown( Keys.A				)) flags |= UserCtrlFlags.StrafeLeft;
@@ -167,10 +169,57 @@ namespace ShooterDemo {
 			gameWorld.RecordUserCommand( sentCommandID, gameTime.ElapsedSec, cmdBytes );
 			gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
 
-			gameWorld.SimulateWorld( gameTime.ElapsedSec );
+			if (!ProcessSnapshot()) {
+				gameWorld.SimulateWorld( gameTime.ElapsedSec );
+			}
+
 			gameWorld.PresentWorld( gameTime.ElapsedSec );
 
 			return cmdBytes;
+		}
+
+
+
+		/// <summary>
+		/// Process snapshot, replay world.
+		/// </summary>
+		/// <returns></returns>
+		bool ProcessSnapshot ()
+		{
+			if (latestSnapshot!=null) {
+
+				//	save current pos in vis-pos :
+				foreach ( var ent in gameWorld.entities ) {
+					ent.Value.PositionError = ent.Value.Position;
+				}
+
+				//	read snapshot :
+				using ( var ms = new MemoryStream(latestSnapshot) ) {
+					using ( var reader = new BinaryReader(ms) ) {
+						gameWorld.Read( reader, ackCommandID );
+					}
+				}
+
+				//	replay world with non-acked commands :
+				gameWorld.ReplayWorld( ackCommandID );
+
+
+				foreach ( var ent in gameWorld.entities ) {
+					ent.Value.PositionError = ent.Value.Position - ent.Value.PositionError;
+				}
+
+				latestSnapshot	=	null;
+
+				return true;
+
+			} else {
+
+				foreach ( var ent in gameWorld.entities ) {
+					ent.Value.PositionError = Vector3.Zero;//ent.Value.PositionError * 0.9f;
+				}
+
+				return false;
+			}
 		}
 
 
@@ -183,12 +232,8 @@ namespace ShooterDemo {
 		public override void FeedSnapshot ( byte[] snapshot, uint ackCommandID )
 		{
 			//Log.Warning("Ack cmd : {0}", ackCommandID );
-
-			using ( var ms = new MemoryStream(snapshot) ) {
-				using ( var reader = new BinaryReader(ms) ) { 
-					gameWorld.Read( reader, ackCommandID );
-				}
-			}
+			this.ackCommandID	=	ackCommandID;
+			this.latestSnapshot	=	snapshot;
 		}
 
 

@@ -26,8 +26,6 @@ namespace ShooterDemo {
 	/// </summary>
 	public struct UserCommand {
 
-		public uint Counter;
-
 		/// <summary>
 		/// Current user yaw.
 		/// </summary>

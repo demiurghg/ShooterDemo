@@ -32,7 +32,7 @@ namespace ShooterDemo.Core {
 
 		Dictionary<uint, Prefab> prefabs = new Dictionary<uint,Prefab>();
 
-		Dictionary<uint, Entity> entities;
+		public Dictionary<uint, Entity> entities;
 		uint idCounter = 1;
 
 		public event EntityEventHandler ReplicaSpawned;
@@ -262,6 +262,17 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void PresentWorld ( float deltaTime )
 		{
+			foreach ( var ent in entities ) {
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( ent.Value.Position, 0.5f, Color.Yellow );
+			}
+			foreach ( var rp in replay ) {
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.3f, Color.Magenta );
+			}
+			foreach ( var rp in svPos ) {
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.3f, Color.Red );
+			}
+
+
 			if (IsClientSide) {
 				foreach ( var view in views ) {
 					view.Update( deltaTime );
@@ -512,6 +523,8 @@ namespace ShooterDemo.Core {
 		}
 
 
+		List<Vector3> replay = new List<Vector3>();
+		List<Vector3> svPos = new List<Vector3>();
 
 		/// <summary>
 		/// 
@@ -519,26 +532,43 @@ namespace ShooterDemo.Core {
 		/// <param name="commandId"></param>
 		public void ReplayWorld ( uint commandId )
 		{
+			var entArray	=	entities
+							.Select( pair => pair.Value )
+							.OrderBy( e => e.ID )
+							.ToArray();
+
+			var oldPos		=	entArray.Select( e => e.Position ).ToArray();
+
 			//	apply received changes :
 			foreach ( var controller in controllers ) {
 				controller.Update( 0, true );
 			}
 
 			//	remove acknoledged commands :
-			commandBuffer.RemoveAll( cmd => cmd.ID <= commandId );
+			commandBuffer.RemoveAll( cmd => cmd.ID < commandId );
+			Log.Message("non-ack cmds : {0}", commandBuffer.Count );
+
+			replay.Clear();
 
 			//	replay world from server time :
 			foreach ( var cmd in commandBuffer ) {
+
+				foreach ( var ent in entities ) {
+					replay.Add( ent.Value.Position );
+				}
 
 				PlayerCommand( this.UserGuid, cmd.Data, 0 );
 				SimulateWorld( cmd.ElapsedTime );
 
 			}
+
+			/*for ( int i=0; i<oldPos.Length; i++) {
+				entArray[i].Position = Vector3.Lerp( oldPos[i], entArray[i].Position, 0.5f );
+			} */
+
 		}
 		#endif
 
-
-		
 
 		/// <summary>
 		/// Writes world state to stream writer.
@@ -582,14 +612,7 @@ namespace ShooterDemo.Core {
 
 					//	Entity with given ID exists.
 					//	Just update internal state.
-					//entities[id].RemoteEntity = new Entity(id);
 					entities[id].Read( reader );
-
-					//var error = Vector3.Distance( clPos, entities[id].Position );
-					//if (error>0.1f) {
-					//	Log.Warning("Position error : {0}", error );
-					//}
-
 
 				} else {
 					
@@ -608,7 +631,13 @@ namespace ShooterDemo.Core {
 				}
 			}
 
-			ReplayWorld( ackCmdID );
+
+			foreach ( var ent in entities ) {
+				svPos.Add( ent.Value.Position );
+			}
+			while (svPos.Count>60) {
+				svPos.RemoveAt(0);
+			}
 
 			//	Kill all stale entities :
 			var staleIDs = oldIDs.Except( newIDs );

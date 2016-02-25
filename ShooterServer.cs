@@ -115,14 +115,6 @@ namespace ShooterDemo {
 		}
 
 
-		class BufferedCommand {
-			public Guid UserGuid;
-			public byte[] UserCommand;
-			public float Lag;
-		}
-
-
-		Queue<BufferedCommand> delayBuffer = new Queue<BufferedCommand>();
 
 		/// <summary>
 		/// Feed client commands from particular client.
@@ -138,13 +130,6 @@ namespace ShooterDemo {
 			//Log.Message("Lag : {0} ms / Cmd : {1}", lag * 1000, commandID);
 
 			gameWorld.PlayerCommand( id, userCommand, lag );
-
-			/*delayBuffer.Enqueue( new BufferedCommand { UserGuid = id, UserCommand = userCommand, Lag = lag } );
-
-			while (delayBuffer.Count>Config.SimulateDelay) {
-				var bc = delayBuffer.Dequeue();
-				gameWorld.PlayerCommand( bc.UserGuid, bc.UserCommand, bc.Lag );
-			} //*/
 		}
 
 
