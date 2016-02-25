@@ -188,11 +188,6 @@ namespace ShooterDemo {
 		{
 			if (latestSnapshot!=null) {
 
-				//	save current pos in vis-pos :
-				foreach ( var ent in gameWorld.entities ) {
-					ent.Value.PositionError = ent.Value.Position;
-				}
-
 				//	read snapshot :
 				using ( var ms = new MemoryStream(latestSnapshot) ) {
 					using ( var reader = new BinaryReader(ms) ) {
@@ -205,7 +200,7 @@ namespace ShooterDemo {
 
 
 				foreach ( var ent in gameWorld.entities ) {
-					ent.Value.PositionError = ent.Value.Position - ent.Value.PositionError;
+					ent.Value.PositionError = ent.Value.PositionError - ent.Value.Position;
 				}
 
 				latestSnapshot	=	null;
@@ -214,9 +209,19 @@ namespace ShooterDemo {
 
 			} else {
 
-				foreach ( var ent in gameWorld.entities ) {
-					ent.Value.PositionError = Vector3.Zero;//ent.Value.PositionError * 0.9f;
-				}
+				//foreach ( var ent in gameWorld.entities ) {
+				//	var len = ent.Value.PositionError.Length();
+
+				//	if (len<0.0001f) {
+				//		continue;
+				//	}
+
+				//	len = Math.Max( 0, len - 0.1f );
+
+				//	ent.Value.PositionError = ent.Value.PositionError.Normalized() * len;
+
+				//	//ent.Value.PositionError = ent.Value.PositionError * 0.9f;
+				//}
 
 				return false;
 			}
