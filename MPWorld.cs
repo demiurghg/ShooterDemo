@@ -73,12 +73,12 @@ namespace ShooterDemo {
 
 
 
-		public override void Update ( GameTime gameTime )
+		public override void SimulateWorld ( float elapsedTime )
 		{
-			physSpace.TimeStepSettings.MaximumTimeStepsPerFrame = 10;
-			physSpace.Update( gameTime.ElapsedSec );
+			physSpace.TimeStepSettings.MaximumTimeStepsPerFrame = 100;
+			physSpace.Update( elapsedTime );
 
-			base.Update( gameTime );
+			base.SimulateWorld( elapsedTime );
 		}
 
 
@@ -90,9 +90,9 @@ namespace ShooterDemo {
 
 
 
-		public override void Read ( BinaryReader reader )
+		public override void Read ( BinaryReader reader, uint ackCmdID )
 		{
-			base.Read( reader );
+			base.Read( reader, ackCmdID );
 		}
 	}
 }

@@ -95,7 +95,7 @@ namespace ShooterDemo.Core {
 		/// Updates controller.
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public virtual void Update ( GameTime gameTime, bool dirty ) {}
+		public virtual void Update ( float elapsedTime, bool dirty ) {}
 
 		/// <summary>
 		/// Called when entity has died.

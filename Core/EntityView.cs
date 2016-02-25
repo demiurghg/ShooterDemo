@@ -79,7 +79,7 @@ namespace ShooterDemo.Core {
 		/// Called on each viewable entity.
 		/// </summary>
 		/// <param name="entity"></param>
-		public virtual void Update ( GameTime gameTime ) {}
+		public virtual void Update ( float elapsedTime ) {}
 
 		/// <summary>
 		/// Called when entity has died.

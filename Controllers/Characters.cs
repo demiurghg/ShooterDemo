@@ -39,7 +39,33 @@ namespace ShooterDemo.Controllers {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( GameTime gameTime, bool dirty )
+		public override void Update ( float elapsedTime, bool dirty )
+		{
+			IterateObjects( dirty, (d,e,c) => {
+
+				if (dirty) {
+
+					c.Body.Position			=	MathConverter.Convert( e.Position );
+					c.Body.LinearVelocity	=	MathConverter.Convert( e.LinearVelocity );
+					c.Body.AngularVelocity	=	MathConverter.Convert( e.AngularVelocity );
+
+				} else {
+					Move( c, e );
+
+					e.Position			=	MathConverter.Convert( c.Body.Position ); 
+					e.LinearVelocity	=	MathConverter.Convert( c.Body.LinearVelocity );
+					e.AngularVelocity	=	MathConverter.Convert( c.Body.AngularVelocity );
+				}
+			});
+		}
+
+
+		#if false
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="gameTime"></param>
+		public override void Update ( float elapsedTime, bool dirty )
 		{
 			IterateObjects( dirty, (d,e,c) => {
 
@@ -69,6 +95,7 @@ namespace ShooterDemo.Controllers {
 				} 
 			});
 		}
+		#endif
 
 
 

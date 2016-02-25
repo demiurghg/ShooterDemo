@@ -237,27 +237,34 @@ namespace ShooterDemo.Core {
 		}
 
 
+
 		/// <summary>
-		/// 
+		/// Simulates world.
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public virtual void Update ( GameTime gameTime )
+		public virtual void SimulateWorld ( float deltaTime )
 		{
 			//
 			//	Control entities :
 			//
 			foreach ( var controller in controllers ) {
-				controller.Update( gameTime, snapshotDirty && IsClientSide );
+				controller.Update( deltaTime, snapshotDirty && IsClientSide );
 			}
 
 			snapshotDirty = false;
+		}
 
-			//
-			//	Present entities :
-			//
+
+
+		/// <summary>
+		/// Updates visual and audial stuff
+		/// </summary>
+		/// <param name="gameTime"></param>
+		public virtual void PresentWorld ( float deltaTime )
+		{
 			if (IsClientSide) {
 				foreach ( var view in views ) {
-					view.Update( gameTime );
+					view.Update( deltaTime );
 				}
 			}
 		}
@@ -292,6 +299,8 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, Angles angles )
 		{
+			//	due to server reconciliation
+			//	never create entities on client-side:
 			if (IsClientSide) {
 				return null;
 			}
@@ -468,6 +477,67 @@ namespace ShooterDemo.Core {
 			Log.Message("");
 		}
 
+
+
+		class CommandRecord {
+			public CommandRecord( uint id, float elapsed, byte[] data )
+			{
+				this.ID				=	id;
+				this.ElapsedTime	=	elapsed;
+				this.Data			=	data;
+			}
+
+			public uint ID;
+			public float ElapsedTime;
+			public byte[] Data;
+		}
+
+
+		List<CommandRecord> commandBuffer = new List<CommandRecord>();
+
+
+		#if false
+		public void RecordUserCommand ( uint cmdId, byte[] command ){}
+		public void ReplayWorld ( uint commandId ){}
+		#else
+
+		/// <summary>
+		/// Records user commands for server reconciliation.
+		/// </summary>
+		/// <param name="cmdId"></param>
+		/// <param name="command"></param>
+		public void RecordUserCommand ( uint cmdId, float elapsed, byte[] command )
+		{
+			commandBuffer.Add( new CommandRecord( cmdId, elapsed, command ) );	
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="commandId"></param>
+		public void ReplayWorld ( uint commandId )
+		{
+			//	apply received changes :
+			foreach ( var controller in controllers ) {
+				controller.Update( 0, true );
+			}
+
+			//	remove acknoledged commands :
+			commandBuffer.RemoveAll( cmd => cmd.ID <= commandId );
+
+			//	replay world from server time :
+			foreach ( var cmd in commandBuffer ) {
+
+				PlayerCommand( this.UserGuid, cmd.Data, 0 );
+				SimulateWorld( cmd.ElapsedTime );
+
+			}
+		}
+		#endif
+
+
 		
 
 		/// <summary>
@@ -494,7 +564,7 @@ namespace ShooterDemo.Core {
 		/// Reads world state from stream reader.
 		/// </summary>
 		/// <param name="writer"></param>
-		public virtual void Read ( BinaryReader reader )
+		public virtual void Read ( BinaryReader reader, uint ackCmdID )
 		{
 			reader.ExpectFourCC("ENT0", "Bad snapshot");
 
@@ -538,7 +608,7 @@ namespace ShooterDemo.Core {
 				}
 			}
 
-			//snapshotDirty	=	true;
+			ReplayWorld( ackCmdID );
 
 			//	Kill all stale entities :
 			var staleIDs = oldIDs.Except( newIDs );

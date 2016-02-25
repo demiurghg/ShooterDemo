@@ -115,7 +115,7 @@ namespace ShooterDemo.Views {
 		/// Updates visible meshes
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( GameTime gameTime )
+		public override void Update ( float elapsedTime )
 		{
 			IterateObjects( (e,m) => {
 				m.Instance.World	=	m.PreTransform * e.GetWorldMatrix() * m.PostTransform;

@@ -36,7 +36,7 @@ namespace ShooterDemo.Views {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( GameTime gameTime )
+		public override void Update ( float elapsedTime )
 		{
 			var rw = Game.RenderSystem.RenderWorld;
 			var vp = Game.RenderSystem.DisplayBounds;

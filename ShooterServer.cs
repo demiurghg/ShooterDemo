@@ -102,7 +102,7 @@ namespace ShooterDemo {
 			Thread.Sleep(Config.ServerSleepTime);
 
 			//	update world
-			gameWorld.Update( gameTime );
+			gameWorld.SimulateWorld( gameTime.ElapsedSec );
 
 			//	write world to stream :
 			using ( var ms = new MemoryStream() ) { 
@@ -118,6 +118,7 @@ namespace ShooterDemo {
 		class BufferedCommand {
 			public Guid UserGuid;
 			public byte[] UserCommand;
+			public float Lag;
 		}
 
 
@@ -138,12 +139,12 @@ namespace ShooterDemo {
 
 			gameWorld.PlayerCommand( id, userCommand, lag );
 
-			/*delayBuffer.Enqueue( new BufferedCommand { UserGuid = id, UserCommand = userCommand } );
+			/*delayBuffer.Enqueue( new BufferedCommand { UserGuid = id, UserCommand = userCommand, Lag = lag } );
 
 			while (delayBuffer.Count>Config.SimulateDelay) {
 				var bc = delayBuffer.Dequeue();
-				gameWorld.PlayerCommand( bc.UserGuid, bc.UserCommand );
-			} */
+				gameWorld.PlayerCommand( bc.UserGuid, bc.UserCommand, bc.Lag );
+			} //*/
 		}
 
 

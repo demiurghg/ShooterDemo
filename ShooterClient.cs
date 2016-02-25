@@ -137,8 +137,6 @@ namespace ShooterDemo {
 		/// <param name="gameTime"></param>
 		public override byte[] Update ( GameTime gameTime, uint sentCommandID )
 		{
-			gameWorld.Update( gameTime );
-
 			var flags = UserCtrlFlags.None;
 			
 			UserCommand.Counter		=	commandCounter;
@@ -166,7 +164,11 @@ namespace ShooterDemo {
 
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
 
+			gameWorld.RecordUserCommand( sentCommandID, gameTime.ElapsedSec, cmdBytes );
 			gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
+
+			gameWorld.SimulateWorld( gameTime.ElapsedSec );
+			gameWorld.PresentWorld( gameTime.ElapsedSec );
 
 			return cmdBytes;
 		}
@@ -184,7 +186,7 @@ namespace ShooterDemo {
 
 			using ( var ms = new MemoryStream(snapshot) ) {
 				using ( var reader = new BinaryReader(ms) ) { 
-					gameWorld.Read( reader );
+					gameWorld.Read( reader, ackCommandID );
 				}
 			}
 		}
