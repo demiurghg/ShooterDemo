@@ -406,6 +406,20 @@ namespace ShooterDemo.Core {
 		}
 
 
+		/// <summary>
+		/// Performs action on each entity.
+		/// </summary>
+		/// <param name="action"></param>
+		public void ForEachEntity ( Action<Entity> action )
+		{
+			foreach ( var pair in entities ) {
+				action( pair.Value );
+			}
+		}
+
+
+
+
 
 		/// <summary>
 		/// 
@@ -543,7 +557,7 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="commandId"></param>
-		public void ReplayWorld ( uint commandId )
+		public float ReplayWorld ( uint commandId )
 		{
 			var entArray	=	entities
 							.Select( pair => pair.Value )
@@ -561,7 +575,9 @@ namespace ShooterDemo.Core {
 			commandBuffer.RemoveAll( cmd => cmd.ID <= commandId );
 			//Log.Message("non-ack cmds : {0} {1}", commandBuffer.Count, commandId );
 
-			replay.Clear();
+			while (replay.Count>1500) {
+				replay.RemoveAt(0);
+			}
 
 			//	replay world from server time :
 			foreach ( var cmd in commandBuffer ) {
@@ -578,7 +594,7 @@ namespace ShooterDemo.Core {
 			/*for ( int i=0; i<oldPos.Length; i++) {
 				entArray[i].Position = Vector3.Lerp( oldPos[i], entArray[i].Position, 0.5f );
 			} */
-
+			return commandBuffer.Sum( cmd => cmd.ElapsedTime );
 		}
 		#endif
 
@@ -648,7 +664,7 @@ namespace ShooterDemo.Core {
 			foreach ( var ent in entities ) {
 				svPos.Add( ent.Value.Position );
 			}
-			while (svPos.Count>60) {
+			while (svPos.Count>300) {
 				svPos.RemoveAt(0);
 			}
 

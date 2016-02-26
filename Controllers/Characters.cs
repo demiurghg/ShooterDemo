@@ -44,6 +44,8 @@ namespace ShooterDemo.Controllers {
 			IterateObjects( dirty, (d,e,c) => {
 
 				if (dirty) {
+					Move( c, e );
+
 					c.Body.Position			=	MathConverter.Convert( e.Position );
 					c.Body.LinearVelocity	=	MathConverter.Convert( e.LinearVelocity );
 					c.Body.AngularVelocity	=	MathConverter.Convert( e.AngularVelocity );

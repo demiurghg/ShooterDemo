@@ -10,6 +10,7 @@ namespace ShooterDemo {
 		public float Sensitivity { get; set; }
 		public bool InvertMouse { get; set; }
 		public float PullFactor { get; set; }
+		public bool ThirdPerson { get; set; }
 
 
 		/// <summary>
@@ -20,6 +21,7 @@ namespace ShooterDemo {
 			Sensitivity	=	5;
 			InvertMouse	=	false;
 			PullFactor	=	1;
+
 		}
 	}
 }
