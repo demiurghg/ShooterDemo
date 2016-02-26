@@ -244,6 +244,13 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void SimulateWorld ( float deltaTime )
 		{
+			foreach ( var e in entities ) {
+				clPos.Add( e.Value.Position );
+			}
+			while(clPos.Count>1500) {
+				clPos.RemoveAt(0);
+			}
+
 			//
 			//	Control entities :
 			//
@@ -271,6 +278,11 @@ namespace ShooterDemo.Core {
 			foreach ( var rp in svPos ) {
 				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.3f, Color.Red );
 			}
+			foreach ( var rp in clPos ) {
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.1f, Color.Orange );
+			}
+
+
 
 
 			if (IsClientSide) {
@@ -525,6 +537,7 @@ namespace ShooterDemo.Core {
 
 		List<Vector3> replay = new List<Vector3>();
 		List<Vector3> svPos = new List<Vector3>();
+		List<Vector3> clPos = new List<Vector3>();
 
 		/// <summary>
 		/// 
@@ -545,8 +558,8 @@ namespace ShooterDemo.Core {
 			}
 
 			//	remove acknoledged commands :
-			commandBuffer.RemoveAll( cmd => cmd.ID < commandId );
-			Log.Message("non-ack cmds : {0}", commandBuffer.Count );
+			commandBuffer.RemoveAll( cmd => cmd.ID <= commandId );
+			//Log.Message("non-ack cmds : {0} {1}", commandBuffer.Count, commandId );
 
 			replay.Clear();
 

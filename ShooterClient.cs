@@ -165,11 +165,11 @@ namespace ShooterDemo {
 
 
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
-
 			gameWorld.RecordUserCommand( sentCommandID, gameTime.ElapsedSec, cmdBytes );
-			gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
+
 
 			if (!ProcessSnapshot()) {
+				gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
 				gameWorld.SimulateWorld( gameTime.ElapsedSec );
 			}
 
@@ -198,31 +198,11 @@ namespace ShooterDemo {
 				//	replay world with non-acked commands :
 				gameWorld.ReplayWorld( ackCommandID );
 
-
-				foreach ( var ent in gameWorld.entities ) {
-					ent.Value.PositionError = ent.Value.PositionError - ent.Value.Position;
-				}
-
 				latestSnapshot	=	null;
 
 				return true;
 
 			} else {
-
-				//foreach ( var ent in gameWorld.entities ) {
-				//	var len = ent.Value.PositionError.Length();
-
-				//	if (len<0.0001f) {
-				//		continue;
-				//	}
-
-				//	len = Math.Max( 0, len - 0.1f );
-
-				//	ent.Value.PositionError = ent.Value.PositionError.Normalized() * len;
-
-				//	//ent.Value.PositionError = ent.Value.PositionError * 0.9f;
-				//}
-
 				return false;
 			}
 		}

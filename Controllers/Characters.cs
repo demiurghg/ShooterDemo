@@ -44,7 +44,6 @@ namespace ShooterDemo.Controllers {
 			IterateObjects( dirty, (d,e,c) => {
 
 				if (dirty) {
-
 					c.Body.Position			=	MathConverter.Convert( e.Position );
 					c.Body.LinearVelocity	=	MathConverter.Convert( e.LinearVelocity );
 					c.Body.AngularVelocity	=	MathConverter.Convert( e.AngularVelocity );
@@ -189,6 +188,8 @@ namespace ShooterDemo.Controllers {
 					maximumGlueForce		);
 
 			space.Add( controller );
+
+			controller.Body.LinearVelocity = BEPUutilities.Vector3.Forward * 10;
 
 			AddObject( entity.ID, controller );
 		}
