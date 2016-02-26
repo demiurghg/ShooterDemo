@@ -44,7 +44,11 @@ namespace ShooterDemo.Controllers {
 			IterateObjects( dirty, (d,e,c) => {
 
 				if (dirty) {
+
 					Move( c, e );
+
+					space.Remove(c);
+					space.Add(c);
 
 					c.Body.Position			=	MathConverter.Convert( e.Position );
 					c.Body.LinearVelocity	=	MathConverter.Convert( e.LinearVelocity );
@@ -139,9 +143,10 @@ namespace ShooterDemo.Controllers {
 			controller.HorizontalMotionConstraint.MovementDirection = new BEPUutilities.Vector2( move.X, -move.Z );
 			controller.HorizontalMotionConstraint.TargetSpeed	=	8.0f;
 
-			if (jump) {
+			controller.TryToJump = jump;
+			/*if (jump) {
 				controller.Jump();
-			}
+			} */
 		}
 
 

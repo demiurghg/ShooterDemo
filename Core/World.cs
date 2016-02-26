@@ -244,13 +244,6 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void SimulateWorld ( float deltaTime )
 		{
-			foreach ( var e in entities ) {
-				clPos.Add( e.Value.Position );
-			}
-			while(clPos.Count>1500) {
-				clPos.RemoveAt(0);
-			}
-
 			//
 			//	Control entities :
 			//
@@ -269,17 +262,24 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void PresentWorld ( float deltaTime )
 		{
+			foreach ( var e in entities ) {
+				clPos.Add( e.Value.Position );
+			}
+			while(clPos.Count>1500) {
+				clPos.RemoveAt(0);
+			}
+
 			foreach ( var ent in entities ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( ent.Value.Position, 0.5f, Color.Yellow );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( ent.Value.Position, 0.25f, Color.Yellow );
 			}
 			foreach ( var rp in replay ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.3f, Color.Magenta );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.13f, Color.Magenta );
 			}
 			foreach ( var rp in svPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.3f, Color.Red );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.13f, Color.Red );
 			}
 			foreach ( var rp in clPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.1f, Color.Orange );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.05f, Color.Yellow );
 			}
 
 
@@ -559,13 +559,6 @@ namespace ShooterDemo.Core {
 		/// <param name="commandId"></param>
 		public float ReplayWorld ( uint commandId )
 		{
-			var entArray	=	entities
-							.Select( pair => pair.Value )
-							.OrderBy( e => e.ID )
-							.ToArray();
-
-			var oldPos		=	entArray.Select( e => e.Position ).ToArray();
-
 			//	apply received changes :
 			foreach ( var controller in controllers ) {
 				controller.Update( 0, true );
@@ -575,7 +568,7 @@ namespace ShooterDemo.Core {
 			commandBuffer.RemoveAll( cmd => cmd.ID <= commandId );
 			//Log.Message("non-ack cmds : {0} {1}", commandBuffer.Count, commandId );
 
-			while (replay.Count>1500) {
+			while (replay.Count>3500) {
 				replay.RemoveAt(0);
 			}
 
@@ -591,9 +584,6 @@ namespace ShooterDemo.Core {
 
 			}
 
-			/*for ( int i=0; i<oldPos.Length; i++) {
-				entArray[i].Position = Vector3.Lerp( oldPos[i], entArray[i].Position, 0.5f );
-			} */
 			return commandBuffer.Sum( cmd => cmd.ElapsedTime );
 		}
 		#endif

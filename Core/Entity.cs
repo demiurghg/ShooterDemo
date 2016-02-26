@@ -48,7 +48,7 @@ namespace ShooterDemo.Core {
 
 		public Vector3 VisPosition {
 			get {
-				return Position + new Vector3( Error.X, Error.Y, Error.Z );
+				return Position;// + new Vector3( Error.X, Error.Y, Error.Z );
 			}
 		}
 

@@ -60,7 +60,7 @@ namespace ShooterDemo.Views {
 
 			var ppos	=	player.VisPosition;
 			//ppos.Y = 4;
-			float backoffset = ((ShooterClient)World.GameClient).Config.ThirdPerson ? 5 : 0;
+			float backoffset = ((ShooterClient)World.GameClient).Config.ThirdPerson ? 2 : 0;
 			var pos		=	ppos + Vector3.Up * 1.0f + m.Backward * backoffset;
 
 			/*filteredPos = Vector3.Lerp( filteredPos, pos, 0.3f );

@@ -201,8 +201,6 @@ namespace ShooterDemo {
 				//	replay world with non-acked commands :
 				float delta = gameWorld.ReplayWorld( ackCommandID );
 
-				Log.Message("Delta = {0}", delta);
-
 				//	
 				gameWorld.ForEachEntity( e => e.StartReduceError(delta) );
 
