@@ -172,14 +172,7 @@ namespace ShooterDemo {
 
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
 
-			gameWorld.RecordUserCommand( sentCommandID, gameTime.ElapsedSec, cmdBytes );
-
-			if (!ProcessSnapshot()) {
-				gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
-				gameWorld.SimulateWorld( gameTime.ElapsedSec );
-				gameWorld.ForEachEntity( e => e.ReduceError( gameTime.ElapsedSec ) );
-			}
-
+			ProcessSnapshot();
 			gameWorld.PresentWorld( gameTime.ElapsedSec );
 
 			return cmdBytes;
@@ -187,29 +180,15 @@ namespace ShooterDemo {
 
 
 
-		/// <summary>
-		/// Process snapshot, replay world.
-		/// </summary>
-		/// <returns></returns>
 		bool ProcessSnapshot ()
 		{
 			if (latestSnapshot!=null) {
-				
-				//	save old client preicted position to error.
-				gameWorld.ForEachEntity( e => e.PrepareError() );
 
-				//	read snapshot :
 				using ( var ms = new MemoryStream(latestSnapshot) ) {
 					using ( var reader = new BinaryReader(ms) ) {
 						gameWorld.Read( reader, ackCommandID );
 					}
 				}
-
-				//	replay world with non-acked commands :
-				float delta = gameWorld.ReplayWorld( ackCommandID );
-
-				//	
-				gameWorld.ForEachEntity( e => e.StartReduceError(delta) );
 
 				latestSnapshot	=	null;
 
@@ -219,7 +198,6 @@ namespace ShooterDemo {
 				return false;
 			}
 		}
-
 
 
 		/// <summary>

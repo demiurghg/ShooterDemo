@@ -247,11 +247,11 @@ namespace ShooterDemo.Core {
 			//
 			//	Control entities :
 			//
-			foreach ( var controller in controllers ) {
-				controller.Update( deltaTime, snapshotDirty && IsClientSide );
+			if (IsServerSide) {
+				foreach ( var controller in controllers ) {
+					controller.Update( deltaTime, snapshotDirty && IsClientSide );
+				}
 			}
-
-			snapshotDirty = false;
 		}
 
 
@@ -262,29 +262,6 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void PresentWorld ( float deltaTime )
 		{
-			foreach ( var e in entities ) {
-				clPos.Add( e.Value.Position );
-			}
-			while(clPos.Count>1500) {
-				clPos.RemoveAt(0);
-			}
-
-			foreach ( var ent in entities ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( ent.Value.Position, 0.25f, Color.Yellow );
-			}
-			foreach ( var rp in replay ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.03f, Color.Magenta );
-			}
-			foreach ( var rp in svPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.23f, Color.Red );
-			}
-			foreach ( var rp in clPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.07f, Color.Yellow );
-			}
-
-
-
-
 			if (IsClientSide) {
 				foreach ( var view in views ) {
 					view.Update( deltaTime );
@@ -515,80 +492,6 @@ namespace ShooterDemo.Core {
 		}
 
 
-
-		class CommandRecord {
-			public CommandRecord( uint id, float elapsed, byte[] data )
-			{
-				this.ID				=	id;
-				this.ElapsedTime	=	elapsed;
-				this.Data			=	data;
-			}
-
-			public uint ID;
-			public float ElapsedTime;
-			public byte[] Data;
-		}
-
-
-		List<CommandRecord> commandBuffer = new List<CommandRecord>();
-
-
-		#if false
-		public void RecordUserCommand ( uint cmdId, byte[] command ){}
-		public void ReplayWorld ( uint commandId ){}
-		#else
-
-		/// <summary>
-		/// Records user commands for server reconciliation.
-		/// </summary>
-		/// <param name="cmdId"></param>
-		/// <param name="command"></param>
-		public void RecordUserCommand ( uint cmdId, float elapsed, byte[] command )
-		{
-			commandBuffer.Add( new CommandRecord( cmdId, elapsed, command ) );	
-		}
-
-
-		List<Vector3> replay = new List<Vector3>();
-		List<Vector3> svPos = new List<Vector3>();
-		List<Vector3> clPos = new List<Vector3>();
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="commandId"></param>
-		public float ReplayWorld ( uint commandId )
-		{
-			//	apply received changes :
-			foreach ( var controller in controllers ) {
-				controller.Update( 0, true );
-			}
-
-			//	remove acknoledged commands :
-			commandBuffer.RemoveAll( cmd => cmd.ID <= commandId );
-			//Log.Message("non-ack cmds : {0} {1}", commandBuffer.Count, commandId );
-
-			while (replay.Count>7500) {
-				replay.RemoveAt(0);
-			}
-
-			//	replay world from server time :
-			foreach ( var cmd in commandBuffer ) {
-
-				foreach ( var ent in entities ) {
-					replay.Add( ent.Value.Position );
-				}
-
-				PlayerCommand( this.UserGuid, cmd.Data, 0 );
-				SimulateWorld( cmd.ElapsedTime );
-
-			}
-
-			return commandBuffer.Sum( cmd => cmd.ElapsedTime );
-		}
-		#endif
-
-
 		/// <summary>
 		/// Writes world state to stream writer.
 		/// </summary>
@@ -648,14 +551,6 @@ namespace ShooterDemo.Core {
 						ReplicaSpawned( this, new EntityEventArgs(ent) );
 					}
 				}
-			}
-
-
-			foreach ( var ent in entities ) {
-				svPos.Add( ent.Value.Position );
-			}
-			while (svPos.Count>300) {
-				svPos.RemoveAt(0);
 			}
 
 			//	Kill all stale entities :
