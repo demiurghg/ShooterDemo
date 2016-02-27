@@ -63,8 +63,8 @@ namespace ShooterDemo.Views {
 			float backoffset = ((ShooterClient)World.GameClient).Config.ThirdPerson ? 2 : 0;
 			var pos		=	ppos + Vector3.Up * 1.0f + m.Backward * backoffset;
 
-			/*filteredPos = Vector3.Lerp( filteredPos, pos, 0.3f );
-			pos = filteredPos;*/
+			/*filteredPos = Vector3.Lerp( filteredPos, pos, 0.5f );
+			pos = filteredPos;//*/
 
 			var fwd	=	pos + m.Forward;
 			var up	=	m.Up;

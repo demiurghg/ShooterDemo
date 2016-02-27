@@ -134,6 +134,8 @@ namespace ShooterDemo {
 		uint ackCommandID;
 		byte[] latestSnapshot = null;
 
+		Random rand  = new Random();
+
 
 		/// <summary>
 		/// Runs one step of client-side simulation and renders world state.
@@ -142,6 +144,11 @@ namespace ShooterDemo {
 		/// <param name="gameTime"></param>
 		public override byte[] Update ( GameTime gameTime, uint sentCommandID )
 		{
+			/*if (rand.NextFloat(0,1)<0.1f) {
+				System.Threading.Thread.Sleep(30);
+			} */
+
+
 			var flags = UserCtrlFlags.None;
 			
 			if (Game.Keyboard.IsKeyDown( Keys.S				)) flags |= UserCtrlFlags.Forward;
@@ -163,8 +170,8 @@ namespace ShooterDemo {
 				UserCommand.Roll		=	0;
 			}
 
-
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
+
 			gameWorld.RecordUserCommand( sentCommandID, gameTime.ElapsedSec, cmdBytes );
 
 			if (!ProcessSnapshot()) {

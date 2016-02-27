@@ -273,13 +273,13 @@ namespace ShooterDemo.Core {
 				Game.RenderSystem.RenderWorld.Debug.DrawPoint( ent.Value.Position, 0.25f, Color.Yellow );
 			}
 			foreach ( var rp in replay ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.13f, Color.Magenta );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.03f, Color.Magenta );
 			}
 			foreach ( var rp in svPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.13f, Color.Red );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.23f, Color.Red );
 			}
 			foreach ( var rp in clPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.05f, Color.Yellow );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.07f, Color.Yellow );
 			}
 
 
@@ -568,7 +568,7 @@ namespace ShooterDemo.Core {
 			commandBuffer.RemoveAll( cmd => cmd.ID <= commandId );
 			//Log.Message("non-ack cmds : {0} {1}", commandBuffer.Count, commandId );
 
-			while (replay.Count>3500) {
+			while (replay.Count>7500) {
 				replay.RemoveAt(0);
 			}
 

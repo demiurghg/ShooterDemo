@@ -47,8 +47,11 @@ namespace ShooterDemo.Controllers {
 
 					Move( c, e );
 
-					space.Remove(c);
-					space.Add(c);
+					foreach (var pair in c.Body.CollisionInformation.Pairs) {
+						pair.ClearContacts();
+					}
+
+					c.SupportFinder.ClearSupportData();
 
 					c.Body.Position			=	MathConverter.Convert( e.Position );
 					c.Body.LinearVelocity	=	MathConverter.Convert( e.LinearVelocity );
@@ -195,8 +198,6 @@ namespace ShooterDemo.Controllers {
 					maximumGlueForce		);
 
 			space.Add( controller );
-
-			controller.Body.LinearVelocity = BEPUutilities.Vector3.Forward * 10;
 
 			AddObject( entity.ID, controller );
 		}
