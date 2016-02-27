@@ -44,6 +44,15 @@ namespace ShooterDemo.Controllers {
 			IterateObjects( dirty, (d,e,c) => {
 
 				if (dirty) {
+
+					Move( c, e );
+
+					foreach (var pair in c.Body.CollisionInformation.Pairs) {
+						pair.ClearContacts();
+					}
+
+					c.SupportFinder.ClearSupportData();
+
 					c.Body.Position			=	MathConverter.Convert( e.Position );
 					c.Body.LinearVelocity	=	MathConverter.Convert( e.LinearVelocity );
 					c.Body.AngularVelocity	=	MathConverter.Convert( e.AngularVelocity );
@@ -137,9 +146,10 @@ namespace ShooterDemo.Controllers {
 			controller.HorizontalMotionConstraint.MovementDirection = new BEPUutilities.Vector2( move.X, -move.Z );
 			controller.HorizontalMotionConstraint.TargetSpeed	=	8.0f;
 
-			if (jump) {
+			controller.TryToJump = jump;
+			/*if (jump) {
 				controller.Jump();
-			}
+			} */
 		}
 
 
@@ -188,8 +198,6 @@ namespace ShooterDemo.Controllers {
 					maximumGlueForce		);
 
 			space.Add( controller );
-
-			controller.Body.LinearVelocity = BEPUutilities.Vector3.Forward * 10;
 
 			AddObject( entity.ID, controller );
 		}

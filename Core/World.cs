@@ -244,13 +244,6 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void SimulateWorld ( float deltaTime )
 		{
-			foreach ( var e in entities ) {
-				clPos.Add( e.Value.Position );
-			}
-			while(clPos.Count>1500) {
-				clPos.RemoveAt(0);
-			}
-
 			//
 			//	Control entities :
 			//
@@ -269,17 +262,24 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void PresentWorld ( float deltaTime )
 		{
+			foreach ( var e in entities ) {
+				clPos.Add( e.Value.Position );
+			}
+			while(clPos.Count>1500) {
+				clPos.RemoveAt(0);
+			}
+
 			foreach ( var ent in entities ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( ent.Value.Position, 0.5f, Color.Yellow );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( ent.Value.Position, 0.25f, Color.Yellow );
 			}
 			foreach ( var rp in replay ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.3f, Color.Magenta );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.03f, Color.Magenta );
 			}
 			foreach ( var rp in svPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.3f, Color.Red );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.23f, Color.Red );
 			}
 			foreach ( var rp in clPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.1f, Color.Orange );
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( rp, 0.07f, Color.Yellow );
 			}
 
 
@@ -404,6 +404,20 @@ namespace ShooterDemo.Core {
 
 			return entities.Where( pair => pair.Value.PrefabID == prefabId ).Select( pair1 => pair1.Value );
 		}
+
+
+		/// <summary>
+		/// Performs action on each entity.
+		/// </summary>
+		/// <param name="action"></param>
+		public void ForEachEntity ( Action<Entity> action )
+		{
+			foreach ( var pair in entities ) {
+				action( pair.Value );
+			}
+		}
+
+
 
 
 
@@ -543,15 +557,8 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="commandId"></param>
-		public void ReplayWorld ( uint commandId )
+		public float ReplayWorld ( uint commandId )
 		{
-			var entArray	=	entities
-							.Select( pair => pair.Value )
-							.OrderBy( e => e.ID )
-							.ToArray();
-
-			var oldPos		=	entArray.Select( e => e.Position ).ToArray();
-
 			//	apply received changes :
 			foreach ( var controller in controllers ) {
 				controller.Update( 0, true );
@@ -561,7 +568,9 @@ namespace ShooterDemo.Core {
 			commandBuffer.RemoveAll( cmd => cmd.ID <= commandId );
 			//Log.Message("non-ack cmds : {0} {1}", commandBuffer.Count, commandId );
 
-			replay.Clear();
+			while (replay.Count>7500) {
+				replay.RemoveAt(0);
+			}
 
 			//	replay world from server time :
 			foreach ( var cmd in commandBuffer ) {
@@ -575,10 +584,7 @@ namespace ShooterDemo.Core {
 
 			}
 
-			/*for ( int i=0; i<oldPos.Length; i++) {
-				entArray[i].Position = Vector3.Lerp( oldPos[i], entArray[i].Position, 0.5f );
-			} */
-
+			return commandBuffer.Sum( cmd => cmd.ElapsedTime );
 		}
 		#endif
 
@@ -648,7 +654,7 @@ namespace ShooterDemo.Core {
 			foreach ( var ent in entities ) {
 				svPos.Add( ent.Value.Position );
 			}
-			while (svPos.Count>60) {
+			while (svPos.Count>300) {
 				svPos.RemoveAt(0);
 			}
 

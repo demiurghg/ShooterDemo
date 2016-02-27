@@ -134,6 +134,8 @@ namespace ShooterDemo {
 		uint ackCommandID;
 		byte[] latestSnapshot = null;
 
+		Random rand  = new Random();
+
 
 		/// <summary>
 		/// Runs one step of client-side simulation and renders world state.
@@ -142,6 +144,11 @@ namespace ShooterDemo {
 		/// <param name="gameTime"></param>
 		public override byte[] Update ( GameTime gameTime, uint sentCommandID )
 		{
+			/*if (rand.NextFloat(0,1)<0.1f) {
+				System.Threading.Thread.Sleep(30);
+			} */
+
+
 			var flags = UserCtrlFlags.None;
 			
 			if (Game.Keyboard.IsKeyDown( Keys.S				)) flags |= UserCtrlFlags.Forward;
@@ -163,14 +170,14 @@ namespace ShooterDemo {
 				UserCommand.Roll		=	0;
 			}
 
-
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
-			gameWorld.RecordUserCommand( sentCommandID, gameTime.ElapsedSec, cmdBytes );
 
+			gameWorld.RecordUserCommand( sentCommandID, gameTime.ElapsedSec, cmdBytes );
 
 			if (!ProcessSnapshot()) {
 				gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
 				gameWorld.SimulateWorld( gameTime.ElapsedSec );
+				gameWorld.ForEachEntity( e => e.ReduceError( gameTime.ElapsedSec ) );
 			}
 
 			gameWorld.PresentWorld( gameTime.ElapsedSec );
@@ -187,6 +194,9 @@ namespace ShooterDemo {
 		bool ProcessSnapshot ()
 		{
 			if (latestSnapshot!=null) {
+				
+				//	save old client preicted position to error.
+				gameWorld.ForEachEntity( e => e.PrepareError() );
 
 				//	read snapshot :
 				using ( var ms = new MemoryStream(latestSnapshot) ) {
@@ -196,7 +206,10 @@ namespace ShooterDemo {
 				}
 
 				//	replay world with non-acked commands :
-				gameWorld.ReplayWorld( ackCommandID );
+				float delta = gameWorld.ReplayWorld( ackCommandID );
+
+				//	
+				gameWorld.ForEachEntity( e => e.StartReduceError(delta) );
 
 				latestSnapshot	=	null;
 
