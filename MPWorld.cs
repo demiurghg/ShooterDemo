@@ -75,7 +75,6 @@ namespace ShooterDemo {
 
 		public override void SimulateWorld ( float elapsedTime )
 		{
-			physSpace.TimeStepSettings.MaximumTimeStepsPerFrame = 100;
 			physSpace.Update( elapsedTime );
 
 			base.SimulateWorld( elapsedTime );
