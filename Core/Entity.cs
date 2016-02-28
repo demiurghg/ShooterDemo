@@ -46,21 +46,10 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		public Vector3 Position;
 
-		public Vector3 VisPosition {
-			get {
-				return Position;// + new Vector3( Error.X, Error.Y, Error.Z );
-			}
-		}
-
 		/// <summary>
-		/// Entity position	error.
+		/// Entity position
 		/// </summary>
-		public Vector3 Error;
-
-		/// <summary>
-		/// Error reduce factor.
-		/// </summary>
-		public float ReduceFactor;
+		public Vector3 PositionOld;
 
 		/// <summary>
 		/// Entity's angle
@@ -108,6 +97,7 @@ namespace ShooterDemo.Core {
 			Angles			=	angles;
 			UserCtrlFlags	=	UserCtrlFlags.None;
 			Position		=	position;
+			PositionOld		=	position;
 		}
 
 
@@ -169,9 +159,10 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public Matrix GetWorldMatrix ()
+		public Matrix GetWorldMatrix (float lerpFactor)
 		{
-			return Matrix.RotationYawPitchRoll( Angles.Yaw.Radians, Angles.Pitch.Radians, Angles.Roll.Radians ) * Matrix.Translation( Position );
+			return Matrix.RotationYawPitchRoll( Angles.Yaw.Radians, Angles.Pitch.Radians, Angles.Roll.Radians ) 
+					* Matrix.Translation( LerpPosition(lerpFactor) );
 		}
 
 
@@ -179,47 +170,12 @@ namespace ShooterDemo.Core {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void PrepareError ()
+		/// <param name="lerpFactor"></param>
+		/// <returns></returns>
+		public Vector3 LerpPosition ( float lerpFactor )
 		{
-			ReduceFactor	=	0;
-			Error			=	Position;
-		}
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public void StartReduceError ( float serverDelta )
-		{
-			var oldPos		=	Error;
-			var newPos		=	Position;
-			ReduceFactor	=	Vector3.Distance( oldPos, newPos ) / serverDelta;
-			Error			=	oldPos - newPos;	
-		}
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="dt"></param>
-		public void ReduceError ( float dt )
-		{
-			if (ReduceFactor==0) {
-				return;
-			}
-
-			var reduceFactor	=	ReduceFactor * dt;
-			var errorMagnitude	=	Error.Length();
-
-			if (errorMagnitude < reduceFactor) {
-				Error = Vector3.Zero;
-				ReduceFactor = 0;
-			} else {
-
-				var newErrorMagnitude = errorMagnitude - reduceFactor;
-
-				Error = Error.Normalized() * newErrorMagnitude;
-			}
+			//return Position;
+			return Vector3.Lerp( PositionOld, Position, MathUtil.Clamp(lerpFactor,0,1f) );
 		}
 	}
 }

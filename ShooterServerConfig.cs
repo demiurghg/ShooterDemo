@@ -17,7 +17,9 @@ using ShooterDemo.Core;
 namespace ShooterDemo {
 	partial class ShooterServerConfig {
 
-		public int ServerSleepTime { get; set; }
+		public int TargetFrameRate { get; set; }
+
+		public float ServerTimeDriftRate { get; set; }
 
 		public int SimulateDelay { get; set; }
 
@@ -25,8 +27,9 @@ namespace ShooterDemo {
 
 		public ShooterServerConfig()
 		{
-			ServerSleepTime	=	50;
-			SimulateDelay	=	0;
+			TargetFrameRate		=	60;
+			SimulateDelay		=	0;
+			ServerTimeDriftRate	=	0.001f;
 		}
 	}
 }

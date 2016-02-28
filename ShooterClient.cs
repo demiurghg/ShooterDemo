@@ -133,7 +133,13 @@ namespace ShooterDemo {
 		uint ackCommandID;
 		byte[] latestSnapshot = null;
 
-		uint ss;
+		float timeSinceLastSnapshot = 0;
+		float serverElapsedTime = 999999.0f;
+		float entityLerpFactor {
+			get { 
+				return timeSinceLastSnapshot / serverElapsedTime;
+			}
+		}
 
 
 		/// <summary>
@@ -171,13 +177,16 @@ namespace ShooterDemo {
 
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
 
+			timeSinceLastSnapshot	+= gameTime.ElapsedSec;
+
 			ProcessSnapshot();
+
+			//Log.Verbose("  f: {0}/{1}", timeSinceLastSnapshot, serverElapsedTime);
+
 			gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
 			//gameWorld.SimulateWorld( gameTime.ElapsedSec );
-			gameWorld.PresentWorld( gameTime.ElapsedSec );
 
-			//Log.Message("{0}", ss);
-			ss = 0;
+			gameWorld.PresentWorld( gameTime.ElapsedSec, entityLerpFactor );
 
 			return cmdBytes;
 		}
@@ -188,15 +197,27 @@ namespace ShooterDemo {
 		{
 			if (latestSnapshot!=null) {
 
+				gameWorld.ForEachEntity( e => {
+						e.PositionOld = e.LerpPosition(entityLerpFactor) ;
+						Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.2f, Color.Red );
+					});
+				
+
+				serverElapsedTime		=	timeSinceLastSnapshot;
+				timeSinceLastSnapshot	=	0;
+
 				using ( var ms = new MemoryStream(latestSnapshot) ) {
 					using ( var reader = new BinaryReader(ms) ) {
+
+						//serverElapsedTime	=	reader.ReadSingle();
+						reader.ReadSingle();
+
 						gameWorld.Read( reader, ackCommandID );
 					}
 				}
 
 				latestSnapshot	=	null;
 
-				ss++;
 
 				return true;
 

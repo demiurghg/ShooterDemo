@@ -38,7 +38,7 @@ namespace ShooterDemo.Views {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( float elapsedTime )
+		public override void Update ( float elapsedTime, float lerpFactor )
 		{
 			var rw = Game.RenderSystem.RenderWorld;
 			var vp = Game.RenderSystem.DisplayBounds;
@@ -58,7 +58,7 @@ namespace ShooterDemo.Views {
 
 			var m	= 	Matrix.RotationYawPitchRoll( uc.Yaw, uc.Pitch, uc.Roll );
 
-			var ppos	=	player.VisPosition;
+			var ppos	=	player.LerpPosition(lerpFactor);
 			//ppos.Y = 4;
 			float backoffset = ((ShooterClient)World.GameClient).Config.ThirdPerson ? 2 : 0;
 			var pos		=	ppos + Vector3.Up * 1.0f + m.Backward * backoffset;

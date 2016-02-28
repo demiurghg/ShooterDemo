@@ -74,6 +74,8 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override void LoadContent ( string map )
 		{
+			TargetFrameRate	=	Config.TargetFrameRate;			
+
 			gameWorld	=	new MPWorld( this, map );
 			Thread.Sleep(100);
 			for (int i=0; i<100; i++) {
@@ -94,6 +96,8 @@ namespace ShooterDemo {
 		}
 
 
+		float averageRate = 0;
+
 
 		/// <summary>
 		/// Runs one step of server-side world simulation.
@@ -102,19 +106,18 @@ namespace ShooterDemo {
 		/// <returns>Snapshot bytes</returns>
 		public override byte[] Update ( GameTime gameTime )
 		{
-			//	give some time to other threads :
-			Thread.Sleep(Config.ServerSleepTime);
+			TargetFrameRate	=	Config.TargetFrameRate;			
 
 			//	update world
 			gameWorld.SimulateWorld( gameTime.ElapsedSec );
 
-			if (gameTime.ElapsedSec>0.018f) {
-				Log.Warning("{0}", gameTime.ElapsedSec );
-			}
-
 			//	write world to stream :
 			using ( var ms = new MemoryStream() ) { 
+
 				using ( var writer = new BinaryWriter(ms) ) {
+
+					writer.Write( gameTime.ElapsedSec );
+
 					gameWorld.Write( writer );
 
 					return ms.GetBuffer();

@@ -256,29 +256,24 @@ namespace ShooterDemo.Core {
 
 
 		List<Vector3> clPos = new List<Vector3>();
+		List<Vector3> visPos = new List<Vector3>();
 
 
 		/// <summary>
 		/// Updates visual and audial stuff
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public virtual void PresentWorld ( float deltaTime )
+		public virtual void PresentWorld ( float deltaTime, float lerpFactor )
 		{
-			ForEachEntity( e => clPos.Add( e.Position ) );
+			var dr = Game.RenderSystem.RenderWorld.Debug;
 
-			while (clPos.Count>1500) {
-				clPos.RemoveAt(0);
-			}
-
-
-			foreach ( var p in clPos ) {
-				Game.RenderSystem.RenderWorld.Debug.DrawPoint( p, 0.25f, Color.Yellow );
-			}
+			ForEachEntity( e => dr.Trace( e.Position, 0.25f, new Color(0,0,0,128) ) );
+			ForEachEntity( e => dr.Trace( e.LerpPosition(lerpFactor), 0.05f, new Color(255,255,0,128) ) );
 
 
 			if (IsClientSide) {
 				foreach ( var view in views ) {
-					view.Update( deltaTime );
+					view.Update( deltaTime, lerpFactor );
 				}
 			}
 		}

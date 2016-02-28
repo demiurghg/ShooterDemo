@@ -13,7 +13,7 @@ namespace ShooterDemo.Core {
 		/// Called on each viewable entity.
 		/// </summary>
 		/// <param name="entity"></param>
-		void Update ( float elapsedTime );
+		void Update ( float elapsedTime, float lerpFactor );
 
 		/// <summary>
 		/// Called when entity has died.

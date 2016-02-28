@@ -115,10 +115,10 @@ namespace ShooterDemo.Views {
 		/// Updates visible meshes
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( float elapsedTime )
+		public override void Update ( float elapsedTime, float lerpFactor )
 		{
 			IterateObjects( (e,m) => {
-				m.Instance.World	=	m.PreTransform * e.GetWorldMatrix() * m.PostTransform;
+				m.Instance.World	=	m.PreTransform * e.GetWorldMatrix(lerpFactor) * m.PostTransform;
 				m.Instance.Visible	=	e.UserGuid != World.GameClient.Guid;
 			});
 		}
