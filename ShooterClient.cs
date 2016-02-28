@@ -67,7 +67,6 @@ namespace ShooterDemo {
 		}
 
 
-
 		/// <summary>
 		/// Called when loader finished loading.
 		/// This method lets client to complete loading process in main thread.
@@ -134,7 +133,7 @@ namespace ShooterDemo {
 		uint ackCommandID;
 		byte[] latestSnapshot = null;
 
-		Random rand  = new Random();
+		uint ss;
 
 
 		/// <summary>
@@ -173,7 +172,12 @@ namespace ShooterDemo {
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
 
 			ProcessSnapshot();
+			gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
+			//gameWorld.SimulateWorld( gameTime.ElapsedSec );
 			gameWorld.PresentWorld( gameTime.ElapsedSec );
+
+			//Log.Message("{0}", ss);
+			ss = 0;
 
 			return cmdBytes;
 		}
@@ -191,6 +195,8 @@ namespace ShooterDemo {
 				}
 
 				latestSnapshot	=	null;
+
+				ss++;
 
 				return true;
 

@@ -247,13 +247,15 @@ namespace ShooterDemo.Core {
 			//
 			//	Control entities :
 			//
-			if (IsServerSide) {
+			//if (IsServerSide) {
 				foreach ( var controller in controllers ) {
 					controller.Update( deltaTime, snapshotDirty && IsClientSide );
 				}
-			}
+			//}
 		}
 
+
+		List<Vector3> clPos = new List<Vector3>();
 
 
 		/// <summary>
@@ -262,6 +264,18 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void PresentWorld ( float deltaTime )
 		{
+			ForEachEntity( e => clPos.Add( e.Position ) );
+
+			while (clPos.Count>1500) {
+				clPos.RemoveAt(0);
+			}
+
+
+			foreach ( var p in clPos ) {
+				Game.RenderSystem.RenderWorld.Debug.DrawPoint( p, 0.25f, Color.Yellow );
+			}
+
+
 			if (IsClientSide) {
 				foreach ( var view in views ) {
 					view.Update( deltaTime );

@@ -75,6 +75,10 @@ namespace ShooterDemo {
 		public override void LoadContent ( string map )
 		{
 			gameWorld	=	new MPWorld( this, map );
+			Thread.Sleep(100);
+			for (int i=0; i<100; i++) {
+				gameWorld.SimulateWorld(0.16f);
+			}
 		}
 
 
@@ -103,6 +107,10 @@ namespace ShooterDemo {
 
 			//	update world
 			gameWorld.SimulateWorld( gameTime.ElapsedSec );
+
+			if (gameTime.ElapsedSec>0.018f) {
+				Log.Warning("{0}", gameTime.ElapsedSec );
+			}
 
 			//	write world to stream :
 			using ( var ms = new MemoryStream() ) { 
