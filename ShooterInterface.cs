@@ -109,7 +109,8 @@ namespace ShooterDemo {
 				uiLayer.Draw( null, 0,vp.Height/4, vp.Width, vp.Height/2, new Color(0,0,0,192) );
 
 				var h = textFont.LineHeight;
-				titleFont.DrawString( uiLayer, "SHOOTER DEMO", 100,vp.Height/2 - h*2, new Color(242,242,242) );
+				//titleFont.DrawString( uiLayer, "SHOOTER DEMO", 100,vp.Height/2 - h*2, new Color(242,242,242) );
+				titleFont.DrawString( uiLayer, "HEROES OF THE SHOOTER AGE", 100,vp.Height/2 - h*2, new Color(242,242,242) );
 				textFont.DrawString( uiLayer, "Fusion Engine Test Project", 100,vp.Height/2 - h, new Color(220,20,60) );
 
 				textFont.DrawString( uiLayer, "Press [~] to open console:", 100,vp.Height/2 + h, new Color(242,242,242) );

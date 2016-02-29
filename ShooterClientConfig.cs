@@ -11,6 +11,7 @@ namespace ShooterDemo {
 		public bool InvertMouse { get; set; }
 		public float PullFactor { get; set; }
 		public bool ThirdPerson { get; set; }
+		public int JitterPlayoutDelay { get; set; }
 
 
 		/// <summary>
