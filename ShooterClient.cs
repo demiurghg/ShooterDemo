@@ -58,8 +58,6 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override GameLoader LoadContent ( string serverInfo )
 		{
-			this.JitterPlayoutDelay	=	Config.JitterPlayoutDelay;
-
 			latestSnapshot	=	null;
 
 			Log.Message("");
@@ -151,12 +149,6 @@ namespace ShooterDemo {
 		/// <param name="gameTime"></param>
 		public override byte[] Update ( GameTime gameTime, uint sentCommandID )
 		{
-			this.JitterPlayoutDelay	=	Config.JitterPlayoutDelay;
-			/*if (rand.NextFloat(0,1)<0.1f) {
-				System.Threading.Thread.Sleep(30);
-			} */
-
-
 			var flags = UserCtrlFlags.None;
 			
 			if (Game.Keyboard.IsKeyDown( Keys.S				)) flags |= UserCtrlFlags.Forward;
