@@ -194,8 +194,8 @@ namespace ShooterDemo {
 
 				gameWorld.ForEachEntity( e => {
 						e.PositionOld = e.LerpPosition(entityLerpFactor) ;
-						Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.2f, Color.Red );
-					});
+						//Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.2f, Color.Red );
+					});//*/
 				
 
 				serverElapsedTime		=	timeSinceLastSnapshot;
@@ -213,6 +213,11 @@ namespace ShooterDemo {
 
 				latestSnapshot	=	null;
 
+				gameWorld.ForEachEntity( e => {
+						Game.RenderSystem.RenderWorld.Debug.Trace( e.Position, 0.2f, Color.Red );
+					});
+				
+
 
 				return true;
 
@@ -227,8 +232,9 @@ namespace ShooterDemo {
 		/// Called when fresh snapshot arrived.
 		/// </summary>
 		/// <param name="snapshot"></param>
-		public override void FeedSnapshot ( byte[] snapshot, uint ackCommandID )
+		public override void FeedSnapshot ( GameTime serverTime, byte[] snapshot, uint ackCommandID )
 		{
+			Log.Verbose("{0} {1}", serverTime.Total.Ticks, serverTime.Elapsed.Ticks );
 			//Log.Warning("Ack cmd : {0}", ackCommandID );
 			this.ackCommandID	=	ackCommandID;
 			this.latestSnapshot	=	snapshot;

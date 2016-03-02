@@ -175,7 +175,7 @@ namespace ShooterDemo.Core {
 		public Vector3 LerpPosition ( float lerpFactor )
 		{
 			//return Position;
-			return Vector3.Lerp( PositionOld, Position, MathUtil.Clamp(lerpFactor,0,2f) );
+			return Vector3.Lerp( PositionOld, Position, MathUtil.Clamp(lerpFactor,0,1f) );
 		}
 	}
 }
