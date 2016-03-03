@@ -106,6 +106,7 @@ namespace ShooterDemo {
 		/// <returns>Snapshot bytes</returns>
 		public override byte[] Update ( GameTime gameTime )
 		{
+			//Log.Verbose("----");
 			TargetFrameRate	=	Config.TargetFrameRate;			
 
 			//	update world

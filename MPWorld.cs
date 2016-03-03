@@ -75,8 +75,12 @@ namespace ShooterDemo {
 
 		public override void SimulateWorld ( float elapsedTime )
 		{
-			physSpace.TimeStepSettings.MaximumTimeStepsPerFrame = 3;
-			physSpace.Update(elapsedTime);
+			if (IsServerSide) {
+				var dt	=	1 / GameServer.TargetFrameRate;
+				physSpace.TimeStepSettings.MaximumTimeStepsPerFrame = 6;
+				physSpace.TimeStepSettings.TimeStepDuration = 1.0f/60.0f;
+				physSpace.Update(dt);
+			}
 
 			base.SimulateWorld( elapsedTime );
 		}

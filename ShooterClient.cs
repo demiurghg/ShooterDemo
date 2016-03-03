@@ -133,12 +133,9 @@ namespace ShooterDemo {
 		uint ackCommandID;
 		byte[] latestSnapshot = null;
 
-		float timeSinceLastSnapshot = 0;
-		float serverElapsedTime = 999999.0f;
-		float entityLerpFactor {
-			get { 
-				return timeSinceLastSnapshot / serverElapsedTime;
-			}
+		public float entityLerpFactor {
+			get;
+			private set;
 		}
 
 
@@ -172,9 +169,7 @@ namespace ShooterDemo {
 
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
 
-			timeSinceLastSnapshot	+= gameTime.ElapsedSec;
-
-			ProcessSnapshot();
+			ProcessSnapshot(gameTime);
 
 			//Log.Verbose("  f: {0}/{1}", timeSinceLastSnapshot, serverElapsedTime);
 
@@ -188,18 +183,54 @@ namespace ShooterDemo {
 
 
 
-		bool ProcessSnapshot ()
+		GameTime serverTime;
+
+		long ticksSinceSnapshot = 0;
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		bool ProcessSnapshot ( GameTime gameTime )
 		{
+			//Log.Verbose("    ----");
+			float lerpInc	=	1;
+			
+			if (serverTime.ElapsedSec!=0) {
+				lerpInc  = 1/3.0f;//gameTime.ElapsedSec / serverTime.ElapsedSec;
+			}
+
+			entityLerpFactor += lerpInc;
+
+
 			if (latestSnapshot!=null) {
 
+				bool late = false;
+				bool early = false;
+
+				if ( !MathUtil.WithinEpsilon( entityLerpFactor, 1, lerpInc/2.0f ) ) {
+					if (entityLerpFactor>1) {
+						late = true;
+					}
+					if (entityLerpFactor<1) {
+						early = true;
+					}
+				}
+
+				Log.Warning("{1} - snapshot: {0,8} {2,8} {3}{4}", entityLerpFactor, serverTime.Frames, lerpInc, early?"<<<":"   ", late?">>>":"   ");
+
+				if (early) {
+					return false;
+				}
+
 				gameWorld.ForEachEntity( e => {
-						e.PositionOld = e.LerpPosition(entityLerpFactor) ;
-						//Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.2f, Color.Red );
+						e.PositionOld = e.LerpPosition( entityLerpFactor );
+						Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.15f, new Color(255,255,0,255) );
 					});//*/
 				
 
-				serverElapsedTime		=	timeSinceLastSnapshot;
-				timeSinceLastSnapshot	=	0;
+				entityLerpFactor = 0;
 
 				using ( var ms = new MemoryStream(latestSnapshot) ) {
 					using ( var reader = new BinaryReader(ms) ) {
@@ -234,8 +265,8 @@ namespace ShooterDemo {
 		/// <param name="snapshot"></param>
 		public override void FeedSnapshot ( GameTime serverTime, byte[] snapshot, uint ackCommandID )
 		{
-			Log.Verbose("{0} {1}", serverTime.Total.Ticks, serverTime.Elapsed.Ticks );
-			//Log.Warning("Ack cmd : {0}", ackCommandID );
+			this.serverTime		=	serverTime;
+
 			this.ackCommandID	=	ackCommandID;
 			this.latestSnapshot	=	snapshot;
 		}

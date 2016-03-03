@@ -268,7 +268,7 @@ namespace ShooterDemo.Core {
 			var dr = Game.RenderSystem.RenderWorld.Debug;
 
 			//ForEachEntity( e => dr.Trace( e.Position, 0.25f, new Color(0,0,0,128) ) );
-			ForEachEntity( e => dr.Trace( e.LerpPosition(lerpFactor), 0.05f, new Color(255,255,0,128) ) );
+			ForEachEntity( e => dr.Trace( e.LerpPosition(lerpFactor), 0.05f, new Color(255,255,0,255) ) );
 
 
 			if (IsClientSide) {
