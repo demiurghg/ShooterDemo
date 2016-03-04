@@ -187,6 +187,8 @@ namespace ShooterDemo {
 
 		long ticksSinceSnapshot = 0;
 
+		Core.Filter filter = new Core.Filter(8);
+
 
 		/// <summary>
 		/// 
@@ -198,7 +200,8 @@ namespace ShooterDemo {
 			float lerpInc	=	1;
 			
 			if (serverTime.ElapsedSec!=0) {
-				lerpInc  = 1/3.0f;//gameTime.ElapsedSec / serverTime.ElapsedSec;
+				filter.Push(gameTime.ElapsedSec / serverTime.ElapsedSec);
+				lerpInc  = filter.Value;
 			}
 
 			entityLerpFactor += lerpInc;
@@ -218,7 +221,7 @@ namespace ShooterDemo {
 					}
 				}
 
-				Log.Warning("{1} - snapshot: {0,8} {2,8} {3}{4}", entityLerpFactor, serverTime.Frames, lerpInc, early?"<<<":"   ", late?">>>":"   ");
+				//Log.Warning("{1} - snapshot: {0,8} {2,8} {3}{4}", entityLerpFactor, serverTime.Frames, lerpInc, early?"<<<":"   ", late?">>>":"   ");
 
 				if (early) {
 					return false;
