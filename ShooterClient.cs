@@ -96,6 +96,7 @@ namespace ShooterDemo {
 
 			rw.SkySettings.SunPosition			=	Vector3.One;
 			rw.SkySettings.SunLightIntensity	=	100;
+			rw.SkySettings.SkyTurbidity			=	8;
 
 			rw.LightSet.DirectLight.Direction	=	rw.SkySettings.SunLightDirection;
 			rw.LightSet.DirectLight.Intensity	=	rw.SkySettings.SunLightColor;

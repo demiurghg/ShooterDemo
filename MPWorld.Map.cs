@@ -70,7 +70,7 @@ namespace ShooterDemo {
 
 
 				if (name.StartsWith("startPoint")) {	
-					Spawn("startPoint", 0, world.TranslationVector + Vector3.Up * 100, new Angles() );
+					Spawn("startPoint", 0, world.TranslationVector, new Angles() );
 					continue;
 				}
 

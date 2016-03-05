@@ -26,7 +26,7 @@ namespace ShooterDemo {
 		
 		public MPWorld( GameServer server, string map ) : base(server)
 		{
-			InitPhysSpace(9.8f);
+			InitPhysSpace(16);
 			this.mapName	=	map;
 
 			InitializePrefabs();
@@ -40,7 +40,7 @@ namespace ShooterDemo {
 
 		public MPWorld( GameClient client, string serverInfo ) : base(client)
 		{
-			InitPhysSpace(9.8f);
+			InitPhysSpace(16);
 
 			InitializePrefabs();
 

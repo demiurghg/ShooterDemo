@@ -173,7 +173,7 @@ namespace ShooterDemo.Controllers {
 			float slidingForce = 50f, 
 			float airSpeed = 1f, 
 			float airForce = 250f, 
-			float jumpSpeed = 4.5f, 
+			float jumpSpeed = 6f, 
 			float slidingJumpSpeed = 3f, 
 			float maximumGlueForce = 5000f )
 		{
