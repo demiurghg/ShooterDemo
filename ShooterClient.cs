@@ -248,9 +248,9 @@ namespace ShooterDemo {
 
 				latestSnapshot	=	null;
 
-				gameWorld.ForEachEntity( e => {
+				/*gameWorld.ForEachEntity( e => {
 						Game.RenderSystem.RenderWorld.Debug.Trace( e.Position, 0.2f, Color.Red );
-					});
+					});*/
 				
 
 
