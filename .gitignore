@@ -13,6 +13,7 @@ fbxsdk.exe
 *.fbx.html
 [Tt]emp/
 
+*.old/
 
 # User-specific files
 *.suo

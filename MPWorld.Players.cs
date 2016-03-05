@@ -35,9 +35,7 @@ namespace ShooterDemo {
 			}
 
 			player.Lag					=	lag;
-			player.Angles.Yaw.Radians	=	userCmd.Yaw;
-			player.Angles.Pitch.Radians	=	userCmd.Pitch;
-			player.Angles.Roll.Radians	=	userCmd.Roll;
+			player.Rotation				=	Quaternion.RotationYawPitchRoll( userCmd.Yaw, userCmd.Pitch, userCmd.Roll );
 			player.UserCtrlFlags		=	userCmd.CtrlFlags;
 		}
 
@@ -56,7 +54,7 @@ namespace ShooterDemo {
 				throw new GameException("No starting points found");
 			}
 
-			var ent = Spawn( "player", 0, sp.Position, sp.Angles );
+			var ent = Spawn( "player", 0, sp.Position, 0 );
 
 			ent.UserGuid = guid;
 		}

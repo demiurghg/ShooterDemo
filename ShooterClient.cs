@@ -81,9 +81,9 @@ namespace ShooterDemo {
 			gameWorld.FinalizeLoad();
 
 			gameWorld.ReplicaSpawned += (s,e) => { 
-				UserCommand.Yaw			=	e.Entity.Angles.Yaw.Radians;
-				UserCommand.Pitch		=	e.Entity.Angles.Pitch.Radians;
-				UserCommand.Roll		=	e.Entity.Angles.Roll.Radians;
+				UserCommand.Yaw			=	0;
+				UserCommand.Pitch		=	0;
+				UserCommand.Roll		=	0;
 				UserCommand.CtrlFlags	=	UserCtrlFlags.None;
 			};
 
@@ -230,7 +230,7 @@ namespace ShooterDemo {
 
 				gameWorld.ForEachEntity( e => {
 						e.PositionOld = e.LerpPosition( entityLerpFactor );
-						Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.15f, new Color(255,255,0,255) );
+						//Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.15f, new Color(255,255,0,255) );
 					});//*/
 				
 

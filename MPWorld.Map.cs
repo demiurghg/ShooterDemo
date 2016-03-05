@@ -70,7 +70,7 @@ namespace ShooterDemo {
 
 
 				if (name.StartsWith("startPoint")) {	
-					Spawn("startPoint", 0, world.TranslationVector, new Angles() );
+					Spawn("startPoint", 0, world.TranslationVector, 10 );
 					continue;
 				}
 
@@ -87,10 +87,11 @@ namespace ShooterDemo {
 				}
 			}
 
-			//Spawn("player", 0, Vector3.Up * 4 + Vector3.BackwardRH * 48, 45 );
-			//Spawn("player", 0, Vector3.Up * 4 + Vector3.BackwardRH * 48 + Vector3.Right * 2, 90 );
-			//Spawn("player", 0, Vector3.Up * 4 + Vector3.BackwardRH * 50, 135 );
-			//Spawn("player", 0, Vector3.Up * 4 + Vector3.BackwardRH * 50 + Vector3.Right * 2, 180 );
+			Random	r = new Random();
+
+			for (int i=0; i<100; i++) {
+				Spawn("box", 0, Vector3.Up * 400 + r.GaussRadialDistribution(2,2), 0 );
+			}
 		}
 
 	}

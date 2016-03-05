@@ -129,7 +129,7 @@ namespace ShooterDemo.Controllers {
 		/// <param name="moveVector"></param>
 		void Move ( CharacterController controller, Entity ent )
 		{
-			var m	= 	Matrix.RotationYawPitchRoll( ent.Angles.Yaw.Radians, 0*ent.Angles.Yaw.Radians, 0*ent.Angles.Yaw.Radians );
+			var m	=	Matrix.RotationQuaternion( ent.Rotation );
 
 			var move = Vector3.Zero;
 			var jump = false;

@@ -54,7 +54,7 @@ namespace ShooterDemo.Core {
 		/// <summary>
 		/// Entity's angle
 		/// </summary>
-		public Angles Angles;
+		public Quaternion Rotation;
 
 		/// <summary>
 		/// Control flags.
@@ -87,14 +87,14 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="id"></param>
-		public Entity ( uint id, uint prefabId, uint parentId, Vector3 position, Angles angles )
+		public Entity ( uint id, uint prefabId, uint parentId, Vector3 position, float yaw )
 		{
 			this.ID		=	id;
 			UserGuid	=	new Guid();
 			PrefabID	=	prefabId;
 			ParentID	=	parentId;
 
-			Angles			=	angles;
+			Rotation		=	Quaternion.RotationYawPitchRoll( yaw, 0, 0 );
 			UserCtrlFlags	=	UserCtrlFlags.None;
 			Position		=	position;
 			PositionOld		=	position;
@@ -114,7 +114,7 @@ namespace ShooterDemo.Core {
 			writer.Write( PrefabID );
 
 			writer.Write( Position );
-			writer.Write( Angles );
+			writer.Write( Rotation );
 			writer.Write( (int)UserCtrlFlags );
 			writer.Write( LinearVelocity );
 			writer.Write( AngularVelocity );
@@ -135,7 +135,7 @@ namespace ShooterDemo.Core {
 			PrefabID			=	reader.ReadUInt32();
 
 			Position			=	reader.Read<Vector3>();	
-			Angles				=	reader.Read<Angles>();	
+			Rotation			=	reader.Read<Quaternion>();	
 			UserCtrlFlags		=	(UserCtrlFlags)reader.ReadInt32();
 			LinearVelocity		=	reader.Read<Vector3>();
 			AngularVelocity		=	reader.Read<Vector3>();	
@@ -161,7 +161,7 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public Matrix GetWorldMatrix (float lerpFactor)
 		{
-			return Matrix.RotationYawPitchRoll( Angles.Yaw.Radians, Angles.Pitch.Radians, Angles.Roll.Radians ) 
+			return Matrix.RotationQuaternion( Rotation ) 
 					* Matrix.Translation( LerpPosition(lerpFactor) );
 		}
 

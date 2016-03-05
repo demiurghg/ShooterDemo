@@ -268,7 +268,7 @@ namespace ShooterDemo.Core {
 			var dr = Game.RenderSystem.RenderWorld.Debug;
 
 			//ForEachEntity( e => dr.Trace( e.Position, 0.25f, new Color(0,0,0,128) ) );
-			ForEachEntity( e => dr.Trace( e.LerpPosition(lerpFactor), 0.05f, new Color(255,255,0,255) ) );
+			//ForEachEntity( e => dr.Trace( e.LerpPosition(lerpFactor), 0.05f, new Color(255,255,0,255) ) );
 
 
 			if (IsClientSide) {
@@ -280,22 +280,6 @@ namespace ShooterDemo.Core {
 
 		
 		
-		
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="prefab"></param>
-		/// <param name="parentId"></param>
-		/// <param name="origin"></param>
-		/// <param name="angles"></param>
-		/// <returns></returns>
-		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, float angle )
-		{	
-			var a = new Angles();
-			a.Yaw.Degrees = angle;
-			return Spawn( prefab, parentId, origin, a );
-		}
-
 
 
 		/// <summary>
@@ -306,7 +290,7 @@ namespace ShooterDemo.Core {
 		/// <param name="origin"></param>
 		/// <param name="angles"></param>
 		/// <returns></returns>
-		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, Angles angles )
+		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, float yaw )
 		{
 			//	due to server reconciliation
 			//	never create entities on client-side:
@@ -327,7 +311,7 @@ namespace ShooterDemo.Core {
 
 			uint prefabId = Factory.GetPrefabID( prefab );
 
-			var entity = new Entity(id, prefabId, parentId, origin, angles);
+			var entity = new Entity(id, prefabId, parentId, origin, yaw);
 
 			entities.Add( id, entity );
 
