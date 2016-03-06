@@ -118,8 +118,15 @@ namespace ShooterDemo {
 
 			rw.LightSet.DirectLight.Direction	=	rw.SkySettings.SunLightDirection;
 			rw.LightSet.DirectLight.Intensity	=	rw.SkySettings.SunLightColor;
-			rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(0,4,0), 1, 500 ) );
 
+			rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(0,4,0), 1, 500 ) );
+			for (float x=-32; x<=32; x+=8 ) {
+				for (float y=-32; y<=32; y+=8 ) {
+					rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(x,4,y), 1, 8 ) );
+				}
+			}
+
+			Log.Message("Capturing radiance...");
 			rw.RenderRadiance();
 
 			Game.GetModule<ShooterInterface>().ShowMenu = false;

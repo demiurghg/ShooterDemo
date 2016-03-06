@@ -80,10 +80,10 @@ namespace ShooterDemo {
 
 		public static void PrefabBox ( World world, Entity entity )
 		{
-			world.GetController<RigidBody>().AddBox( entity, 1,1,1,5 );
+			world.GetController<RigidBody>().AddBox( entity, 1.0f, 0.75f, 0.75f,5 );
 
 			if (world.IsClientSide) {
-				world.GetView<ModelView>().AddModel( entity, @"scenes\box", "pCube1", Matrix.Identity, Matrix.Identity );
+				world.GetView<ModelView>().AddModel( entity, @"scenes\boxes\boxModel", "pCube1", Matrix.Identity, Matrix.Identity );
 			}
 		}
 

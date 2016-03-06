@@ -22,7 +22,6 @@ namespace ShooterDemo.Views {
 	public class HudView : EntityView<object> {
 
 		DiscTexture	crosshair;
-		DiscTexture	bar;
 		SpriteFont	hudFont;
 		SpriteFont	hudFontSmall;
 		SpriteFont	hudFontMicro;
@@ -45,7 +44,6 @@ namespace ShooterDemo.Views {
 		void LoadContent()
 		{
 			crosshair		=	Game.Content.Load<DiscTexture>(@"hud\crosshairA");
-			bar				=	Game.Content.Load<DiscTexture>(@"hud\bar");
 			hudFont			=	Game.Content.Load<SpriteFont>(@"hud\hudFont");
 			hudFontSmall	=	Game.Content.Load<SpriteFont>(@"hud\hudFontSmall");
 			hudFontMicro	=	Game.Content.Load<SpriteFont>(@"hud\hudFontMicro");
