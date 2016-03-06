@@ -57,6 +57,11 @@ namespace ShooterDemo.Core {
 		public Quaternion Rotation;
 
 		/// <summary>
+		/// Entity's angle
+		/// </summary>
+		public Quaternion RotationOld;
+
+		/// <summary>
 		/// Control flags.
 		/// </summary>
 		public UserCtrlFlags UserCtrlFlags;
@@ -80,6 +85,8 @@ namespace ShooterDemo.Core {
 		public Entity ( uint id )
 		{
 			ID	=	id;
+			RotationOld	=	Quaternion.Identity;
+			Rotation	=	Quaternion.Identity;
 		}
 
 
@@ -90,6 +97,10 @@ namespace ShooterDemo.Core {
 		public Entity ( uint id, uint prefabId, uint parentId, Vector3 position, float yaw )
 		{
 			this.ID		=	id;
+
+			RotationOld	=	Quaternion.Identity;
+			PositionOld	=	Vector3.Zero;
+
 			UserGuid	=	new Guid();
 			PrefabID	=	prefabId;
 			ParentID	=	parentId;
@@ -161,8 +172,21 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public Matrix GetWorldMatrix (float lerpFactor)
 		{
-			return Matrix.RotationQuaternion( Rotation ) 
+			return Matrix.RotationQuaternion( LerpRotation(lerpFactor) ) 
 					* Matrix.Translation( LerpPosition(lerpFactor) );
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="lerpFactor"></param>
+		/// <returns></returns>
+		public Quaternion LerpRotation ( float lerpFactor )
+		{
+			//return Position;
+			return Quaternion.Slerp( RotationOld, Rotation, MathUtil.Clamp(lerpFactor,0,1f) );
 		}
 
 

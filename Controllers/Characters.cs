@@ -197,6 +197,8 @@ namespace ShooterDemo.Controllers {
 					slidingJumpSpeed		,
 					maximumGlueForce		);
 
+			controller.StepManager.MaximumStepHeight	=	0.5f;
+
 			space.Add( controller );
 
 			AddObject( entity.ID, controller );

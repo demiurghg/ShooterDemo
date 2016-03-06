@@ -230,6 +230,7 @@ namespace ShooterDemo {
 
 				gameWorld.ForEachEntity( e => {
 						e.PositionOld = e.LerpPosition( entityLerpFactor );
+						e.RotationOld = e.LerpRotation( entityLerpFactor );
 						//Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.15f, new Color(255,255,0,255) );
 					});//*/
 				
