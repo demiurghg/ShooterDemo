@@ -28,10 +28,24 @@ namespace ShooterDemo.Views {
 		/// <param name="space"></param>
 		public CameraView ( World world ) : base(world)
 		{
+			if (world.IsClientSide) {
+				currentFov	=	(World.GameClient as ShooterClient).Config.Fov;
+			}
 		}
 
 
+		float currentFov;
 		Vector3 filteredPos = Vector3.Zero;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public float Sensitivity {
+			get {
+				var cfg = ((ShooterClient)World.GameClient).Config;
+				return currentFov / cfg.Fov * cfg.Sensitivity;
+			}
+		}
 
 
 		/// <summary>
@@ -40,8 +54,9 @@ namespace ShooterDemo.Views {
 		/// <param name="gameTime"></param>
 		public override void Update ( float elapsedTime, float lerpFactor )
 		{
-			var rw = Game.RenderSystem.RenderWorld;
-			var vp = Game.RenderSystem.DisplayBounds;
+			var rw	= Game.RenderSystem.RenderWorld;
+			var vp	= Game.RenderSystem.DisplayBounds;
+			var cfg	= ((ShooterClient)World.GameClient).Config;
 
 			var aspect	=	(vp.Width) / (float)vp.Height;
 		
@@ -75,13 +90,18 @@ namespace ShooterDemo.Views {
 			var fwd	=	pos + m.Forward;
 			var up	=	m.Up;
 
-			rw.Camera.SetupCameraFov( pos, fwd, up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
+
+			var targetFov	=	MathUtil.Clamp( uc.CtrlFlags.HasFlag( UserCtrlFlags.Zoom ) ? cfg.ZoomFov : cfg.Fov, 10, 140 );
+
+			currentFov		=	MathUtil.Drift( currentFov, targetFov, 360*elapsedTime, 360*elapsedTime );
+
+			rw.Camera.SetupCameraFov( pos, fwd, up, MathUtil.Rad(currentFov), 0.125f, 1024f, 1, 0, aspect );
 
 		}
 
 
-		Oscillator bobPitch = new Oscillator(70,20);
-		Oscillator bobRoll	= new Oscillator(50,10);
+		Oscillator bobPitch = new Oscillator(100,20);
+		Oscillator bobRoll	= new Oscillator( 50,10);
 
 		Vector3 oldVelocity = Vector3.Zero;
 		bool oldTraction = true;
@@ -134,7 +154,6 @@ namespace ShooterDemo.Views {
 
 			if (hasTraction && !oldTraction) {
 				bobPitch.Kick( -clientCfg.BobLand * Math.Abs(oldVelocity.Y/10.0f) );
-				Log.Verbose("{0}", oldVelocity);
 			}
 
 			oldVelocity	=	player.LinearVelocity;
@@ -149,8 +168,6 @@ namespace ShooterDemo.Views {
 
 				if (stepCounter<0) {
 					stepCounter = 0.25f;
-
-					Log.Message("Step");
 
 					rlStep = !rlStep;
 

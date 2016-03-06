@@ -82,6 +82,15 @@ namespace ShooterDemo.Core {
 		public Vector3 AngularVelocity;
 
 
+		public short Health;
+		public short Armor;
+		public short Bullets;
+		public short Shells;
+		public short Cells;
+		public short Slugs;
+		public short Grenades;
+		public short Rockets;
+
 
 		/// <summary>
 		/// Used to replicate entity on client side.
@@ -170,6 +179,15 @@ namespace ShooterDemo.Core {
 			writer.Write( (int)UserCtrlFlags );
 			writer.Write( LinearVelocity );
 			writer.Write( AngularVelocity );
+
+			writer.Write( Health	);
+			writer.Write( Armor		);
+			writer.Write( Bullets	);
+			writer.Write( Shells	);
+			writer.Write( Cells		);
+			writer.Write( Slugs		);
+			writer.Write( Grenades	);
+			writer.Write( Rockets	);
 		}
 
 
@@ -201,6 +219,17 @@ namespace ShooterDemo.Core {
 			UserCtrlFlags	=	(UserCtrlFlags)reader.ReadInt32();
 			LinearVelocity	=	reader.Read<Vector3>();
 			AngularVelocity	=	reader.Read<Vector3>();	
+
+
+			Health			=	reader.ReadInt16();
+			Armor			=	reader.ReadInt16();
+			Bullets			=	reader.ReadInt16();
+			Shells			=	reader.ReadInt16();
+			Cells			=	reader.ReadInt16();
+			Slugs			=	reader.ReadInt16();
+			Grenades		=	reader.ReadInt16();
+			Rockets			=	reader.ReadInt16();
+
 
 			//	entity teleported - reset position and rotation :
 			if (oldTeleport!=TeleportCount) {

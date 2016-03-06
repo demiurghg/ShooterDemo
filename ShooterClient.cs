@@ -14,6 +14,7 @@ using Fusion.Engine.Client;
 using Fusion.Engine.Server;
 using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
+using ShooterDemo.Views;
 
 
 namespace ShooterDemo {
@@ -28,6 +29,13 @@ namespace ShooterDemo {
 
 		[Config]
 		public ShooterClientConfig Config { get; set; }
+
+
+		SpriteLayer	hudLayer;
+
+		public SpriteLayer HudLayer {
+			get { return hudLayer; }
+		}
 
 
 		/// <summary>
@@ -47,8 +55,18 @@ namespace ShooterDemo {
 		/// </summary>
 		public override void Initialize ()
 		{
+			hudLayer	=	new SpriteLayer( Game.RenderSystem, 1024 );
+			Game.RenderSystem.RenderWorld.SpriteLayers.Add( hudLayer );
 		}
 
+
+		protected override void Dispose ( bool disposing )
+		{
+			if (disposing) {
+				SafeDispose( ref hudLayer );
+			}
+			base.Dispose( disposing );
+		}
 
 
 		/// <summary>
@@ -155,16 +173,18 @@ namespace ShooterDemo {
 			if (Game.Keyboard.IsKeyDown( Keys.X				)) flags |= UserCtrlFlags.StrafeRight;
 			if (Game.Keyboard.IsKeyDown( Keys.RightButton	)) flags |= UserCtrlFlags.Jump;
 			if (Game.Keyboard.IsKeyDown( Keys.LeftAlt		)) flags |= UserCtrlFlags.Crouch;
+			if (Game.Keyboard.IsKeyDown( Keys.D				)) flags |= UserCtrlFlags.Zoom;
 
 			//	http://eliteownage.com/mousesensitivity.html 
 			//	Q3A: 16200 dot per 360 turn:
 			var vp		=	Game.RenderSystem.DisplayBounds;
 			var ui		=	Game.GameInterface as ShooterInterface;
+			var cam		=	World.GetView<CameraView>();
 
 			if (!ui.Console.Show) {
 				UserCommand.CtrlFlags	=	flags;
-				UserCommand.Yaw			-=	2 * MathUtil.Pi * Config.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
-				UserCommand.Pitch		-=	2 * MathUtil.Pi * Config.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
+				UserCommand.Yaw			-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
+				UserCommand.Pitch		-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
 				UserCommand.Roll		=	0;
 			}
 
@@ -210,13 +230,13 @@ namespace ShooterDemo {
 			// snapshot has arrived :
 			if (latestSnapshot!=null) {
 
-				bool late = false;
+				//bool late = false;
 				bool early = false;
 
 				//	check whether chanpshot is too early or late :
 				if ( !MathUtil.WithinEpsilon( entityLerpFactor, 1, lerpInc/2.0f ) ) {
 					if (entityLerpFactor>1) {
-						late = true;
+						//late = true;
 					}
 					if (entityLerpFactor<1) {
 						early = true;

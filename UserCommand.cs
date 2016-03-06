@@ -18,6 +18,7 @@ namespace ShooterDemo {
 		StrafeRight	=	0x0008,
 		Crouch		=	0x0010,
 		Jump		=	0x0020,
+		Zoom		=	0x0040,
 	}
 
 	

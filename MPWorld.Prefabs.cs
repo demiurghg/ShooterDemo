@@ -31,6 +31,7 @@ namespace ShooterDemo {
 
 			AddView( new ModelView(this) );
 			AddView( new CameraView(this) );
+			AddView( new HudView(this) );
 
 
 			AddPrefab( "startPoint"	, PrefabDummy	);
@@ -69,6 +70,10 @@ namespace ShooterDemo {
 			if (world.IsClientSide) {
 				world.GetView<ModelView>().AddModel( entity, @"scenes\characters\marine\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) );
 			}
+
+			entity.Health	=	100;
+			entity.Armor	=	0;
+			entity.Bullets	=	50;
 		}
 
 

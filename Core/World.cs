@@ -75,7 +75,7 @@ namespace ShooterDemo.Core {
 		public GameServer GameServer {
 			get { 
 				if (!IsServerSide) {
-					throw new System.Security.SecurityException("World is not server-side");
+					throw new InvalidOperationException("World is not server-side");
 				}
 				return Game.GameServer;
 			}
@@ -88,7 +88,7 @@ namespace ShooterDemo.Core {
 		public GameClient GameClient {
 			get { 
 				if (!IsClientSide) {
-					throw new System.Security.SecurityException("World is nor client-side");
+					throw new InvalidOperationException("World is nor client-side");
 				}
 				return Game.GameClient;
 			}
