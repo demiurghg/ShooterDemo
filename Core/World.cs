@@ -489,7 +489,7 @@ namespace ShooterDemo.Core {
 		/// Writes world state to stream writer.
 		/// </summary>
 		/// <param name="writer"></param>
-		public virtual void Write ( BinaryWriter writer )
+		public virtual void WriteToSnapshot ( BinaryWriter writer )
 		{
 			var entArray = entities.OrderBy( pair => pair.Key ).ToArray();
 
@@ -509,14 +509,13 @@ namespace ShooterDemo.Core {
 		/// Reads world state from stream reader.
 		/// </summary>
 		/// <param name="writer"></param>
-		public virtual void Read ( BinaryReader reader, uint ackCmdID )
+		public virtual void ReadFromSnapshot ( BinaryReader reader, uint ackCmdID, float lerpFactor )
 		{
 			reader.ExpectFourCC("ENT0", "Bad snapshot");
 
 			int length	=	reader.ReadInt32();
 			var oldIDs	=	entities.Select( pair => pair.Key ).ToArray();
 			var newIDs	=	new uint[length];
-
 
 			for ( int i=0; i<length; i++ ) {
 
@@ -527,7 +526,7 @@ namespace ShooterDemo.Core {
 
 					//	Entity with given ID exists.
 					//	Just update internal state.
-					entities[id].Read( reader );
+					entities[id].Read( reader, lerpFactor );
 
 				} else {
 					
@@ -535,7 +534,7 @@ namespace ShooterDemo.Core {
 					//	Create new one.
 					var ent = new Entity(id);
 
-					ent.Read( reader );
+					ent.Read( reader, lerpFactor );
 					entities.Add( id, ent );
 
 					ConstructEntity( ent );

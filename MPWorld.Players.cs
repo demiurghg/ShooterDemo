@@ -34,7 +34,6 @@ namespace ShooterDemo {
 				return;
 			}
 
-			player.Lag					=	lag;
 			player.Rotation				=	Quaternion.RotationYawPitchRoll( userCmd.Yaw, userCmd.Pitch, userCmd.Roll );
 			player.UserCtrlFlags		=	userCmd.CtrlFlags;
 		}

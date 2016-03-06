@@ -197,7 +197,7 @@ namespace ShooterDemo {
 		/// <returns></returns>
 		bool ProcessSnapshot ( GameTime gameTime )
 		{
-			//Log.Verbose("    ----");
+			//	calc lerp factor :
 			float lerpInc	=	1;
 			
 			if (serverTime.ElapsedSec!=0) {
@@ -207,12 +207,13 @@ namespace ShooterDemo {
 
 			entityLerpFactor += lerpInc;
 
-
+			// snapshot has arrived :
 			if (latestSnapshot!=null) {
 
 				bool late = false;
 				bool early = false;
 
+				//	check whether chanpshot is too early or late :
 				if ( !MathUtil.WithinEpsilon( entityLerpFactor, 1, lerpInc/2.0f ) ) {
 					if (entityLerpFactor>1) {
 						late = true;
@@ -222,38 +223,24 @@ namespace ShooterDemo {
 					}
 				}
 
-				//Log.Warning("{1} - snapshot: {0,8} {2,8} {3}{4}", entityLerpFactor, serverTime.Frames, lerpInc, early?"<<<":"   ", late?">>>":"   ");
-
+				//	snapshot too early, wait next frame.
 				if (early) {
 					return false;
 				}
 
-				gameWorld.ForEachEntity( e => {
-						e.PositionOld = e.LerpPosition( entityLerpFactor );
-						e.RotationOld = e.LerpRotation( entityLerpFactor );
-						//Game.RenderSystem.RenderWorld.Debug.Trace( e.LerpPosition(entityLerpFactor), 0.15f, new Color(255,255,0,255) );
-					});//*/
-				
-
-				entityLerpFactor = 0;
-
+				//	read snapshot :
 				using ( var ms = new MemoryStream(latestSnapshot) ) {
 					using ( var reader = new BinaryReader(ms) ) {
 
-						//serverElapsedTime	=	reader.ReadSingle();
 						reader.ReadSingle();
 
-						gameWorld.Read( reader, ackCommandID );
+						gameWorld.ReadFromSnapshot( reader, ackCommandID, entityLerpFactor );
+					
+						entityLerpFactor = 0;
 					}
 				}
 
 				latestSnapshot	=	null;
-
-				/*gameWorld.ForEachEntity( e => {
-						Game.RenderSystem.RenderWorld.Debug.Trace( e.Position, 0.2f, Color.Red );
-					});*/
-				
-
 
 				return true;
 

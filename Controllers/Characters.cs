@@ -63,6 +63,12 @@ namespace ShooterDemo.Controllers {
 					e.Position			=	MathConverter.Convert( c.Body.Position ); 
 					e.LinearVelocity	=	MathConverter.Convert( c.Body.LinearVelocity );
 					e.AngularVelocity	=	MathConverter.Convert( c.Body.AngularVelocity );
+
+					if (c.SupportFinder.HasTraction) {
+						e.State |= EntityState.HasTraction;
+					} else {
+						e.State &= ~EntityState.HasTraction;
+					}
 				}
 			});
 		}

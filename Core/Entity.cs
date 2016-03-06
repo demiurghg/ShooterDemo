@@ -20,15 +20,14 @@ namespace ShooterDemo.Core {
 		public readonly uint ID;
 
 		/// <summary>
-		/// Client's lag.
-		/// </summary>
-		public float Lag = 0;
-
-		/// <summary>
 		/// Players guid. Zero if no player.
 		/// </summary>
 		public Guid UserGuid;// { get; private set; }
 
+		/// <summary>
+		/// Gets entity state
+		/// </summary>
+		public EntityState State;
 
 		/// <summary>
 		///	Gets parent's ID. 
@@ -40,6 +39,12 @@ namespace ShooterDemo.Core {
 		/// Gets prefab ID.
 		/// </summary>
 		public uint PrefabID { get; private set; }
+
+		/// <summary>
+		/// Teleportation counter.
+		/// Used to prevent interpolation in discreete movement.
+		/// </summary>
+		public byte TeleportCount;
 
 		/// <summary>
 		/// Entity position
@@ -79,31 +84,34 @@ namespace ShooterDemo.Core {
 
 
 		/// <summary>
-		/// 
+		/// Used to replicate entity on client side.
 		/// </summary>
 		/// <param name="id"></param>
 		public Entity ( uint id )
 		{
 			ID	=	id;
-			RotationOld	=	Quaternion.Identity;
-			Rotation	=	Quaternion.Identity;
+			RotationOld		=	Quaternion.Identity;
+			Rotation		=	Quaternion.Identity;
+			TeleportCount	=	0xFF;
 		}
 
 
 		/// <summary>
-		/// 
+		/// Used to spawn entity on server side.
 		/// </summary>
 		/// <param name="id"></param>
 		public Entity ( uint id, uint prefabId, uint parentId, Vector3 position, float yaw )
 		{
 			this.ID		=	id;
 
-			RotationOld	=	Quaternion.Identity;
-			PositionOld	=	Vector3.Zero;
+			TeleportCount	=	0;
 
-			UserGuid	=	new Guid();
-			PrefabID	=	prefabId;
-			ParentID	=	parentId;
+			RotationOld		=	Quaternion.Identity;
+			PositionOld		=	Vector3.Zero;
+
+			UserGuid		=	new Guid();
+			PrefabID		=	prefabId;
+			ParentID		=	parentId;
 
 			Rotation		=	Quaternion.RotationYawPitchRoll( yaw, 0, 0 );
 			UserCtrlFlags	=	UserCtrlFlags.None;
@@ -114,15 +122,48 @@ namespace ShooterDemo.Core {
 
 
 		/// <summary>
+		/// Immediatly put entity in given position without interpolation :
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="orient"></param>
+		void SetPose ( Vector3 position, Quaternion orient )
+		{
+			TeleportCount++;
+			TeleportCount &= 0x7F;
+
+			Position		=	position;
+			Rotation		=	orient;
+			PositionOld		=	position;
+			RotationOld		=	orient;
+		}
+
+
+		/// <summary>
+		/// Moves entity to given position with interpolation :
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="orient"></param>
+		void Move ( Vector3 position, Quaternion orient )
+		{
+			Position		=	position;
+			Rotation		=	orient;
+		}
+
+
+
+		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="writer"></param>
 		public void Write ( BinaryWriter writer )
 		{
-			writer.Write( Lag );
 			writer.Write( UserGuid.ToByteArray() );
+
 			writer.Write( ParentID );
 			writer.Write( PrefabID );
+			writer.Write( (int)State );
+
+			writer.Write( TeleportCount );
 
 			writer.Write( Position );
 			writer.Write( Rotation );
@@ -137,19 +178,35 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="writer"></param>
-		public void Read ( BinaryReader reader )
+		public void Read ( BinaryReader reader, float lerpFactor )
 		{
-			Lag					=	reader.ReadSingle();
-			UserGuid			=	new Guid( reader.ReadBytes(16) );
-									
-			ParentID			=	reader.ReadUInt32();
-			PrefabID			=	reader.ReadUInt32();
+			//	keep old teleport counter :
+			var oldTeleport	=	TeleportCount;
 
-			Position			=	reader.Read<Vector3>();	
-			Rotation			=	reader.Read<Quaternion>();	
-			UserCtrlFlags		=	(UserCtrlFlags)reader.ReadInt32();
-			LinearVelocity		=	reader.Read<Vector3>();
-			AngularVelocity		=	reader.Read<Vector3>();	
+			//	set old values :
+			PositionOld		=	LerpPosition( lerpFactor );
+			RotationOld		=	LerpRotation( lerpFactor );
+
+			//	read state :
+			UserGuid		=	new Guid( reader.ReadBytes(16) );
+								
+			ParentID		=	reader.ReadUInt32();
+			PrefabID		=	reader.ReadUInt32();
+			State			=	(EntityState)reader.ReadInt32();
+
+			TeleportCount	=	reader.ReadByte();
+
+			Position		=	reader.Read<Vector3>();	
+			Rotation		=	reader.Read<Quaternion>();	
+			UserCtrlFlags	=	(UserCtrlFlags)reader.ReadInt32();
+			LinearVelocity	=	reader.Read<Vector3>();
+			AngularVelocity	=	reader.Read<Vector3>();	
+
+			//	entity teleported - reset position and rotation :
+			if (oldTeleport!=TeleportCount) {
+				PositionOld	=	Position;
+				RotationOld	=	Rotation;
+			}
 		}
 
 

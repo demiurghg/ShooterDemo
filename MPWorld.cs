@@ -87,16 +87,16 @@ namespace ShooterDemo {
 
 
 
-		public override void Write ( BinaryWriter writer )
+		public override void WriteToSnapshot ( BinaryWriter writer )
 		{
-			base.Write( writer );
+			base.WriteToSnapshot( writer );
 		}
 
 
 
-		public override void Read ( BinaryReader reader, uint ackCmdID )
+		public override void ReadFromSnapshot ( BinaryReader reader, uint ackCmdID, float lerpFactor )
 		{
-			base.Read( reader, ackCmdID );
+			base.ReadFromSnapshot( reader, ackCmdID, lerpFactor );
 		}
 	}
 }

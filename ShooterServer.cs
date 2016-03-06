@@ -119,7 +119,7 @@ namespace ShooterDemo {
 
 					writer.Write( gameTime.ElapsedSec );
 
-					gameWorld.Write( writer );
+					gameWorld.WriteToSnapshot( writer );
 
 					return ms.GetBuffer();
 				}
