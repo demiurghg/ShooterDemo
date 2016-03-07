@@ -71,9 +71,9 @@ namespace ShooterDemo {
 				world.GetView<ModelView>().AddModel( entity, @"scenes\characters\marine\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) );
 			}
 
-			entity.Health	=	100;
-			entity.Armor	=	0;
-			entity.Bullets	=	50;
+			entity.SetItemCount( Inventory.Health	,	100	);
+			entity.SetItemCount( Inventory.Armor	,	0	);
+			entity.SetItemCount( Inventory.Bullets	,	50	);
 		}
 
 

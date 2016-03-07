@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="Commands\ShowWorldState.cs" />
     <Compile Include="Controllers\Characters.cs" />
+    <Compile Include="Core\Enums.cs" />
+    <Compile Include="MPWorld.Casting.cs" />
     <Compile Include="Core\EntityState.cs" />
     <Compile Include="Core\Filter.cs" />
     <Compile Include="ShooterServerConfig.cs" />

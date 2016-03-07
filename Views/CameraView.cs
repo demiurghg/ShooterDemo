@@ -97,6 +97,13 @@ namespace ShooterDemo.Views {
 
 			rw.Camera.SetupCameraFov( pos, fwd, up, MathUtil.Rad(currentFov), 0.125f, 1024f, 1, 0, aspect );
 
+
+			Vector3 n, p;
+			(World as MPWorld).RayCastAgainstAll( pos, pos + m.Forward * 100, out n, out p );
+
+			rw.Debug.DrawPoint ( p, 0.5f, Color.Orange );
+			rw.Debug.DrawVector( p, n, Color.Orange );
+
 		}
 
 
