@@ -25,6 +25,9 @@ namespace ShooterDemo.Controllers {
 	/// </summary>
 	public class Weaponry : EntityController<object> {
 
+		Random	rand	=	new Random();
+
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -107,7 +110,7 @@ namespace ShooterDemo.Controllers {
 
 			if (attack) {
 				switch (entity.ActiveItem) {
-					case Inventory.Machinegun		:	FireBullet(world, entity, 5, 5, 100); break;
+					case Inventory.Machinegun		:	FireBullet(world, entity, 5, 5, 75); break;
 					case Inventory.Shotgun			:	break;
 					case Inventory.SuperShotgun		:	break;
 					case Inventory.GrenadeLauncher	:	break;
@@ -139,12 +142,17 @@ namespace ShooterDemo.Controllers {
 		/// <param name="damage"></param>
 		void FireBullet ( MPWorld world, Entity attacker, int damage, float impulse, short cooldown )
 		{
-			Log.Verbose("fire buller");
+			if (!attacker.ConsumeItem( Inventory.Bullets, 1 )) {
+				return;
+			}
 
 			var view	=	Matrix.RotationQuaternion( attacker.Rotation );
 			Vector3 n,p;
 			Entity e;
-			if (world.RayCastAgainstAll( AttackPos(attacker), view.Forward * 4000, out n, out p, out e, attacker )) {
+
+			var direction	=	view.Forward + rand.UniformRadialDistribution(0, 0.02f);
+
+			if (world.RayCastAgainstAll( AttackPos(attacker), AttackPos(attacker) + direction * 400, out n, out p, out e, attacker )) {
 
 				Game.RenderSystem.RenderWorld.Debug.Trace( p, 0.25f, Color.Yellow, 60 );
 

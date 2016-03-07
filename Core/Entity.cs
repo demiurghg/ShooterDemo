@@ -166,6 +166,16 @@ namespace ShooterDemo.Core {
 		}
 
 
+		public bool ConsumeItem ( Inventory item, short amount )
+		{
+			if (inventory[(byte)item] >= amount) {
+				inventory[(byte)item] -= amount;
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 
 		/// <summary>
 		/// 
