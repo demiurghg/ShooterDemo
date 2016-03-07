@@ -114,7 +114,7 @@ namespace ShooterDemo {
 			rw.HdrSettings.DirtAmount	= 0.0f;
 			rw.HdrSettings.KeyValue		= 0.18f;
 
-			rw.SkySettings.SunPosition			=	Vector3.One;
+			rw.SkySettings.SunPosition			=	new Vector3(1,2,1);
 			rw.SkySettings.SunLightIntensity	=	100;
 			rw.SkySettings.SkyTurbidity			=	8;
 
