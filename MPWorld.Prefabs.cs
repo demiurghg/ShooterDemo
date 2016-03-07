@@ -28,6 +28,7 @@ namespace ShooterDemo {
 		{
 			AddController( new Characters(this, PhysSpace) );
 			AddController( new RigidBody(this, PhysSpace) );
+			AddController( new Weaponry(this) );
 
 			AddView( new ModelView(this) );
 			AddView( new CameraView(this) );
@@ -66,6 +67,7 @@ namespace ShooterDemo {
 		public static void PrefabPlayer ( World world, Entity entity )
 		{
 			world.GetController<Characters>().AddCharacter( entity );
+			world.GetController<Weaponry>().Attach( entity );
 
 			if (world.IsClientSide) {
 				world.GetView<ModelView>().AddModel( entity, @"scenes\characters\marine\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) );
@@ -73,7 +75,6 @@ namespace ShooterDemo {
 
 			entity.SetItemCount( Inventory.Health	,	100	);
 			entity.SetItemCount( Inventory.Armor	,	0	);
-			entity.SetItemCount( Inventory.Bullets	,	50	);
 		}
 
 

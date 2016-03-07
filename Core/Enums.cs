@@ -9,6 +9,16 @@ namespace ShooterDemo.Core {
 
 		Health,
 		Armor,
+
+		Machinegun,
+		Shotgun,
+		SuperShotgun,
+		GrenadeLauncher,
+		RocketLauncher,
+		HyperBlaster,
+		Chaingun,
+		Railgun,
+		BFG,
 		
 		Bullets,
 		Shells,
@@ -16,6 +26,9 @@ namespace ShooterDemo.Core {
 		Rockets,
 		Cells,
 		Slugs,
+
+		WeaponCooldown,
+		QuadDamage,
 
 		Max,
 	}

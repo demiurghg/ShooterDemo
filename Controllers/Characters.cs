@@ -204,6 +204,8 @@ namespace ShooterDemo.Controllers {
 					maximumGlueForce		);
 
 			controller.StepManager.MaximumStepHeight	=	0.5f;
+			controller.Body.Tag	=	entity;
+			controller.Tag		=	entity;
 
 			space.Add( controller );
 

@@ -87,6 +87,15 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		readonly short[] inventory = new short[(byte)Inventory.Max];
 
+		/// <summary>
+		/// Currently active item.
+		/// </summary>
+		public Inventory ActiveItem;
+
+
+		public Vector3 KickImpulse;
+		public Vector3 KickPoint;
+
 
 
 		/// <summary>
@@ -157,6 +166,19 @@ namespace ShooterDemo.Core {
 		}
 
 
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="impulse"></param>
+		/// <param name="wsPoint"></param>
+		public void Kick ( Vector3 impulse, Vector3 wsPoint )
+		{
+			this.KickImpulse	=	impulse;
+			this.KickPoint		=	wsPoint;
+		}
+
+
 		/// <summary>
 		/// Moves entity to given position with interpolation :
 		/// </summary>
@@ -193,6 +215,8 @@ namespace ShooterDemo.Core {
 			for (int i=0; i<inventory.Length; i++) {
 				writer.Write( inventory[i] );
 			}
+
+			writer.Write( (byte)ActiveItem );
 		}
 
 
@@ -229,6 +253,8 @@ namespace ShooterDemo.Core {
 			for (int i=0; i<inventory.Length; i++) {
 				inventory[i]	=	reader.ReadInt16();
 			}
+
+			ActiveItem	=	(Inventory)reader.ReadByte();
 
 
 			//	entity teleported - reset position and rotation :

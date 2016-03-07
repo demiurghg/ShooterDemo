@@ -58,6 +58,15 @@ namespace ShooterDemo.Controllers {
 					rb.AngularVelocity	=	MathConverter.Convert( e.AngularVelocity );
 
 				} else {
+
+					if (e.KickImpulse.Length()>0.01f) {
+						var i = MathConverter.Convert( e.KickImpulse );
+						var p = MathConverter.Convert( e.KickPoint );
+						rb.ApplyImpulse( p, i );
+						e.KickImpulse = Vector3.Zero;
+						e.KickPoint	  = Vector3.Zero;
+					}
+
 					e.Position			=	MathConverter.Convert( rb.Position ); 
 					e.Rotation			=	MathConverter.Convert( rb.Orientation ); 
 					e.LinearVelocity	=	MathConverter.Convert( rb.LinearVelocity );
@@ -99,6 +108,8 @@ namespace ShooterDemo.Controllers {
 			ms.Position			=	MathConverter.Convert( entity.Position );
 			Box	box	=	new Box(  ms, w, h, d, mass );
 			box.PositionUpdateMode	=	PositionUpdateMode.Continuous;
+
+			box.Tag	=	entity;
 
 			AddObject( entity.ID, box );
 

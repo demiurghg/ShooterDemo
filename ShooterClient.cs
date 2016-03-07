@@ -57,6 +57,8 @@ namespace ShooterDemo {
 		{
 			hudLayer	=	new SpriteLayer( Game.RenderSystem, 1024 );
 			Game.RenderSystem.RenderWorld.SpriteLayers.Add( hudLayer );
+
+			Game.Keyboard.KeyDown += Keyboard_KeyDown;
 		}
 
 
@@ -172,38 +174,18 @@ namespace ShooterDemo {
 		/// <param name="gameTime"></param>
 		public override byte[] Update ( GameTime gameTime, uint sentCommandID )
 		{
-			var flags = UserCtrlFlags.None;
-			
-			if (Game.Keyboard.IsKeyDown( Keys.S				)) flags |= UserCtrlFlags.Forward;
-			if (Game.Keyboard.IsKeyDown( Keys.Z				)) flags |= UserCtrlFlags.Backward;
-			if (Game.Keyboard.IsKeyDown( Keys.A				)) flags |= UserCtrlFlags.StrafeLeft;
-			if (Game.Keyboard.IsKeyDown( Keys.X				)) flags |= UserCtrlFlags.StrafeRight;
-			if (Game.Keyboard.IsKeyDown( Keys.RightButton	)) flags |= UserCtrlFlags.Jump;
-			if (Game.Keyboard.IsKeyDown( Keys.LeftAlt		)) flags |= UserCtrlFlags.Crouch;
-			if (Game.Keyboard.IsKeyDown( Keys.D				)) flags |= UserCtrlFlags.Zoom;
-
-			//	http://eliteownage.com/mousesensitivity.html 
-			//	Q3A: 16200 dot per 360 turn:
-			var vp		=	Game.RenderSystem.DisplayBounds;
-			var ui		=	Game.GameInterface as ShooterInterface;
-			var cam		=	World.GetView<CameraView>();
-
-			if (!ui.Console.Show) {
-				UserCommand.CtrlFlags	=	flags;
-				UserCommand.Yaw			-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
-				UserCommand.Pitch		-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
-				UserCommand.Roll		=	0;
-			}
-
+			// update user input :
+			UpdateInput( ref UserCommand );
 			var cmdBytes = UserCommand.GetBytes( UserCommand );
 
+			//	process incoming snapshots :
 			ProcessSnapshot(gameTime);
 
-			//Log.Verbose("  f: {0}/{1}", timeSinceLastSnapshot, serverElapsedTime);
-
-			gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
+			//	movement prediction :
+			//gameWorld.PlayerCommand( this.Guid, cmdBytes, 0 );
 			//gameWorld.SimulateWorld( gameTime.ElapsedSec );
 
+			//	render world :
 			gameWorld.PresentWorld( gameTime.ElapsedSec, entityLerpFactor );
 
 			return cmdBytes;
@@ -275,6 +257,84 @@ namespace ShooterDemo {
 				return false;
 			}
 		}
+
+
+
+
+		void Keyboard_KeyDown ( object sender, KeyEventArgs e )
+		{
+			if (e.Key==Config.UseWeapon1) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.Machinegun;
+			}
+			if (e.Key==Config.UseWeapon2) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.Shotgun;
+			}
+			if (e.Key==Config.UseWeapon3) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.SuperShotgun;
+			}
+			if (e.Key==Config.UseWeapon4) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.GrenadeLauncher;
+			}
+			if (e.Key==Config.UseWeapon5) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.RocketLauncher;
+			}
+			if (e.Key==Config.UseWeapon6) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.Machinegun;
+			}
+			if (e.Key==Config.UseWeapon7) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.Railgun;
+			}
+			if (e.Key==Config.UseWeapon8) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.HyperBlaster;
+			}
+			if (e.Key==Config.UseWeapon9) {	
+				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
+				UserCommand.CtrlFlags |= UserCtrlFlags.BFG;
+			}
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void UpdateInput ( ref UserCommand userCommand )
+		{
+			var flags = UserCtrlFlags.None;
+			var cfg	  = Config;
+			
+			if (Game.Keyboard.IsKeyDown( cfg.MoveForward	)) flags |= UserCtrlFlags.Forward;
+			if (Game.Keyboard.IsKeyDown( cfg.MoveBackward	)) flags |= UserCtrlFlags.Backward;
+			if (Game.Keyboard.IsKeyDown( cfg.StrafeLeft		)) flags |= UserCtrlFlags.StrafeLeft;
+			if (Game.Keyboard.IsKeyDown( cfg.StrafeRight	)) flags |= UserCtrlFlags.StrafeRight;
+			if (Game.Keyboard.IsKeyDown( cfg.Jump			)) flags |= UserCtrlFlags.Jump;
+			if (Game.Keyboard.IsKeyDown( cfg.Crouch			)) flags |= UserCtrlFlags.Crouch;
+			if (Game.Keyboard.IsKeyDown( cfg.Zoom			)) flags |= UserCtrlFlags.Zoom;
+			if (Game.Keyboard.IsKeyDown( cfg.Attack			)) flags |= UserCtrlFlags.Attack;
+
+
+			//	http://eliteownage.com/mousesensitivity.html 
+			//	Q3A: 16200 dot per 360 turn:
+			var vp		=	Game.RenderSystem.DisplayBounds;
+			var ui		=	Game.GameInterface as ShooterInterface;
+			var cam		=	World.GetView<CameraView>();
+
+			if (!ui.Console.Show) {
+				UserCommand.CtrlFlags	=	flags;
+				UserCommand.Yaw			-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
+				UserCommand.Pitch		-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
+				UserCommand.Roll		=	0;
+			}
+		}
+
 
 
 		/// <summary>

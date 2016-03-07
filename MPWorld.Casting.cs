@@ -25,6 +25,7 @@ using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.CollisionShapes;
+using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
 namespace ShooterDemo {
 	public partial class MPWorld : World {
@@ -37,23 +38,33 @@ namespace ShooterDemo {
 		/// <param name="normal"></param>
 		/// <param name="pos"></param>
 		/// <returns></returns>
-		public bool RayCastAgainstAll ( Vector3 from, Vector3 to, out Vector3 normal, out Vector3 pos )
+		public bool RayCastAgainstAll ( Vector3 from, Vector3 to, out Vector3 normal, out Vector3 pos, out Entity hitEntity, Entity skipEntity = null )
 		{
-			var dir  = to - from;
-			var dist = dir.Length();
-			var ndir = dir.Normalized();
-			Ray ray  = new Ray( from, ndir );
+			hitEntity	=	null;
+			var dir		=	to - from;
+			var dist	=	dir.Length();
+			var ndir	=	dir.Normalized();
+			Ray ray		=	new Ray( from, ndir );
 
 			normal	= Vector3.Zero;
 			pos		= to;
 
 			Func<BroadPhaseEntry, bool> filterFunc = delegate(BroadPhaseEntry bpe) 
 			{
+				if (skipEntity==null) return true;
+
+				ConvexCollidable cc = bpe as ConvexCollidable;
+				if (cc==null) return true;
+					
+				Entity ent = cc.Entity.Tag as Entity;
+				if (ent==null) return true;
+
+				if (ent==skipEntity) return false;
+
 				return true;
 			};
 
 			var rcr		= new RayCastResult();	
-			
 			var bRay	= MathConverter.Convert( ray );
 
 			bool result = physSpace.RayCast( bRay, dist, filterFunc, out rcr );
@@ -62,8 +73,10 @@ namespace ShooterDemo {
 				return false;
 			}
 
-			normal	=	MathConverter.Convert( rcr.HitData.Normal ).Normalized();
-			pos		=	MathConverter.Convert( rcr.HitData.Location );
+			var convex	=	rcr.HitObject as ConvexCollidable;
+			normal		=	MathConverter.Convert( rcr.HitData.Normal ).Normalized();
+			pos			=	MathConverter.Convert( rcr.HitData.Location );
+			hitEntity	=	(convex == null) ? null : convex.Entity.Tag as Entity;
 
 			return true;
 		}
