@@ -39,6 +39,11 @@ namespace ShooterDemo.Core {
 		public event EntityEventHandler ReplicaKilled;
 
 
+		List<FXEvent> fxEvents = new List<FXEvent>();
+
+		SFX.SfxSystem	sfxSystem;
+
+
 		/// <summary>
 		/// We just received snapshot.
 		/// Need to update client-side controllers.
@@ -124,6 +129,7 @@ namespace ShooterDemo.Core {
 			this.UserGuid	=	client.Guid;
 			Content			=	client.Content;
 			entities		=	new Dictionary<uint,Entity>();
+			sfxSystem		=	new SFX.SfxSystem((ShooterClient)client);
 		}
 
 
@@ -275,6 +281,8 @@ namespace ShooterDemo.Core {
 				foreach ( var view in views ) {
 					view.Update( deltaTime, lerpFactor );
 				}
+
+				sfxSystem.Update( deltaTime );
 			}
 		}
 
@@ -320,6 +328,34 @@ namespace ShooterDemo.Core {
 			LogTrace("spawn: {0} - #{1}", prefab, id );
 
 			return entity;
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fxType"></param>
+		/// <param name="position"></param>
+		/// <param name="target"></param>
+		/// <param name="orient"></param>
+		public void SpawnFX ( FXEventType fxType, Vector3 origin, Vector3 target, Vector3 normal )
+		{
+			fxEvents.Add( new FXEvent(fxType, origin, target, normal ) );
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fxType"></param>
+		/// <param name="position"></param>
+		/// <param name="target"></param>
+		/// <param name="orient"></param>
+		public void SpawnFX ( FXEventType fxType, Vector3 origin )
+		{
+			fxEvents.Add( new FXEvent(fxType, origin, origin, Vector3.Up ) );
 		}
 
 
@@ -457,7 +493,12 @@ namespace ShooterDemo.Core {
 		/// <summary>
 		/// Called when client or server is 
 		/// </summary>
-		public abstract void Cleanup ();
+		public virtual void Cleanup ()
+		{
+			if (IsClientSide) {
+				sfxSystem.StopAllSFX();
+			}
+		}
 
 
 		/// <summary>
@@ -493,14 +534,29 @@ namespace ShooterDemo.Core {
 		{
 			var entArray = entities.OrderBy( pair => pair.Key ).ToArray();
 
+			//
+			//	Write fat entities :
+			//
 			writer.WriteFourCC("ENT0");
-
 			writer.Write( entArray.Length );
 
 			foreach ( var ent in entArray ) {
 				writer.Write( ent.Key );
 				ent.Value.Write( writer );
 			}
+
+
+			//
+			//	Write FX events :
+			//
+			writer.WriteFourCC("FXE0");
+			writer.Write( fxEvents.Count );
+			
+			foreach ( var fxe in fxEvents ) {
+				fxe.Write( writer );
+			}
+
+			fxEvents.Clear();
 		}
 
 
@@ -550,6 +606,17 @@ namespace ShooterDemo.Core {
 
 			foreach ( var id in staleIDs ) {
 				Kill( id );
+			}
+
+
+			reader.ExpectFourCC("FXE0", "Bad snapshot");
+
+			int count = reader.ReadInt32();
+
+			for (int i=0; i<count; i++) {
+				var fxe = new FXEvent();
+				fxe.Read( reader );
+				sfxSystem.RunFX( fxe );
 			}
 		}
 	}

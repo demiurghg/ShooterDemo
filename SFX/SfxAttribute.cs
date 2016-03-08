@@ -17,8 +17,19 @@ using ShooterDemo.Core;
 
 
 namespace ShooterDemo.SFX {
-	public class BaseSfx {
 
+	[AttributeUsage(AttributeTargets.Class)]
+	public class SfxAttribute : Attribute {
 
+		public readonly FXEventType FXType;
+
+		public SfxAttribute ( FXEventType fxType )
+		{
+			this.FXType		=	fxType;
+		}
+
+		private SfxAttribute()
+		{
+		}
 	}
 }

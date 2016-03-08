@@ -15,7 +15,7 @@ using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
 
 namespace ShooterDemo {
-	partial class ShooterServerConfig {
+	public class ShooterServerConfig {
 
 		public int TargetFrameRate { get; set; }
 

@@ -12,8 +12,6 @@ using System.IO;
 namespace ShooterDemo.Core {
 	public class Entity {
 
-		public Entity RemoteEntity = null;
-
 		/// <summary>
 		/// Entity ID
 		/// </summary>

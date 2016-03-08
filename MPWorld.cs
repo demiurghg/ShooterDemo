@@ -60,6 +60,7 @@ namespace ShooterDemo {
 
 		public override void Cleanup ()
 		{
+			base.Cleanup();
 			if (IsClientSide) {
 				Game.RenderSystem.RenderWorld.ClearWorld();
 			}

@@ -18,7 +18,7 @@ using ShooterDemo.Views;
 
 
 namespace ShooterDemo {
-	class ShooterClient : Fusion.Engine.Client.GameClient {
+	public class ShooterClient : Fusion.Engine.Client.GameClient {
 
 		World gameWorld;
 
@@ -148,6 +148,7 @@ namespace ShooterDemo {
 		{
 			latestSnapshot	=	null;
 
+			World.Cleanup();
 			Game.RenderSystem.RenderWorld.ClearWorld();
 
 			Content.Unload();
@@ -194,8 +195,6 @@ namespace ShooterDemo {
 
 
 		GameTime serverTime;
-
-		long ticksSinceSnapshot = 0;
 
 		Core.Filter filter = new Core.Filter(8);
 

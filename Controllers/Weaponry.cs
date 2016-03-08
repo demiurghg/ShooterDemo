@@ -151,10 +151,11 @@ namespace ShooterDemo.Controllers {
 			Entity e;
 
 			var direction	=	view.Forward + rand.UniformRadialDistribution(0, 0.02f);
+			var origin		=	AttackPos( attacker );
 
-			if (world.RayCastAgainstAll( AttackPos(attacker), AttackPos(attacker) + direction * 400, out n, out p, out e, attacker )) {
+			if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {
 
-				Game.RenderSystem.RenderWorld.Debug.Trace( p, 0.25f, Color.Yellow, 60 );
+				world.SpawnFX( FXEventType.BulletTrail, origin, p, n );
 
 				if (e!=null) {
 					e.Kick( view.Forward * impulse, p );

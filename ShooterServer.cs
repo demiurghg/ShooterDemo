@@ -16,7 +16,7 @@ using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
 
 namespace ShooterDemo {
-	partial class ShooterServer : GameServer {
+	public partial class ShooterServer : GameServer {
 
 		
 		World	gameWorld;
@@ -94,9 +94,6 @@ namespace ShooterDemo {
 			gameWorld.Cleanup();
 			Content.Unload();
 		}
-
-
-		float averageRate = 0;
 
 
 		/// <summary>
