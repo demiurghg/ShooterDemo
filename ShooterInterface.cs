@@ -97,6 +97,7 @@ namespace ShooterDemo {
 
 			if (ShowMenu) {
 
+				Game.Keyboard.ScanKeyboard	=	false;
 				Game.Mouse.IsMouseCentered	=	false;
 				Game.Mouse.IsMouseClipped	=	false;
 				Game.Mouse.IsMouseHidden	=	false;
@@ -120,10 +121,12 @@ namespace ShooterDemo {
 			} else {
 
 				if (!console.Show) {
+					Game.Keyboard.ScanKeyboard	=	true;
 					Game.Mouse.IsMouseCentered	=	true;
 					Game.Mouse.IsMouseClipped	=	true;
 					Game.Mouse.IsMouseHidden	=	true;
 				} else {
+					Game.Keyboard.ScanKeyboard	=	false;
 					Game.Mouse.IsMouseCentered	=	false;
 					Game.Mouse.IsMouseClipped	=	false;
 					Game.Mouse.IsMouseHidden	=	false;

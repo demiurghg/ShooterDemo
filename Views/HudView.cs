@@ -89,20 +89,21 @@ namespace ShooterDemo.Views {
 			short	ammo	=	player.GetItemCount( Inventory.Bullets );
 			short	health	=	player.GetItemCount( Inventory.Health );
 			short	armor	=	player.GetItemCount( Inventory.Armor );
+			var		wpn		=	player.ActiveItem.ToString().ToUpper();
 
 			
 			SmallTextRJ	( hudLayer, "BULLETS",			center - 4, baseLine2, dimText );
-			MicroTextRJ	( hudLayer, "MACHINEGUN",		center - 4, baseLine,  dimText );
+			MicroTextRJ	( hudLayer, wpn,				center - 4, baseLine,  dimText );
 			BigTextLJ	( hudLayer, ammo.ToString(),	center + 4, baseLine,  fullText );
 
 
-			SmallTextRJ	( hudLayer, "HEALTH",			center - 4 - 192, baseLine2, dimText );
-			MicroTextRJ	( hudLayer, "NORMAL",			center - 4 - 192, baseLine,  dimText );
-			BigTextLJ	( hudLayer, health.ToString(),	center + 4 - 192, baseLine,  fullText );
+			SmallTextRJ	( hudLayer, "HEALTH",			center - 4 - 200, baseLine2, dimText );
+			MicroTextRJ	( hudLayer, "NORMAL",			center - 4 - 200, baseLine,  dimText );
+			BigTextLJ	( hudLayer, health.ToString(),	center + 4 - 200, baseLine,  fullText );
 
-			SmallTextRJ	( hudLayer, "ARMOR",			center - 4 + 192, baseLine2, dimText );
-			MicroTextRJ	( hudLayer, "HEAVY",			center - 4 + 192, baseLine,  dimText );
-			BigTextLJ	( hudLayer, health.ToString(),	center + 4 + 192, baseLine,  fullText );
+			SmallTextRJ	( hudLayer, "ARMOR",			center - 4 + 200, baseLine2, dimText );
+			MicroTextRJ	( hudLayer, "HEAVY",			center - 4 + 200, baseLine,  dimText );
+			BigTextLJ	( hudLayer, health.ToString(),	center + 4 + 200, baseLine,  fullText );
 			/*hudFontSmall.DrawString( hudLayer, "Bullets", vp.Width / 2 - 64, baseLine, Color.Gray, -2 );
 			hudFont.DrawString( hudLayer, player.Bullets.ToString(), vp.Width / 2 + 16, baseLine, Color.White, -4 );
 

@@ -29,9 +29,9 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 			SetupMotion		( ref p, pos, vel, Vector3.Down * 7 );
 			SetupAngles		( ref p, 160 );
-			SetupColor		( ref p, 1000, 0, 1 );
-			SetupTiming		( ref p, 0.5f, 0.01f, 0.01f );
-			SetupSize		( ref p, 0.15f, 0.00f );
+			SetupColor		( ref p, 500, 0, 1 );
+			SetupTiming		( ref p, 0.5f, 0.01f, 0.9f );
+			SetupSize		( ref p, 0.1f, 0.00f );
 		}
 	}
 }

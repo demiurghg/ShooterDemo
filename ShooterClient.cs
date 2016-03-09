@@ -261,45 +261,48 @@ namespace ShooterDemo {
 
 
 
+		UserCtrlFlags weaponControl;
+
 
 		void Keyboard_KeyDown ( object sender, KeyEventArgs e )
 		{
 			if (e.Key==Config.UseWeapon1) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.Machinegun;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.Machinegun;
 			}
 			if (e.Key==Config.UseWeapon2) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.Shotgun;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.Shotgun;
 			}
 			if (e.Key==Config.UseWeapon3) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.SuperShotgun;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.SuperShotgun;
 			}
 			if (e.Key==Config.UseWeapon4) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.GrenadeLauncher;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.GrenadeLauncher;
 			}
 			if (e.Key==Config.UseWeapon5) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.RocketLauncher;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.RocketLauncher;
 			}
 			if (e.Key==Config.UseWeapon6) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.Machinegun;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.Machinegun;
 			}
 			if (e.Key==Config.UseWeapon7) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.Railgun;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.Railgun;
 			}
 			if (e.Key==Config.UseWeapon8) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.HyperBlaster;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.HyperBlaster;
 			}
 			if (e.Key==Config.UseWeapon9) {	
-				UserCommand.CtrlFlags &= ~UserCtrlFlags.AllWeapon;
-				UserCommand.CtrlFlags |= UserCtrlFlags.BFG;
+				weaponControl &= ~UserCtrlFlags.AllWeapon;
+				weaponControl |= UserCtrlFlags.BFG;
 			}
+			Log.Message("{0} {1}", e.Key, UserCommand.CtrlFlags);
 		}
 
 
@@ -329,7 +332,7 @@ namespace ShooterDemo {
 			var cam		=	World.GetView<CameraView>();
 
 			if (!ui.Console.Show) {
-				UserCommand.CtrlFlags	=	flags;
+				UserCommand.CtrlFlags	=	flags | weaponControl;
 				UserCommand.Yaw			-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
 				UserCommand.Pitch		-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
 				UserCommand.Roll		=	0;
