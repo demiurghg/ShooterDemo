@@ -91,7 +91,9 @@ namespace ShooterDemo {
 		/// </summary>
 		public override void UnloadContent ()
 		{
-			gameWorld.Cleanup();
+			if (gameWorld!=null) {
+				gameWorld.Cleanup();
+			}
 			Content.Unload();
 		}
 

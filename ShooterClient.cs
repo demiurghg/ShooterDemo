@@ -302,7 +302,6 @@ namespace ShooterDemo {
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.BFG;
 			}
-			Log.Message("{0} {1}", e.Key, UserCommand.CtrlFlags);
 		}
 
 
