@@ -88,7 +88,8 @@ namespace ShooterDemo.Controllers {
 			var attack		=	entity.UserCtrlFlags.HasFlag( UserCtrlFlags.Attack );
 			var cooldown	=	entity.GetItemCount( Inventory.WeaponCooldown );
 
-			cooldown -=   deltaTime;
+			cooldown		=   (short)Math.Max( 0, cooldown - deltaTime );
+
 			entity.SetItemCount( Inventory.WeaponCooldown, cooldown );
 
 			//	weapon is too hot :

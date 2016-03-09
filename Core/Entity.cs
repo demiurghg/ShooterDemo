@@ -154,6 +154,10 @@ namespace ShooterDemo.Core {
 
 		public void SetItemCount ( Inventory item, short count ) 
 		{
+			if (count<0) {
+				Log.Warning("SetItemCount: count of {0} < 0. Forced zero.", item);
+				count = 0;
+			}
 			inventory[(byte)item] = count;
 		}
 
