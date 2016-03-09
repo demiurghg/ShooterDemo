@@ -148,7 +148,9 @@ namespace ShooterDemo {
 		{
 			latestSnapshot	=	null;
 
-			World.Cleanup();
+			if (World!=null) {
+				World.Cleanup();
+			}
 			Game.RenderSystem.RenderWorld.ClearWorld();
 
 			Content.Unload();
