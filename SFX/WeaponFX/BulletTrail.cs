@@ -18,6 +18,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 		public BulletTrail ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
 			AddStage("bulletSpark", 0, 0f, 0.1f, 30, EmitSpark );
+
+			AddLight( fxEvent.Target + fxEvent.Normal * 0.05f, new Color4(200,150,100,1), 2, 100f, 3f );
 		}
 
 

@@ -56,6 +56,18 @@ namespace ShooterDemo.SFX {
 
 
 		/// <summary>
+		/// Immediatly removes all sfx instance stuff, 
+		/// like light sources and sounds.
+		/// Check IsExhausted before calling Kill to produce smooth animation.
+		/// </summary>
+		public void Kill ()
+		{
+			KillLight();
+		}
+
+
+
+		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="elapsedTime"></param>
@@ -64,8 +76,37 @@ namespace ShooterDemo.SFX {
 			foreach ( var stage in stages ) {
 				stage.Update( dt, fxEvent );
 			}
+
+			UpdateLight( dt );
 		}
 
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool IsExhausted {
+			get {
+				
+				bool isStopped = true;
+
+				//	check stages :
+				foreach ( var stage in stages ) {
+					isStopped &= stage.Stopped;
+				}
+
+				//	check lights :
+				isStopped &= IsLightExhausted;
+
+				return isStopped;
+			}
+		}
+
+
+		/*-----------------------------------------------------------------------------------------
+		 * 
+		 *	Particle helper functions
+		 * 
+		-----------------------------------------------------------------------------------------*/
 
 		/// <summary>
 		/// 
@@ -85,28 +126,6 @@ namespace ShooterDemo.SFX {
 
 
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public bool IsExhausted {
-			get {
-				
-				bool isStopped = true;
-
-				foreach ( var stage in stages ) {
-					isStopped &= stage.Stopped;
-				}
-
-				return isStopped;
-			}
-		}
-
-
-		/*-----------------------------------------------------------------------------------------
-		 * 
-		 *	Particle helper functions
-		 * 
-		-----------------------------------------------------------------------------------------*/
 
 
 		protected static void SetupMotion ( ref Particle p, Vector3 origin, Vector3 velocity, Vector3 accel )

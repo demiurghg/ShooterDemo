@@ -87,11 +87,16 @@ namespace ShooterDemo.SFX {
 
 			while ( timeAccumulator > dt ) {
 
-				runningSFXes.RemoveAll( sfx => sfx.IsExhausted );
-
 				foreach ( var sfx in runningSFXes ) {
+
 					sfx.Update( dt );
+
+					if (sfx.IsExhausted) {
+						sfx.Kill();
+					}
 				}
+
+				runningSFXes.RemoveAll( sfx => sfx.IsExhausted );
 
 				timeAccumulator -= dt;				
 			}

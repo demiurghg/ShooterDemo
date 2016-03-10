@@ -61,6 +61,7 @@
     <Compile Include="MPWorld.Casting.cs" />
     <Compile Include="Core\EntityState.cs" />
     <Compile Include="Core\Filter.cs" />
+    <Compile Include="SFX\SfxInstance.Light.cs" />
     <Compile Include="SFX\SfxInstance.Stage.cs" />
     <Compile Include="SFX\SfxInstance.cs" />
     <Compile Include="SFX\SfxAttribute.cs" />
