@@ -59,6 +59,16 @@ namespace ShooterDemo {
 			Game.RenderSystem.RenderWorld.SpriteLayers.Add( hudLayer );
 
 			Game.Keyboard.KeyDown += Keyboard_KeyDown;
+
+			Game.RenderSystem.DisplayBoundsChanged += RenderSystem_DisplayBoundsChanged;
+		}
+
+
+
+		void RenderSystem_DisplayBoundsChanged ( object sender, EventArgs e )
+		{
+			var	vp = Game.RenderSystem.DisplayBounds;
+			Game.RenderSystem.RenderWorld.Resize( vp.Width, vp.Height );
 		}
 
 
