@@ -65,6 +65,19 @@ namespace ShooterDemo.SFX {
 		}
 
 
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public SoundEffect	LoadSound ( string path )
+		{
+			return client.Content.Load<SoundEffect>( path, (SoundEffect)null );
+		}
+
+
+
 		/// <summary>
 		/// 
 		/// </summary>

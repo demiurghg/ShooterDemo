@@ -16,6 +16,7 @@ using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
 using BEPUphysics;
 using BEPUphysics.Character;
+using Fusion.Engine.Audio;
 
 
 namespace ShooterDemo.Views {
@@ -55,6 +56,7 @@ namespace ShooterDemo.Views {
 		public override void Update ( float elapsedTime, float lerpFactor )
 		{
 			var rw	= Game.RenderSystem.RenderWorld;
+			var sw	= Game.SoundSystem.SoundWorld;
 			var vp	= Game.RenderSystem.DisplayBounds;
 			var cfg	= ((ShooterClient)World.GameClient).Config;
 
@@ -97,6 +99,11 @@ namespace ShooterDemo.Views {
 
 			rw.Camera.SetupCameraFov( pos, fwd, up, MathUtil.Rad(currentFov), 0.125f, 1024f, 1, 0, aspect );
 
+			sw.Listener	=	new AudioListener();
+			sw.Listener.Position	=	pos;
+			sw.Listener.Forward		=	m.Forward;
+			sw.Listener.Up			=	m.Up;
+			sw.Listener.Velocity	=	Vector3.Zero;
 
 			//Vector3 n, p;
 			//(World as MPWorld).RayCastAgainstAll( pos, pos + m.Forward * 100, out n, out p );

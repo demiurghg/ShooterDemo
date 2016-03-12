@@ -24,113 +24,46 @@ namespace ShooterDemo.SFX {
 	/// </summary>
 	public partial class SfxInstance {
 
-		protected class Stage {
+		/// <summary>
+		/// Represents SfxInstance stage.
+		/// </summary>
+		protected abstract class Stage {
 
-			public bool Looped { get; set; }
-			public bool Stopped { get; private set; }
-
-			readonly SfxInstance	instance;
-			readonly int			spriteIndex;
-			readonly float 			delay;
-			readonly float			period;
-			readonly float			sleep;
-			readonly int			count;
-			readonly EmitFunction	emit;
-
-
-			protected float			time		= 0;
-			protected int			emitCount	= 0;
+			public readonly SfxInstance SfxInstance;
 			
-
 			/// <summary>
 			/// 
 			/// </summary>
-			/// <param name="fxEvent"></param>
-			/// <param name="spriteIndex"></param>
-			/// <param name="delay"></param>
-			/// <param name="period"></param>
-			/// <param name="sleep"></param>
-			/// <param name="count"></param>
-			/// <param name="emit"></param>
-			public Stage ( SfxInstance instance, int spriteIndex, float delay, float period, float sleep, int count, EmitFunction emit )
+			/// <param name="sfxInstance"></param>
+			public Stage ( SfxInstance sfxInstance )
 			{
-				this.instance		=	instance	;
-				this.spriteIndex	=	spriteIndex	;
-				this.delay			=	delay		;
-				this.period			=	period		;
-				this.sleep			=	sleep		;
-				this.count			=	count		;
-				this.emit			=	emit		;
+				this.SfxInstance	=	sfxInstance;
 			}
 
 
-
 			/// <summary>
-			/// 
+			/// Updates internal stage state.
 			/// </summary>
 			/// <param name="dt"></param>
-			public void Update ( float dt, FXEvent fxEvent )
-			{	
-				float old_time		=	time;
-				float new_time		=	time + dt;
-				
-				var pos	=	fxEvent.Origin;
-				var vel =	Vector3.Zero;
-				
-				if ( !Stopped ) {
-
-					for ( int part=emitCount; true; part++ ) {
-	
-						float prt_time	= GetParticleEmitTime( part );
-						float prt_dt	= prt_time - old_time;
-		
-						if (prt_time <= new_time) {
-
-							float addTime = new_time - prt_time;
-
-							Vector3 newPos = pos - vel * addTime; 
-		
-							var p = new Particle();
-							p.TimeLag		=	addTime;
-							p.ImageIndex	=	spriteIndex;
-							p.Position		=	newPos;
-
-							emit( ref p, newPos );
-
-							instance.rw.ParticleSystem.InjectParticle( p );
-
-							emitCount++;
-			
-						} else {
-							break;
-						}
-					}
-
-					if ( !Looped && ( time >= delay + period ) ) {
-						Stopped = true;
-					}
-
-					time += dt;
-				}
-			}
-
+			public abstract void Update ( float dt, FXEvent fxEvent );
 
 			/// <summary>
-			/// 
+			/// Request stage to be stopped.
+			/// If immidiate equals true the stage should be stopped immediatly.
 			/// </summary>
-			/// <param name="index"></param>
+			/// <param name="immediate"></param>
+			public abstract void Stop ( bool immediate );
+
+			/// <summary>
+			/// Indicates whethe stage is worked out.
+			/// </summary>
 			/// <returns></returns>
-			float GetParticleEmitTime( int index )
-			{
-				float	full_cycle			= delay + period + sleep;
-				int		num_cycles			= index / count;
-				int		part_ind_in_bunch	= index	% count;
-				float	interval			= period / (float)count;
-	
-				return	full_cycle * num_cycles + 
-						delay +
-						interval * part_ind_in_bunch;
-			}
+			public abstract bool IsExhausted ();
+
+			/// <summary>
+			/// Kills all associated with fx stage stuff
+			/// </summary>
+			public abstract void Kill ();
 		}
 
 	}

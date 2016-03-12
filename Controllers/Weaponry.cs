@@ -161,6 +161,8 @@ namespace ShooterDemo.Controllers {
 				if (e!=null) {
 					e.Kick( view.Forward * impulse, p );
 				}
+			} else {
+				world.SpawnFX( FXEventType.BulletTrail, origin, origin + direction * 400, Vector3.Up );
 			}
 
 			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );

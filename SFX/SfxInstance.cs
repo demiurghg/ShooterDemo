@@ -24,8 +24,6 @@ namespace ShooterDemo.SFX {
 	/// </summary>
 	public partial class SfxInstance {
 		
-		bool looped;
-
 		static protected Random rand = new Random();
 
 		protected readonly SfxSystem sfxSystem;
@@ -49,7 +47,6 @@ namespace ShooterDemo.SFX {
 			this.sfxSystem	=	sfxSystem;
 			this.rw			=	sfxSystem.rw;
 			this.sw			=	sfxSystem.sw;
-			this.looped		=	false;
 			this.fxEvent	=	fxEvent;
 		}
 
@@ -62,7 +59,10 @@ namespace ShooterDemo.SFX {
 		/// </summary>
 		public void Kill ()
 		{
-			KillLight();
+			foreach ( var stage in stages ) {
+				stage.Kill();
+			}
+			stages.Clear();
 		}
 
 
@@ -76,8 +76,6 @@ namespace ShooterDemo.SFX {
 			foreach ( var stage in stages ) {
 				stage.Update( dt, fxEvent );
 			}
-
-			UpdateLight( dt );
 		}
 
 
@@ -87,24 +85,21 @@ namespace ShooterDemo.SFX {
 		public bool IsExhausted {
 			get {
 				
-				bool isStopped = true;
+				bool isExhausted = true;
 
 				//	check stages :
 				foreach ( var stage in stages ) {
-					isStopped &= stage.Stopped;
+					isExhausted &= stage.IsExhausted();
 				}
 
-				//	check lights :
-				isStopped &= IsLightExhausted;
-
-				return isStopped;
+				return isExhausted;
 			}
 		}
 
 
 		/*-----------------------------------------------------------------------------------------
 		 * 
-		 *	Particle helper functions
+		 *	Stage creation functions :
 		 * 
 		-----------------------------------------------------------------------------------------*/
 
@@ -117,16 +112,32 @@ namespace ShooterDemo.SFX {
 		/// <param name="sleep"></param>
 		/// <param name="count"></param>
 		/// <param name="emit"></param>
-		protected void AddStage ( string spriteName, float delay, float period, float sleep, int count, EmitFunction emit )
+		protected void AddParticleStage ( string spriteName, float delay, float period, float sleep, int count, EmitFunction emit )
 		{
 			var spriteIndex		=	sfxSystem.GetSpriteIndex( spriteName );
-			var stage			=	new Stage( this, spriteIndex, delay, period, sleep, count, emit );
+			var stage			=	new ParticleStage( this, spriteIndex, delay, period, sleep, count, emit );
 			stages.Add( stage );
 		}
 
 
 
+		protected void AddLightStage ( Vector3 position, Color4 color, float radius, float fadeInRate, float fadeOutRate )
+		{
+			var stage = new LightStage( this, position, color, radius, fadeInRate, fadeOutRate );
+			stages.Add( stage );
+		}
 
+
+		protected void AddSoundStage ( string path, Vector3 position, float radius )
+		{
+			stages.Add( new SoundStage( this, position, radius, path ) );
+		}
+
+		/*-----------------------------------------------------------------------------------------
+		 * 
+		 *	Particle helper functions
+		 * 
+		-----------------------------------------------------------------------------------------*/
 
 		protected static void SetupMotion ( ref Particle p, Vector3 origin, Vector3 velocity, Vector3 accel )
 		{
