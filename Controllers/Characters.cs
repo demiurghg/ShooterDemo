@@ -153,6 +153,12 @@ namespace ShooterDemo.Controllers {
 			controller.HorizontalMotionConstraint.TargetSpeed	=	8.0f;
 
 			controller.TryToJump = jump;
+			
+			if (jump && controller.StanceManager.CurrentStance!=Stance.Crouching) {
+				if (controller.SupportFinder.HasSupport || controller.SupportFinder.HasTraction) {
+					World.SpawnFX( FXEventType.PlayerJump, ent.Position );
+				}
+			}
 			/*if (jump) {
 				controller.Jump();
 			} */

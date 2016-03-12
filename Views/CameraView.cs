@@ -71,12 +71,13 @@ namespace ShooterDemo.Views {
 			}
 
 
+			CalcRecoil( player );
 			CalcBobbing( player, elapsedTime );
 
 			var uc	=	(World.GameClient as ShooterClient).UserCommand;
 
 			var m	= 	Matrix.RotationYawPitchRoll(	
-							uc.Yaw	 + 0, 
+							uc.Yaw	 + bobYaw.Offset, 
 							uc.Pitch + bobPitch.Offset, 
 							uc.Roll	 + bobRoll.Offset
 						);
@@ -116,6 +117,7 @@ namespace ShooterDemo.Views {
 
 		Oscillator bobPitch = new Oscillator(100,20);
 		Oscillator bobRoll	= new Oscillator( 50,10);
+		Oscillator bobYaw	= new Oscillator( 50,10);
 
 		Vector3 oldVelocity = Vector3.Zero;
 		bool oldTraction = true;
@@ -156,6 +158,23 @@ namespace ShooterDemo.Views {
 		float stepCounter;
 		bool rlStep;
 
+		Random rand = new Random();
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="player"></param>
+		void CalcRecoil ( Entity player )
+		{
+			if (player.State.HasFlag( EntityState.WeaponRecoilLight )) {
+				bobPitch.Kick( rand.NextFloat(-0.25f, 0.25f) );
+				bobYaw.Kick( rand.NextFloat(-0.25f,0.25f) );
+				bobRoll.Kick( rand.NextFloat(-0.25f,0.25f) );
+			}
+		}
+
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -168,6 +187,12 @@ namespace ShooterDemo.Views {
 
 			if (hasTraction && !oldTraction) {
 				bobPitch.Kick( -clientCfg.BobLand * Math.Abs(oldVelocity.Y/10.0f) );
+
+				if (oldVelocity.Y<-10) {
+					World.RunFX( new FXEvent( FXEventType.PlayerLanding, player.Position, Vector3.Zero, Vector3.Up ) );
+				} else {
+					World.RunFX( new FXEvent( FXEventType.PlayerFootStep, player.Position, Vector3.Zero, Vector3.Up ) );
+				}
 			}
 
 			oldVelocity	=	player.LinearVelocity;
@@ -181,11 +206,13 @@ namespace ShooterDemo.Views {
 				stepCounter -= elapsedTime;
 
 				if (stepCounter<0) {
-					stepCounter = 0.25f;
+					stepCounter = 0.30f;
+
 
 					rlStep = !rlStep;
 
 					if (hasTraction) {
+						World.RunFX( new FXEvent( FXEventType.PlayerFootStep, player.Position, Vector3.Zero, Vector3.Up ) );
 						bobRoll.Kick( (rlStep ? 1 : -1) * clientCfg.BobRoll );
 						bobPitch.Kick( clientCfg.BobPitch );
 					}
@@ -211,6 +238,7 @@ namespace ShooterDemo.Views {
 
 			bobRoll.Update( elapsedTime );
 			bobPitch.Update( elapsedTime );
+			bobYaw.Update( elapsedTime );
 
 			
 		}

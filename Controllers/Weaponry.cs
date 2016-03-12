@@ -91,6 +91,9 @@ namespace ShooterDemo.Controllers {
 			cooldown		=   (short)Math.Max( 0, cooldown - deltaTime );
 
 			entity.SetItemCount( Inventory.WeaponCooldown, cooldown );
+			entity.State &= ~EntityState.WeaponRecoilLight;
+			entity.State &= ~EntityState.WeaponRecoilMedium;
+			entity.State &= ~EntityState.WeaponRecoilHeavy;
 
 			//	weapon is too hot :
 			if (cooldown>0) {
@@ -146,6 +149,8 @@ namespace ShooterDemo.Controllers {
 			if (!attacker.ConsumeItem( Inventory.Bullets, 1 )) {
 				return;
 			}
+
+			attacker.State |= EntityState.WeaponRecoilLight;
 
 			var view	=	Matrix.RotationQuaternion( attacker.Rotation );
 			Vector3 n,p;

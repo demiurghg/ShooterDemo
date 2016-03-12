@@ -361,6 +361,17 @@ namespace ShooterDemo.Core {
 
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fxType"></param>
+		public void RunFX ( FXEvent fxEvent )
+		{
+			sfxSystem.RunFX( fxEvent );
+		}
+
+
+
+		/// <summary>
 		/// Check whether entity with id is dead.
 		/// </summary>
 		/// <param name="id"></param>
@@ -616,7 +627,7 @@ namespace ShooterDemo.Core {
 			for (int i=0; i<count; i++) {
 				var fxe = new FXEvent();
 				fxe.Read( reader );
-				sfxSystem.RunFX( fxe );
+				RunFX( fxe );
 			}
 		}
 	}
