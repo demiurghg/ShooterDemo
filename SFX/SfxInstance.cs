@@ -190,8 +190,10 @@ namespace ShooterDemo.SFX {
 
 		protected void	SetupAngles	( ref Particle p, float angularLength )
 		{
-			p.Rotation0	=	rand.NextFloat(0,1) * MathUtil.TwoPi;
-			p.Rotation1	=	p.Rotation0 + MathUtil.DegreesToRadians(angularLength) * rand.NextFloat(0,1)>0.5 ? 1 : -1;
+			float angle0	=	rand.NextFloat(0,1) * MathUtil.TwoPi;
+			float angle1	=	angle0 + MathUtil.DegreesToRadians(angularLength) * (rand.NextFloat(0,1)>0.5 ? 1 : -1);
+			p.Rotation0		=	angle0;
+			p.Rotation1		=	angle1;
 		} 
 
 		protected void	SetupAnglesAbs	( ref Particle p, float angularLength )

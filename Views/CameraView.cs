@@ -168,9 +168,9 @@ namespace ShooterDemo.Views {
 		void CalcRecoil ( Entity player )
 		{
 			if (player.State.HasFlag( EntityState.WeaponRecoilLight )) {
-				bobPitch.Kick( rand.NextFloat(-0.25f, 0.25f) );
-				bobYaw.Kick( rand.NextFloat(-0.25f,0.25f) );
-				bobRoll.Kick( rand.NextFloat(-0.25f,0.25f) );
+				bobPitch.Kick( rand.NextFloat(-0.25f,0.25f) );
+				bobYaw  .Kick( rand.NextFloat(-0.25f,0.25f) );
+				bobRoll .Kick( rand.NextFloat(-0.25f,0.25f) );
 			}
 		}
 

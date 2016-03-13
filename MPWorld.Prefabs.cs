@@ -26,9 +26,9 @@ namespace ShooterDemo {
 		/// </summary>
 		void InitializePrefabs ()
 		{
+			AddController( new Weaponry(this) );
 			AddController( new Characters(this, PhysSpace) );
 			AddController( new RigidBody(this, PhysSpace) );
-			AddController( new Weaponry(this) );
 
 			AddView( new ModelView(this) );
 			AddView( new CameraView(this) );
