@@ -74,7 +74,9 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override void LoadContent ( string map )
 		{
-			TargetFrameRate	=	Config.TargetFrameRate;			
+			TargetFrameRate	=	Config.TargetFrameRate;		
+
+			SFX.SfxInstance.EnumerateSFX( (t) => Atoms.Add( t.Name ) );			
 
 			gameWorld	=	new MPWorld( this, map );
 			Thread.Sleep(100);
