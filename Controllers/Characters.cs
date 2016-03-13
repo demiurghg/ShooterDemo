@@ -156,7 +156,7 @@ namespace ShooterDemo.Controllers {
 			
 			if (jump && controller.StanceManager.CurrentStance!=Stance.Crouching) {
 				if (controller.SupportFinder.HasSupport || controller.SupportFinder.HasTraction) {
-					World.SpawnFX( FXEventType.PlayerJump, ent.Position );
+					World.SpawnFX( "PlayerJump", ent.ID, ent.Position );
 				}
 			}
 			/*if (jump) {

@@ -12,10 +12,9 @@ using ShooterDemo.Core;
 using Fusion.Engine.Graphics;
 
 namespace ShooterDemo.SFX.WeaponFX {
-	[Sfx(FXEventType.PlayerFootStep)]
-	class FootStep : SfxInstance {
+	class PlayerFootStep : SfxInstance {
 		
-		public FootStep ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
+		public PlayerFootStep ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
 			var name = "foot" + rand.Next(0,6);
 			AddSoundStage( @"sound\character\" + name,	fxEvent.Origin, 4 );

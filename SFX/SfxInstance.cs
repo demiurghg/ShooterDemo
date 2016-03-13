@@ -97,6 +97,18 @@ namespace ShooterDemo.SFX {
 		}
 
 
+
+		/// <summary>
+		/// Enumerates all SFX instance classes.
+		/// </summary>
+		/// <param name="action"></param>
+		public static void EnumerateSFX ( Action<Type> action )
+		{
+			foreach ( var type in Misc.GetAllSubclassesOf( typeof(SfxInstance), false ) ) {
+				action(type);
+			}
+		}
+
 		/*-----------------------------------------------------------------------------------------
 		 * 
 		 *	Stage creation functions :

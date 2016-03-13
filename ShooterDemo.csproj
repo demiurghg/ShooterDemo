@@ -55,7 +55,6 @@
     <Compile Include="Commands\ShowWorldState.cs" />
     <Compile Include="Controllers\Characters.cs" />
     <Compile Include="Controllers\Weaponry.cs" />
-    <Compile Include="Core\FXEventType.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\FXEvent.cs" />
     <Compile Include="MPWorld.Casting.cs" />
@@ -66,11 +65,10 @@
     <Compile Include="SFX\SfxInstance.LightStage.cs" />
     <Compile Include="SFX\SfxInstance.ParticleStage.cs" />
     <Compile Include="SFX\SfxInstance.cs" />
-    <Compile Include="SFX\SfxAttribute.cs" />
     <Compile Include="SFX\WeaponFX\BulletTrail.cs" />
-    <Compile Include="SFX\WeaponFX\LandGroan.cs" />
-    <Compile Include="SFX\WeaponFX\JumpGroan.cs" />
-    <Compile Include="SFX\WeaponFX\FootStep.cs" />
+    <Compile Include="SFX\WeaponFX\PlayerLanding.cs" />
+    <Compile Include="SFX\WeaponFX\PlayerJump.cs" />
+    <Compile Include="SFX\WeaponFX\PlayerFootStep.cs" />
     <Compile Include="ShooterServerConfig.cs" />
     <Compile Include="Core\EntityEventArgs.cs" />
     <Compile Include="ShooterClientConfig.cs" />

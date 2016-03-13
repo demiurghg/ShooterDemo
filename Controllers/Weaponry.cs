@@ -161,13 +161,13 @@ namespace ShooterDemo.Controllers {
 
 			if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {
 
-				world.SpawnFX( FXEventType.BulletTrail, origin, p, n );
+				world.SpawnFX( "BulletTrail", attacker.ID, origin, p, n );
 
 				if (e!=null) {
 					e.Kick( view.Forward * impulse, p );
 				}
 			} else {
-				world.SpawnFX( FXEventType.BulletTrail, origin, origin + direction * 400, Vector3.Up );
+				world.SpawnFX( "BulletTrail", attacker.ID, origin, origin + direction * 400, Vector3.Up );
 			}
 
 			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );

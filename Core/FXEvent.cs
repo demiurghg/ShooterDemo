@@ -17,7 +17,13 @@ namespace ShooterDemo.Core {
 		/// <summary>
 		/// FX Event type.
 		/// </summary>
-		public FXEventType FXType;
+		public short FXAtomID;
+
+		
+		/// <summary>
+		/// Parent entity ID
+		/// </summary>
+		public uint ParentID;
 
 		/// <summary>
 		/// FX Event source position.
@@ -54,9 +60,9 @@ namespace ShooterDemo.Core {
 		/// <param name="position"></param>
 		/// <param name="target"></param>
 		/// <param name="orient"></param>
-		public FXEvent ( FXEventType fxType, Vector3 origin, Vector3 target, Vector3 normal )
+		public FXEvent ( short fxAtomID, uint parentID, Vector3 origin, Vector3 target, Vector3 normal )
 		{
-			this.FXType		=	fxType;
+			this.FXAtomID	=	fxAtomID;
 			this.Origin		=	origin;
 			this.Target		=	target;
 			this.Normal		=	normal.Normalized();
@@ -69,7 +75,8 @@ namespace ShooterDemo.Core {
 		/// <param name="writer"></param>
 		public void Write ( BinaryWriter writer )
 		{
-			writer.Write( (uint)FXType );
+			writer.Write( FXAtomID );
+			writer.Write( ParentID );
 			writer.Write( Origin );
 			writer.Write( Target );
 			writer.Write( Normal );
@@ -82,10 +89,11 @@ namespace ShooterDemo.Core {
 		/// <param name="reader"></param>
 		public void Read ( BinaryReader reader )
 		{
-			FXType	=	(FXEventType)reader.ReadUInt32();
-			Origin	=	reader.Read<Vector3>();
-			Target	=	reader.Read<Vector3>();
-			Normal	=	reader.Read<Vector3>();
+			FXAtomID	=	reader.ReadInt16();
+			ParentID	=	reader.ReadUInt32();
+			Origin		=	reader.Read<Vector3>();
+			Target		=	reader.Read<Vector3>();
+			Normal		=	reader.Read<Vector3>();
 		}
 	}
 }

@@ -12,7 +12,6 @@ using ShooterDemo.Core;
 using Fusion.Engine.Graphics;
 
 namespace ShooterDemo.SFX.WeaponFX {
-	[Sfx(FXEventType.BulletTrail)]
 	class BulletTrail : SfxInstance {
 		
 		public BulletTrail ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)

@@ -27,10 +27,11 @@ namespace ShooterDemo.SFX {
 		public readonly RenderWorld	rw;
 		public readonly SoundWorld	sw;
 
-		Dictionary<FXEventType, Type> fxDictionary;
 		List<SfxInstance> runningSFXes = new List<SfxInstance>();
 
 		float timeAccumulator = 0;
+
+		Dictionary<string,Type> sfxDict = new Dictionary<string,Type>();
 
 		/// <summary>
 		/// 
@@ -43,11 +44,10 @@ namespace ShooterDemo.SFX {
 			this.rw		=	game.RenderSystem.RenderWorld;
 			this.sw		=	game.SoundSystem.SoundWorld;
 
-			fxDictionary	=	Misc.GetAllClassesWithAttribute<SfxAttribute>()
-									.ToDictionary( t1 => t1.GetCustomAttribute<SfxAttribute>().FXType );
-
 			Game_Reloading(this, EventArgs.Empty);
 			game.Reloading +=	Game_Reloading;
+
+			SfxInstance.EnumerateSFX( type => sfxDict.Add( type.Name, type ) );
 		}
 
 
@@ -135,15 +135,30 @@ namespace ShooterDemo.SFX {
 		/// <param name="fxEvent"></param>
 		public void RunFX ( FXEvent fxEvent )
 		{
-			Type type;
+			var fxAtomID	=	fxEvent.FXAtomID;
 
-			if (fxDictionary.TryGetValue( fxEvent.FXType, out type )) {
+			if (fxAtomID<0) {
+				Log.Warning("RunFX: negative atom ID");
+				return;
+			}
+
+			var className = client.Atoms[ fxAtomID ];
+
+			if (className==null) {
+				Log.Warning("RunFX: bad atom ID");
+				return;
+			}
+
+
+			Type fxType;
+
+			if (sfxDict.TryGetValue( className, out fxType )) {
 				
-				var sfx = (SfxInstance)Activator.CreateInstance( type, this, fxEvent );
+				var sfx = (SfxInstance)Activator.CreateInstance( fxType, this, fxEvent );
 				runningSFXes.Add( sfx );
 
 			} else {
-				Log.Warning("Unhandled FX event: {0}", fxEvent.FXType );
+				Log.Warning("RunFX: Bad FX type name: {0}", className );
 			}
 		}
 	}

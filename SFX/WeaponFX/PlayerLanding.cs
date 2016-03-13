@@ -12,10 +12,9 @@ using ShooterDemo.Core;
 using Fusion.Engine.Graphics;
 
 namespace ShooterDemo.SFX.WeaponFX {
-	[Sfx(FXEventType.PlayerLanding)]
-	class LandGroan : SfxInstance {
+	class PlayerLanding : SfxInstance {
 		
-		public LandGroan ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
+		public PlayerLanding ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
 			AddSoundStage( @"sound\character\fall0", fxEvent.Origin, 4 );
 		}

@@ -12,10 +12,9 @@ using ShooterDemo.Core;
 using Fusion.Engine.Graphics;
 
 namespace ShooterDemo.SFX.WeaponFX {
-	[Sfx(FXEventType.PlayerJump)]
-	class JumpGroan : SfxInstance {
+	class PlayerJump : SfxInstance {
 		
-		public JumpGroan ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
+		public PlayerJump ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
 			AddSoundStage( @"sound\character\jump",	fxEvent.Origin, 4 );
 		}

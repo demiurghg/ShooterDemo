@@ -189,9 +189,9 @@ namespace ShooterDemo.Views {
 				bobPitch.Kick( -clientCfg.BobLand * Math.Abs(oldVelocity.Y/10.0f) );
 
 				if (oldVelocity.Y<-10) {
-					World.RunFX( new FXEvent( FXEventType.PlayerLanding, player.Position, Vector3.Zero, Vector3.Up ) );
+					World.RunFX( "PlayerLanding", 0, player.Position );
 				} else {
-					World.RunFX( new FXEvent( FXEventType.PlayerFootStep, player.Position, Vector3.Zero, Vector3.Up ) );
+					World.RunFX( "PlayerFootStep", 0, player.Position );
 				}
 			}
 
@@ -212,7 +212,7 @@ namespace ShooterDemo.Views {
 					rlStep = !rlStep;
 
 					if (hasTraction) {
-						World.RunFX( new FXEvent( FXEventType.PlayerFootStep, player.Position, Vector3.Zero, Vector3.Up ) );
+						World.RunFX( "PlayerFootStep", 0, player.Position );
 						bobRoll.Kick( (rlStep ? 1 : -1) * clientCfg.BobRoll );
 						bobPitch.Kick( clientCfg.BobPitch );
 					}

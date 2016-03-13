@@ -339,9 +339,15 @@ namespace ShooterDemo.Core {
 		/// <param name="position"></param>
 		/// <param name="target"></param>
 		/// <param name="orient"></param>
-		public void SpawnFX ( FXEventType fxType, Vector3 origin, Vector3 target, Vector3 normal )
+		public void SpawnFX ( string fxName, uint parentID, Vector3 origin, Vector3 target, Vector3 normal )
 		{
-			fxEvents.Add( new FXEvent(fxType, origin, target, normal ) );
+			var fxID = GameServer.Atoms[ fxName ];
+
+			if (fxID<0) {
+				Log.Warning("SpawnFX: bad atom {0}", fxName);
+			}
+
+			fxEvents.Add( new FXEvent(fxID, parentID, origin, target, normal ) );
 		}
 
 
@@ -353,9 +359,9 @@ namespace ShooterDemo.Core {
 		/// <param name="position"></param>
 		/// <param name="target"></param>
 		/// <param name="orient"></param>
-		public void SpawnFX ( FXEventType fxType, Vector3 origin )
+		public void SpawnFX ( string fxName, uint parentID, Vector3 origin )
 		{
-			fxEvents.Add( new FXEvent(fxType, origin, origin, Vector3.Up ) );
+			SpawnFX( fxName, parentID, origin, origin, Vector3.Up );
 		}
 
 
@@ -367,6 +373,18 @@ namespace ShooterDemo.Core {
 		public void RunFX ( FXEvent fxEvent )
 		{
 			sfxSystem.RunFX( fxEvent );
+		}
+
+
+		public void RunFX ( string fxName, uint parentID, Vector3 origin )
+		{
+			var fxID = GameClient.Atoms[ fxName ];
+
+			if (fxID<0) {
+				Log.Warning("RunFX: bad atom {0}", fxName);
+			}
+
+			RunFX( new FXEvent(fxID, parentID, origin, origin, Vector3.Up ) );
 		}
 
 
