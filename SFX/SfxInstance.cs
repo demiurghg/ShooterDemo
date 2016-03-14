@@ -15,6 +15,7 @@ using Fusion.Engine.Server;
 using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
 using Fusion.Engine.Audio;
+using ShooterDemo.Views;
 
 
 namespace ShooterDemo.SFX {
@@ -35,6 +36,8 @@ namespace ShooterDemo.SFX {
 		readonly List<Stage> stages = new List<Stage>();
 
 		protected FXEvent	fxEvent;
+
+
 
 
 		/// <summary>
@@ -107,6 +110,19 @@ namespace ShooterDemo.SFX {
 			foreach ( var type in Misc.GetAllSubclassesOf( typeof(SfxInstance), false ) ) {
 				action(type);
 			}
+		}
+
+
+
+		/// <summary>
+		/// Shakes camera associated with parent entity only.
+		/// </summary>
+		/// <param name="yaw"></param>
+		/// <param name="pitch"></param>
+		/// <param name="roll"></param>
+		public void ShakeCamera ( float yaw, float pitch, float roll )
+		{
+			sfxSystem.world.GetView<CameraView>().Shake( fxEvent.ParentID, yaw, pitch, roll );
 		}
 
 		/*-----------------------------------------------------------------------------------------

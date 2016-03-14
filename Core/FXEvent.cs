@@ -63,6 +63,7 @@ namespace ShooterDemo.Core {
 		public FXEvent ( short fxAtomID, uint parentID, Vector3 origin, Vector3 target, Vector3 normal )
 		{
 			this.FXAtomID	=	fxAtomID;
+			this.ParentID	=	parentID;
 			this.Origin		=	origin;
 			this.Target		=	target;
 			this.Normal		=	normal.Normalized();

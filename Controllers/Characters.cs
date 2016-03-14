@@ -19,9 +19,27 @@ using BEPUphysics.Character;
 
 
 namespace ShooterDemo.Controllers {
-	public class Characters : EntityController<CharacterController> {
+	public class Characters : EntityController<Characters.Character> {
 
 		readonly Space space;
+
+
+		const float StepRate = 0.3f;
+
+
+		public class Character {
+
+			public Character ( CharacterController controller ) {
+				this.Controller = controller;
+			}
+			
+			readonly public CharacterController Controller;
+			public float StepCounter;
+			public bool	 RLStep;
+			public bool	 OldTraction = true;
+			public Vector3 OldVelocity = Vector3.Zero;
+		}
+
 
 		/// <summary>
 		/// 
@@ -41,7 +59,9 @@ namespace ShooterDemo.Controllers {
 		/// <param name="gameTime"></param>
 		public override void Update ( float elapsedTime, bool dirty )
 		{
-			IterateObjects( dirty, (d,e,c) => {
+			IterateObjects( dirty, (d,e,ch) => {
+
+				var c = ch.Controller;
 
 				if (dirty) {
 
@@ -70,9 +90,59 @@ namespace ShooterDemo.Controllers {
 						e.State &= ~EntityState.HasTraction;
 					}
 				}
+
+				UpdateWalkSFX( e, ch, elapsedTime );
+				UpdateFallSFX( e, ch, elapsedTime );
 			});
 		}
 
+
+
+		void UpdateWalkSFX ( Entity e, Character ch, float elapsedTime )
+		{					
+			ch.StepCounter -= elapsedTime;
+			if (ch.StepCounter<=0) {
+				ch.StepCounter = StepRate;
+				ch.RLStep = !ch.RLStep;
+
+				bool step	=	e.UserCtrlFlags.HasFlag( UserCtrlFlags.Forward )
+							|	e.UserCtrlFlags.HasFlag( UserCtrlFlags.Backward )
+							|	e.UserCtrlFlags.HasFlag( UserCtrlFlags.StrafeLeft )
+							|	e.UserCtrlFlags.HasFlag( UserCtrlFlags.StrafeRight );
+
+				if (step && ch.Controller.SupportFinder.HasTraction) {
+					if (ch.RLStep) {
+						World.SpawnFX("PlayerFootStepR", e.ID, e.Position );
+					} else {
+						World.SpawnFX("PlayerFootStepL", e.ID, e.Position );
+					}
+				}
+			}
+		}
+
+
+
+		void UpdateFallSFX ( Entity e, Character ch, float elapsedTime )
+		{
+			bool newTraction = ch.Controller.SupportFinder.HasTraction;
+			
+			if (ch.OldTraction!=newTraction && newTraction) {
+				if (((ShooterServer)World.GameServer).Config.ShowFallings) {
+					Log.Verbose("{0} falls : {1}", e.ID, ch.OldVelocity.Y );
+				}
+
+				if (ch.OldVelocity.Y<-10) {
+					//	medium landing :
+					World.SpawnFX( "PlayerLanding", e.ID, e.Position, ch.OldVelocity, Vector3.Up );
+				} else {
+					//	light landing :
+					World.SpawnFX( "PlayerFootStepL", e.ID, e.Position );
+				}
+			}
+
+			ch.OldTraction = newTraction;
+			ch.OldVelocity = MathConverter.Convert(ch.Controller.Body.LinearVelocity);
+		}
 
 		#if false
 		/// <summary>
@@ -119,10 +189,10 @@ namespace ShooterDemo.Controllers {
 		/// <param name="id"></param>
 		public override void Kill ( uint id )
 		{
-			CharacterController controller;
+			Character character;
 			
-			if ( RemoveObject( id, out controller ) ) {
-				space.Remove( controller );
+			if ( RemoveObject( id, out character ) ) {
+				space.Remove( character.Controller );
 			}
 		}
 
@@ -215,7 +285,7 @@ namespace ShooterDemo.Controllers {
 
 			space.Add( controller );
 
-			AddObject( entity.ID, controller );
+			AddObject( entity.ID, new Character(controller) );
 		}
 	}
 }

@@ -23,6 +23,10 @@ namespace ShooterDemo {
 
 		public int SimulateDelay { get; set; }
 
+		public bool ShowFootSteps { get; set; }
+
+		public bool ShowFallings { get; set; }
+
 
 
 		public ShooterServerConfig()

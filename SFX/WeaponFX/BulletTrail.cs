@@ -16,6 +16,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 		
 		public BulletTrail ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
+			ShakeCamera( rand.GaussDistribution(0,10), rand.GaussDistribution(0,10), rand.GaussDistribution(0,10) );
+
 			AddParticleStage("bulletSpark", 0, 0f, 0.1f, 30, EmitSpark );
 
 			//AddParticleStage("explosionSmoke", 0, 0.1f, 1f, 15, EmitSmoke );

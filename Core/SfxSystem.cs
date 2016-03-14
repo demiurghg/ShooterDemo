@@ -15,6 +15,7 @@ using Fusion.Engine.Server;
 using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
 using Fusion.Engine.Audio;
+using ShooterDemo.Views;
 
 
 namespace ShooterDemo.SFX {
@@ -23,9 +24,10 @@ namespace ShooterDemo.SFX {
 		TextureAtlas spriteSheet;
 
 		readonly Game			game;
-		readonly ShooterClient	client;
+		public readonly ShooterClient	client;
 		public readonly RenderWorld	rw;
 		public readonly SoundWorld	sw;
+		public readonly World world;
 
 		List<SfxInstance> runningSFXes = new List<SfxInstance>();
 
@@ -33,12 +35,14 @@ namespace ShooterDemo.SFX {
 
 		Dictionary<string,Type> sfxDict = new Dictionary<string,Type>();
 
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="game"></param>
-		public SfxSystem ( ShooterClient client )
+		public SfxSystem ( ShooterClient client, World world )
 		{
+			this.world	=	world;
 			this.client	=	client;
 			this.game	=	client.Game;
 			this.rw		=	game.RenderSystem.RenderWorld;

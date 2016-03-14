@@ -91,9 +91,6 @@ namespace ShooterDemo.Controllers {
 			cooldown		=   (short)Math.Max( 0, cooldown - deltaTime );
 
 			entity.SetItemCount( Inventory.WeaponCooldown, cooldown );
-			entity.State &= ~EntityState.WeaponRecoilLight;
-			entity.State &= ~EntityState.WeaponRecoilMedium;
-			entity.State &= ~EntityState.WeaponRecoilHeavy;
 
 			//	weapon is too hot :
 			if (cooldown>0) {
@@ -150,13 +147,11 @@ namespace ShooterDemo.Controllers {
 				return;
 			}
 
-			attacker.State |= EntityState.WeaponRecoilLight;
-
 			var view	=	Matrix.RotationQuaternion( attacker.Rotation );
 			Vector3 n,p;
 			Entity e;
 
-			var direction	=	view.Forward + rand.UniformRadialDistribution(0, 0.02f);
+			var direction	=	view.Forward + rand.UniformRadialDistribution(0, 0.03f);
 			var origin		=	AttackPos( attacker );
 
 			if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {

@@ -129,7 +129,7 @@ namespace ShooterDemo.Core {
 			this.UserGuid	=	client.Guid;
 			Content			=	client.Content;
 			entities		=	new Dictionary<uint,Entity>();
-			sfxSystem		=	new SFX.SfxSystem((ShooterClient)client);
+			sfxSystem		=	new SFX.SfxSystem((ShooterClient)client, this);
 		}
 
 

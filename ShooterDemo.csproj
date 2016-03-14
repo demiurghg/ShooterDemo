@@ -57,9 +57,11 @@
     <Compile Include="Controllers\Weaponry.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\FXEvent.cs" />
+    <Compile Include="Core\Oscillator.cs" />
     <Compile Include="MPWorld.Casting.cs" />
     <Compile Include="Core\EntityState.cs" />
     <Compile Include="Core\Filter.cs" />
+    <Compile Include="SFX\SfxInstance.ShakeStage.cs" />
     <Compile Include="SFX\SfxInstance.Stage.cs" />
     <Compile Include="SFX\SfxInstance.SoundStage.cs" />
     <Compile Include="SFX\SfxInstance.LightStage.cs" />
