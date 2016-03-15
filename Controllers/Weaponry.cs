@@ -61,8 +61,11 @@ namespace ShooterDemo.Controllers {
 			AddObject( entity.ID, null );
 
 			entity.ActiveItem	=	Inventory.Machinegun;
-			entity.SetItemCount( Inventory.Bullets		,	150	);
-			entity.SetItemCount( Inventory.Machinegun	,	1	);
+			entity.SetItemCount( Inventory.Bullets			,	999	);
+			entity.SetItemCount( Inventory.Machinegun		,	1	);
+
+			entity.SetItemCount( Inventory.Rockets			,	150	);
+			entity.SetItemCount( Inventory.RocketLauncher	,	1	);
 
 		}
 
@@ -115,7 +118,7 @@ namespace ShooterDemo.Controllers {
 					case Inventory.Shotgun			:	break;
 					case Inventory.SuperShotgun		:	break;
 					case Inventory.GrenadeLauncher	:	break;
-					case Inventory.RocketLauncher	:	break;
+					case Inventory.RocketLauncher	:	FireRocket(world, entity, 300); break;
 					case Inventory.HyperBlaster		:	break;
 					case Inventory.Chaingun			:	break;
 					case Inventory.Railgun			:	break;
@@ -132,6 +135,19 @@ namespace ShooterDemo.Controllers {
 		Vector3 AttackPos ( Entity e )
 		{
 			return e.Position + Vector3.Up;
+		}
+
+
+
+		void FireRocket( MPWorld world, Entity attacker, short cooldown )
+		{
+			if (!attacker.ConsumeItem( Inventory.Rockets, 1 )) {
+				return;
+			}
+
+			var e = world.Spawn( "rocket", attacker.ID, AttackPos(attacker), attacker.Rotation );
+
+			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );
 		}
 
 

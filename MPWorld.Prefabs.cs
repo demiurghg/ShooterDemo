@@ -27,6 +27,7 @@ namespace ShooterDemo {
 		void InitializePrefabs ()
 		{
 			AddController( new Weaponry(this) );
+			AddController( new Projectiles(this, PhysSpace) );
 			AddController( new Characters(this, PhysSpace) );
 			AddController( new RigidBody(this, PhysSpace) );
 
@@ -38,6 +39,8 @@ namespace ShooterDemo {
 			AddPrefab( "startPoint"	, PrefabDummy	);
 			AddPrefab( "player"		, PrefabPlayer	);
 			AddPrefab( "box"		, PrefabBox		);
+			AddPrefab( "rocket"		, PrefabRocket	);
+			AddPrefab( "explosion"	, PrefabExplosion );
 		}
 
 
@@ -75,6 +78,23 @@ namespace ShooterDemo {
 
 			entity.SetItemCount( Inventory.Health	,	100	);
 			entity.SetItemCount( Inventory.Armor	,	0	);
+		}
+
+
+
+		public static void PrefabRocket ( World world, Entity entity )
+		{
+			world.GetController<Projectiles>().AddProjectile( entity, "Explosion", 30, 5, 100, 20, 5 );
+			
+			if (world.IsClientSide) {
+				world.GetView<ModelView>().AddModel( entity, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity );
+			}
+		}
+
+
+
+		public static void PrefabExplosion ( World world, Entity entity )
+		{
 		}
 
 

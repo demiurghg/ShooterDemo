@@ -167,11 +167,13 @@ namespace ShooterDemo.SFX {
 		 * 
 		-----------------------------------------------------------------------------------------*/
 
-		protected static void SetupMotion ( ref Particle p, Vector3 origin, Vector3 velocity, Vector3 accel )
+		protected static void SetupMotion ( ref Particle p, Vector3 origin, Vector3 velocity, Vector3 accel, float damping=0, float gravity=0 )
 		{
 			p.Position		=	origin;
 			p.Velocity		=	velocity;
 			p.Acceleration	=	accel;
+			p.Damping		=	damping;
+			p.Gravity		=	gravity;
 		}
 
 

@@ -113,7 +113,7 @@ namespace ShooterDemo.Core {
 		/// Used to spawn entity on server side.
 		/// </summary>
 		/// <param name="id"></param>
-		public Entity ( uint id, uint prefabId, uint parentId, Vector3 position, float yaw )
+		public Entity ( uint id, uint prefabId, uint parentId, Vector3 position, Quaternion rotation )
 		{
 			this.ID		=	id;
 
@@ -126,7 +126,7 @@ namespace ShooterDemo.Core {
 			PrefabID		=	prefabId;
 			ParentID		=	parentId;
 
-			Rotation		=	Quaternion.RotationYawPitchRoll( yaw, 0, 0 );
+			Rotation		=	rotation;
 			UserCtrlFlags	=	UserCtrlFlags.None;
 			Position		=	position;
 			PositionOld		=	position;
@@ -196,7 +196,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="position"></param>
 		/// <param name="orient"></param>
-		void Move ( Vector3 position, Quaternion orient )
+		public void Move ( Vector3 position, Quaternion orient )
 		{
 			Position		=	position;
 			Rotation		=	orient;

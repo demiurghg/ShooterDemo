@@ -31,6 +31,7 @@ namespace ShooterDemo.Core {
 		List<IEntityController> controllers = new List<IEntityController>();
 
 		Dictionary<uint, Prefab> prefabs = new Dictionary<uint,Prefab>();
+		List<uint> entityToKill = new List<uint>();
 
 		public Dictionary<uint, Entity> entities;
 		uint idCounter = 1;
@@ -253,11 +254,14 @@ namespace ShooterDemo.Core {
 			//
 			//	Control entities :
 			//
-			//if (IsServerSide) {
-				foreach ( var controller in controllers ) {
-					controller.Update( deltaTime, snapshotDirty && IsClientSide );
-				}
-			//}
+			foreach ( var controller in controllers ) {
+				controller.Update( deltaTime, snapshotDirty && IsClientSide );
+			}
+
+			//
+			//	Kill entities :
+			//
+			CommitKilledEntities();
 		}
 
 
@@ -272,9 +276,6 @@ namespace ShooterDemo.Core {
 		public virtual void PresentWorld ( float deltaTime, float lerpFactor )
 		{
 			var dr = Game.RenderSystem.RenderWorld.Debug;
-
-			//ForEachEntity( e => dr.Trace( e.Position, 0.25f, new Color(0,0,0,128) ) );
-			//ForEachEntity( e => dr.Trace( e.LerpPosition(lerpFactor), 0.05f, new Color(255,255,0,255) ) );
 
 
 			if (IsClientSide) {
@@ -298,7 +299,7 @@ namespace ShooterDemo.Core {
 		/// <param name="origin"></param>
 		/// <param name="angles"></param>
 		/// <returns></returns>
-		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, float yaw )
+		public Entity Spawn ( string prefab, uint parentId, Vector3 origin, Quaternion orient )
 		{
 			//	due to server reconciliation
 			//	never create entities on client-side:
@@ -319,7 +320,7 @@ namespace ShooterDemo.Core {
 
 			uint prefabId = Factory.GetPrefabID( prefab );
 
-			var entity = new Entity(id, prefabId, parentId, origin, yaw);
+			var entity = new Entity(id, prefabId, parentId, origin, orient);
 
 			entities.Add( id, entity );
 
@@ -330,6 +331,12 @@ namespace ShooterDemo.Core {
 			return entity;
 		}
 
+
+
+		public Entity Spawn( string prefab, uint parentId, Vector3 origin, float yaw )
+		{
+			return Spawn( prefab, parentId, origin, Quaternion.RotationYawPitchRoll( yaw,0,0 ) );
+		}
 
 
 		/// <summary>
@@ -409,7 +416,12 @@ namespace ShooterDemo.Core {
 		/// <returns></returns>
 		public Entity GetEntity ( uint id )
 		{
-			return entities[ id ];
+			Entity e;
+			if (entities.TryGetValue( id, out e )) {
+				return e;
+			} else {
+				return null;
+			}
 		}
 
 
@@ -454,19 +466,21 @@ namespace ShooterDemo.Core {
 
 
 
+		void CommitKilledEntities ()
+		{
+			foreach ( var id in entityToKill ) {
+				KillImmediatly( id );
+			}
+			
+			entityToKill.Clear();			
+		}
 
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="id"></param>
-		public void Kill ( uint id )
+		void KillImmediatly ( uint id )
 		{
 			if (id==0) {
 				return;
 			}
-
-			LogTrace("kill: #{0}", id );
 
 			Entity ent;
 
@@ -480,10 +494,19 @@ namespace ShooterDemo.Core {
 				Destruct( ent );
 
 			} else {
-				
 				Log.Warning("Entity #{0} does not exist", id);
-			
 			}
+		}
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="id"></param>
+		public void Kill ( uint id )
+		{
+			LogTrace("kill: #{0}", id );
+			entityToKill.Add( id );
 		}
 
 
@@ -634,7 +657,7 @@ namespace ShooterDemo.Core {
 			var staleIDs = oldIDs.Except( newIDs );
 
 			foreach ( var id in staleIDs ) {
-				Kill( id );
+				KillImmediatly( id );
 			}
 
 

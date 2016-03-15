@@ -111,10 +111,12 @@ namespace ShooterDemo {
 			gameWorld.FinalizeLoad();
 
 			gameWorld.ReplicaSpawned += (s,e) => { 
-				UserCommand.Yaw			=	0;
-				UserCommand.Pitch		=	0;
-				UserCommand.Roll		=	0;
-				UserCommand.CtrlFlags	=	UserCtrlFlags.None;
+				if (e.Entity.UserGuid==Guid) {
+					UserCommand.Yaw			=	0;
+					UserCommand.Pitch		=	0;
+					UserCommand.Roll		=	0;
+					UserCommand.CtrlFlags	=	UserCtrlFlags.None;
+				}
 			};
 
 
