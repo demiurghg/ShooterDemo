@@ -20,8 +20,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 			AddParticleStage("bulletSpark", 0, 0f, 0.1f, 30, EmitSpark );
 																					  
-			AddLightStage( fxEvent.Target + fxEvent.Normal * 0.1f	, new Color4(110,110, 25,1), 1, 100f, 3f );
-			AddLightStage( fxEvent.Origin							, new Color4(110,110, 25,1), 3, 100f, 3f );
+			AddLightStage( fxEvent.Target + fxEvent.Normal * 0.1f	, new Color4(125,110, 35,1), 1, 100f, 3f );
+			AddLightStage( fxEvent.Origin							, new Color4(125,110, 35,1), 3, 100f, 3f );
 
 			AddSoundStage( @"sound\weapon\machineGun2",	fxEvent.Origin, 1 );
 			AddSoundStage( @"sound\weapon\bulletHit",	fxEvent.Target, 1 );

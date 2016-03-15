@@ -16,7 +16,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 		
 		public Explosion ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
-			AddParticleStage("bulletSpark",		0.00f, 0.0f, 0.1f, 1000, EmitSpark );
+			AddParticleStage("bulletSpark",		0.00f, 0.0f, 0.1f,  150, EmitSpark );
 			AddParticleStage("explosionSmoke",	0.10f, 0.1f, 1.0f,   30, EmitSmoke );
 			AddParticleStage("explosionFire",	0.00f, 0.1f, 1.0f,   30, EmitFire );
 
@@ -29,13 +29,13 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 		void EmitSpark ( ref Particle p, Vector3 _pos )
 		{
-			var vel	=	rand.GaussRadialDistribution(0, 8.0f);
-			var pos	=	fxEvent.Origin;
+			var vel	=	rand.GaussRadialDistribution(0, 6.0f) + fxEvent.Normal * 2;
+			var pos	=	fxEvent.Origin + rand.UniformRadialDistribution(1,1) * 0.3f;
 
 			SetupMotion		( ref p, pos, vel, -vel );
 			SetupAngles		( ref p, 160 );
 			SetupColor		( ref p, 500, 0, 1 );
-			SetupTiming		( ref p, 0.25f, 0.01f, 0.9f );
+			SetupTiming		( ref p, 0.2f, 0.01f, 0.9f );
 			SetupSize		( ref p, 0.2f, 0.00f );
 		}
 
@@ -43,13 +43,13 @@ namespace ShooterDemo.SFX.WeaponFX {
 		void EmitSmoke ( ref Particle p, Vector3 _pos )
 		{
 			var dir = 	rand.UniformRadialDistribution(0,1);
-			var vel	=	fxEvent.Normal * dir;
+			var vel	=	dir * 0.5f;
 			var pos	=	fxEvent.Origin + dir;
 
-			SetupMotion		( ref p, pos, vel, Vector3.Zero );
+			SetupMotion		( ref p, pos, vel, -vel*1.5f );
 			SetupAngles		( ref p, 10 );
 			SetupColor		( ref p, 5, 0, 1.0f );
-			SetupTiming		( ref p, 1.5f, 0.1f, 0.1f );
+			SetupTiming		( ref p, 1.5f, 0.2f, 0.2f );
 			SetupSize		( ref p, 1.2f, 2 );
 		}
 
@@ -64,6 +64,20 @@ namespace ShooterDemo.SFX.WeaponFX {
 			SetupColor		( ref p, 2000, 0, 1.0f );
 			SetupTiming		( ref p, 0.4f, 0.01f, 0.8f );
 			SetupSize		( ref p, 2.0f, 2.0f );
+		}
+
+
+		void EmitFire2 ( ref Particle p, Vector3 _pos )
+		{
+			var dir = 	rand.UniformRadialDistribution(0,1);
+			var vel	=	dir * 1.0f;
+			var pos	=	fxEvent.Origin + dir * 0.5f;
+
+			SetupMotion		( ref p, pos, vel, -vel*1.5f );
+			SetupAngles		( ref p, 10 );
+			SetupColor		( ref p, 2000, 0, 1.0f );
+			SetupTiming		( ref p, 0.8f, 0.5f, 0.5f );
+			SetupSize		( ref p, 1.5f, 1.5f );
 		}
 	}
 }
