@@ -88,6 +88,8 @@ namespace ShooterDemo.SFX {
 
 			public override void Update ( float dt, FXEvent fxEvent )
 			{
+				light.Position	=	fxEvent.Origin;
+
 				lightIntensity += dt * lightFadeRate;
 				lightIntensity =  MathUtil.Clamp( lightIntensity, 0, 1 );
 

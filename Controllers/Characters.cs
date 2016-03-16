@@ -80,6 +80,7 @@ namespace ShooterDemo.Controllers {
 				} else {
 
 					if (e.KickImpulse.Length()>0.01f) {
+						c.SupportFinder.ClearSupportData();
 						var i = MathConverter.Convert( e.KickImpulse );
 						var p = MathConverter.Convert( e.KickPoint );
 						c.Body.ApplyImpulse( p, i );
@@ -142,7 +143,7 @@ namespace ShooterDemo.Controllers {
 
 				if (ch.OldVelocity.Y<-10) {
 					//	medium landing :
-					World.SpawnFX( "PlayerLanding", e.ID, e.Position, ch.OldVelocity, Vector3.Up );
+					World.SpawnFX( "PlayerLanding", e.ID, e.Position, ch.OldVelocity, Quaternion.Identity );
 				} else {
 					//	light landing :
 					World.SpawnFX( "PlayerFootStepL", e.ID, e.Position );

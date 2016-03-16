@@ -16,7 +16,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 		
 		public PlayerLanding ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
-			float fallSpeed = Math.Abs(fxEvent.Target.Y);
+			float fallSpeed = Math.Abs(fxEvent.Velocity.Y);
 			ShakeCamera(0, -30 * fallSpeed, rand.GaussDistribution(0, 10*fallSpeed));
 
 			AddSoundStage( @"sound\character\fall0", fxEvent.Origin, 4 );

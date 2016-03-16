@@ -31,12 +31,22 @@ namespace ShooterDemo.SFX {
 		protected readonly RenderWorld rw;
 		protected readonly SoundWorld sw;
 
-		public delegate void EmitFunction ( ref Particle p, Vector3 pos );
+		public delegate void EmitFunction ( ref Particle p, FXEvent fxEvent );
 
 		readonly List<Stage> stages = new List<Stage>();
 
-		protected FXEvent	fxEvent;
+		private FXEvent	fxEvent;
 
+		protected readonly bool looped;
+
+
+		/// <summary>
+		/// Indicates thet SFX is looped.
+		/// </summary>
+		public bool Looped {
+			get;
+			set;
+		}
 
 
 
@@ -79,6 +89,15 @@ namespace ShooterDemo.SFX {
 			foreach ( var stage in stages ) {
 				stage.Update( dt, fxEvent );
 			}
+		}
+
+
+
+		public void Move ( Vector3 position, Vector3 velocity, Quaternion rotation )
+		{
+			fxEvent.Origin		=	position;
+			fxEvent.Velocity	=	velocity;
+			fxEvent.Rotation	=	rotation;
 		}
 
 
@@ -140,10 +159,10 @@ namespace ShooterDemo.SFX {
 		/// <param name="sleep"></param>
 		/// <param name="count"></param>
 		/// <param name="emit"></param>
-		protected void AddParticleStage ( string spriteName, float delay, float period, float sleep, int count, EmitFunction emit )
+		protected void AddParticleStage ( string spriteName, float delay, float period, float sleep, int count, bool looped, EmitFunction emit )
 		{
 			var spriteIndex		=	sfxSystem.GetSpriteIndex( spriteName );
-			var stage			=	new ParticleStage( this, spriteIndex, delay, period, sleep, count, emit );
+			var stage			=	new ParticleStage( this, spriteIndex, delay, period, sleep, count, looped, emit );
 			stages.Add( stage );
 		}
 

@@ -14,22 +14,27 @@ using Fusion.Engine.Graphics;
 namespace ShooterDemo.SFX.WeaponFX {
 	class Explosion : SfxInstance {
 		
+		Vector3 sparkDir;
+		
 		public Explosion ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
-			AddParticleStage("bulletSpark",		0.00f, 0.0f, 0.1f,  150, EmitSpark );
-			AddParticleStage("explosionSmoke",	0.10f, 0.1f, 1.0f,   30, EmitSmoke );
-			AddParticleStage("explosionFire",	0.00f, 0.1f, 1.0f,   30, EmitFire );
+			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
 
-			AddLightStage( fxEvent.Origin + fxEvent.Normal * 0.1f	, new Color4(100, 75, 50,1), 1, 100f, 3f );
+			AddParticleStage("bulletSpark",		0.00f, 0.0f, 0.1f,  150, false, EmitSpark );
+			AddParticleStage("explosionSmoke",	0.10f, 0.1f, 1.0f,   15, false, EmitSmoke );
+			AddParticleStage("explosionSmoke2",	0.10f, 0.1f, 1.0f,   15, false, EmitSmoke );
+			AddParticleStage("explosionFire",	0.00f, 0.1f, 1.0f,   30, false, EmitFire );
+
+			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(200,150,100,1), 3, 100f, 3f );
 
 			AddSoundStage( @"sound\weapon\explosion",	fxEvent.Origin, 1 );
 		}
 
 
 
-		void EmitSpark ( ref Particle p, Vector3 _pos )
+		void EmitSpark ( ref Particle p, FXEvent fxEvent )
 		{
-			var vel	=	rand.GaussRadialDistribution(0, 6.0f) + fxEvent.Normal * 2;
+			var vel	=	rand.GaussRadialDistribution(0, 6.0f) + sparkDir * 2;
 			var pos	=	fxEvent.Origin + rand.UniformRadialDistribution(1,1) * 0.3f;
 
 			SetupMotion		( ref p, pos, vel, -vel );
@@ -40,29 +45,33 @@ namespace ShooterDemo.SFX.WeaponFX {
 		}
 
 
-		void EmitSmoke ( ref Particle p, Vector3 _pos )
+		void EmitSmoke ( ref Particle p, FXEvent fxEvent )
 		{
 			var dir = 	rand.UniformRadialDistribution(0,1);
 			var vel	=	dir * 0.5f;
 			var pos	=	fxEvent.Origin + dir;
 
+			float time	=	rand.NextFloat(1.4f, 1.6f);
+
 			SetupMotion		( ref p, pos, vel, -vel*1.5f );
 			SetupAngles		( ref p, 10 );
 			SetupColor		( ref p, 5, 0, 1.0f );
-			SetupTiming		( ref p, 1.5f, 0.1f, 0.2f );
+			SetupTiming		( ref p, time, 0.1f, 0.2f );
 			SetupSize		( ref p, 1.2f, 2 );
 		}
 
 
-		void EmitFire ( ref Particle p, Vector3 _pos )
+		void EmitFire ( ref Particle p, FXEvent fxEvent )
 		{
 			var vel	=	rand.UniformRadialDistribution(0, 0.5f);
 			var pos	=	fxEvent.Origin + rand.UniformRadialDistribution(1,1) * 0.25f;
 
+			float time	=	rand.NextFloat(0.3f, 0.5f);
+
 			SetupMotion		( ref p, pos, vel, Vector3.Zero );
 			SetupAngles		( ref p, 0 );
 			SetupColor		( ref p, 2000, 0, 1.0f );
-			SetupTiming		( ref p, 0.4f, 0.01f, 0.8f );
+			SetupTiming		( ref p, time, 0.01f, 0.8f );
 			SetupSize		( ref p, 2.0f, 2.0f );
 		}
 	}

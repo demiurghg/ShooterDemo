@@ -12,19 +12,21 @@ using ShooterDemo.Core;
 using Fusion.Engine.Graphics;
 
 namespace ShooterDemo.SFX.WeaponFX {
-	class BulletTrail : SfxInstance {
+	class MZMachinegun : SfxInstance {
 
 		Vector3 sparkDir;
 		
-		public BulletTrail ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
+		public MZMachinegun ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
+			ShakeCamera( rand.GaussDistribution(0,10), rand.GaussDistribution(0,10), rand.GaussDistribution(0,10) );
+
+
 			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
-
-			AddParticleStage("bulletSpark", 0, 0f, 0.1f, 30, false, EmitSpark );
+			//AddParticleStage("bulletSpark", 0, 0f, 0.1f, 30, EmitSpark );
 																					  
-			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(125,110, 35,1), 0.5f, 100f, 3f );
+			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(125,110, 35,1), 1, 100f, 3f );
 
-			AddSoundStage( @"sound\weapon\bulletHit",	fxEvent.Origin, 1 );
+			AddSoundStage( @"sound\weapon\machineGun2",	fxEvent.Origin, 1 );
 		}
 
 

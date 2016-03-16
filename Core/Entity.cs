@@ -196,10 +196,11 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="position"></param>
 		/// <param name="orient"></param>
-		public void Move ( Vector3 position, Quaternion orient )
+		public void Move ( Vector3 position, Quaternion orient, Vector3 velocity )
 		{
 			Position		=	position;
 			Rotation		=	orient;
+			LinearVelocity	=	velocity;
 		}
 
 

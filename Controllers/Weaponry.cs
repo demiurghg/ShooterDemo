@@ -118,7 +118,7 @@ namespace ShooterDemo.Controllers {
 					case Inventory.Shotgun			:	break;
 					case Inventory.SuperShotgun		:	break;
 					case Inventory.GrenadeLauncher	:	break;
-					case Inventory.RocketLauncher	:	FireRocket(world, entity, 300); break;
+					case Inventory.RocketLauncher	:	FireRocket(world, entity, 400); break;
 					case Inventory.HyperBlaster		:	break;
 					case Inventory.Chaingun			:	break;
 					case Inventory.Railgun			:	break;
@@ -145,7 +145,11 @@ namespace ShooterDemo.Controllers {
 				return;
 			}
 
-			var e = world.Spawn( "rocket", attacker.ID, AttackPos(attacker), attacker.Rotation );
+			var origin = AttackPos(attacker);
+
+			var e = world.Spawn( "rocket", attacker.ID, origin, attacker.Rotation );
+
+			world.SpawnFX( "MZRocketLauncher",	attacker.ID, origin );
 
 			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );
 		}
@@ -172,13 +176,14 @@ namespace ShooterDemo.Controllers {
 
 			if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {
 
-				world.SpawnFX( "BulletTrail", attacker.ID, origin, p, n );
+				world.SpawnFX( "BulletTrail",		attacker.ID, p, n );
+				world.SpawnFX( "MZMachinegun",	attacker.ID, origin, n );
 
 				if (e!=null) {
 					e.Kick( view.Forward * impulse, p );
 				}
 			} else {
-				world.SpawnFX( "BulletTrail", attacker.ID, origin, origin + direction * 400, Vector3.Up );
+				world.SpawnFX( "MZMachinegun",	attacker.ID, origin, n );
 			}
 
 			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );

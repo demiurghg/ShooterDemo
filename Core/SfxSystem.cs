@@ -137,20 +137,20 @@ namespace ShooterDemo.SFX {
 		/// 
 		/// </summary>
 		/// <param name="fxEvent"></param>
-		public void RunFX ( FXEvent fxEvent )
+		public SfxInstance RunFX ( FXEvent fxEvent )
 		{
 			var fxAtomID	=	fxEvent.FXAtomID;
 
 			if (fxAtomID<0) {
 				Log.Warning("RunFX: negative atom ID");
-				return;
+				return null;
 			}
 
 			var className = client.Atoms[ fxAtomID ];
 
 			if (className==null) {
 				Log.Warning("RunFX: bad atom ID");
-				return;
+				return null;
 			}
 
 
@@ -161,8 +161,11 @@ namespace ShooterDemo.SFX {
 				var sfx = (SfxInstance)Activator.CreateInstance( fxType, this, fxEvent );
 				runningSFXes.Add( sfx );
 
+				return sfx;
+
 			} else {
 				Log.Warning("RunFX: Bad FX type name: {0}", className );
+				return null;
 			}
 		}
 	}

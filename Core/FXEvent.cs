@@ -27,24 +27,18 @@ namespace ShooterDemo.Core {
 
 		/// <summary>
 		/// FX Event source position.
-		/// Example for bullet trail - muzzle position.
-		/// Example for explosion - explosion origin.
 		/// </summary>
 		public Vector3 Origin;
 
 		/// <summary>
-		/// FX Event target position.
-		/// Example for bullet trail - hit position
-		/// Example for explosion - direction where explosion grows.
+		/// FX rotation
 		/// </summary>
-		public Vector3 Target;
+		public Quaternion Rotation;
 
 		/// <summary>
-		/// FX Event normalized direction.
-		/// Example for bullet trail - hit normal
-		/// Example for explosion - not used.
+		/// FX velocity
 		/// </summary>
-		public Vector3 Normal;
+		public Vector3 Velocity;
 
 
 
@@ -60,13 +54,13 @@ namespace ShooterDemo.Core {
 		/// <param name="position"></param>
 		/// <param name="target"></param>
 		/// <param name="orient"></param>
-		public FXEvent ( short fxAtomID, uint parentID, Vector3 origin, Vector3 target, Vector3 normal )
+		public FXEvent ( short fxAtomID, uint parentID, Vector3 origin, Vector3 velocity, Quaternion rotation )
 		{
 			this.FXAtomID	=	fxAtomID;
 			this.ParentID	=	parentID;
 			this.Origin		=	origin;
-			this.Target		=	target;
-			this.Normal		=	normal.Normalized();
+			this.Velocity	=	velocity;
+			this.Rotation	=	rotation;
 		}
 
 
@@ -79,8 +73,8 @@ namespace ShooterDemo.Core {
 			writer.Write( FXAtomID );
 			writer.Write( ParentID );
 			writer.Write( Origin );
-			writer.Write( Target );
-			writer.Write( Normal );
+			writer.Write( Velocity );
+			writer.Write( Rotation );
 		}
 
 
@@ -93,8 +87,8 @@ namespace ShooterDemo.Core {
 			FXAtomID	=	reader.ReadInt16();
 			ParentID	=	reader.ReadUInt32();
 			Origin		=	reader.Read<Vector3>();
-			Target		=	reader.Read<Vector3>();
-			Normal		=	reader.Read<Vector3>();
+			Velocity	=	reader.Read<Vector3>();
+			Rotation	=	reader.Read<Quaternion>();
 		}
 	}
 }

@@ -32,6 +32,7 @@ namespace ShooterDemo {
 			AddController( new RigidBody(this, PhysSpace) );
 
 			AddView( new ModelView(this) );
+			AddView( new SfxView(this) );
 			AddView( new CameraView(this) );
 			AddView( new HudView(this) );
 
@@ -88,6 +89,7 @@ namespace ShooterDemo {
 			
 			if (world.IsClientSide) {
 				world.GetView<ModelView>().AddModel( entity, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity );
+				world.GetView<SfxView>().AttachSFX ( entity, "RocketTrail" );
 			}
 		}
 

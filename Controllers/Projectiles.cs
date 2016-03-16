@@ -101,21 +101,21 @@ namespace ShooterDemo.Controllers {
 					foreach ( var e in list ) {
 						var delta = e.Position - hitPoint;
 						var dist  = delta.Length() + 0.00001f;
-						var ndir	 = delta / dist;
+						var ndir  = delta / dist;
 						var imp   = Math.Max(0, (projectile.Radius - dist) / projectile.Radius * projectile.Impulse);
 
-						e.Kick( ndir * imp, e.Position + rand.UniformRadialDistribution(0, projectile.Radius/2) );
+						e.Kick( ndir * imp, e.Position + rand.UniformRadialDistribution(0.1f, 0.1f) );
 					}
 				}
 
 
-				world.SpawnFX( projectile.ExplosionFX, projEntity.ParentID, hitPoint, hitPoint, hitNormal );
-				projEntity.Move( hitPoint, projEntity.Rotation );
+				world.SpawnFX( projectile.ExplosionFX, projEntity.ParentID, hitPoint, hitNormal );
+				projEntity.Move( hitPoint, projEntity.Rotation, dir * projectile.Velocity );
 
 				world.Kill( projEntity.ID );
 
 			} else {
-				projEntity.Move( target, projEntity.Rotation );
+				projEntity.Move( target, projEntity.Rotation, dir.Normalized() * projectile.Velocity );
 			}
 		}
 

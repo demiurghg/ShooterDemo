@@ -51,7 +51,7 @@ namespace ShooterDemo.SFX {
 			/// <param name="sleep"></param>
 			/// <param name="count"></param>
 			/// <param name="emit"></param>
-			public ParticleStage ( SfxInstance instance, int spriteIndex, float delay, float period, float sleep, int count, EmitFunction emit ) : base(instance)
+			public ParticleStage ( SfxInstance instance, int spriteIndex, float delay, float period, float sleep, int count, bool looped, EmitFunction emit ) : base(instance)
 			{
 				this.looped			=	false;
 				this.spriteIndex	=	spriteIndex	;
@@ -60,6 +60,7 @@ namespace ShooterDemo.SFX {
 				this.sleep			=	sleep		;
 				this.count			=	count		;
 				this.emit			=	emit		;
+				this.looped			=	looped;
 			}
 
 
@@ -94,11 +95,10 @@ namespace ShooterDemo.SFX {
 			/// <param name="dt"></param>
 			public override void Update ( float dt, FXEvent fxEvent )
 			{	
-				float old_time		=	time;
-				float new_time		=	time + dt;
-				
-				var pos	=	fxEvent.Origin;
-				var vel =	Vector3.Zero;
+				var old_time	=	time;
+				var new_time	=	time + dt;
+				var fxOrigin	=	fxEvent.Origin;
+
 				
 				if ( !stopped ) {
 
@@ -109,17 +109,18 @@ namespace ShooterDemo.SFX {
 		
 						if (prt_time <= new_time) {
 
-							float addTime = new_time - prt_time;
+							float addTime	=	new_time - prt_time;
 
-							Vector3 newPos = pos - vel * addTime; 
-		
+							fxEvent.Origin	=	fxOrigin - fxEvent.Velocity * addTime; 
+							
 							var p = new Particle();
 							p.TimeLag		=	addTime;
 							p.ImageIndex	=	spriteIndex;
-							p.Position		=	newPos;
+							p.Position		=	fxEvent.Origin;
 
-							emit( ref p, newPos );
-
+							emit( ref p, fxEvent );
+ 
+							//SfxInstance.rw.Debug.Trace( p.Position, 0.2f, Color.Yellow );
 							SfxInstance.rw.ParticleSystem.InjectParticle( p );
 
 							emitCount++;
@@ -135,6 +136,8 @@ namespace ShooterDemo.SFX {
 
 					time += dt;
 				}
+
+				fxEvent.Origin	=	fxOrigin;
 			}
 
 

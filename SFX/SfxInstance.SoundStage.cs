@@ -72,6 +72,8 @@ namespace ShooterDemo.SFX {
 
 			public override void Update ( float dt, FXEvent fxEvent )
 			{
+				emitter.Position	=	fxEvent.Origin;
+				emitter.Velocity	=	fxEvent.Velocity;
 			}
 
 		}

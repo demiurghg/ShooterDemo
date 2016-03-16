@@ -10,6 +10,7 @@ using Fusion.Engine.Common;
 using Fusion.Core.Content;
 using Fusion.Engine.Server;
 using Fusion.Engine.Client;
+using ShooterDemo.SFX;
 
 namespace ShooterDemo.Core {
 
@@ -346,7 +347,7 @@ namespace ShooterDemo.Core {
 		/// <param name="position"></param>
 		/// <param name="target"></param>
 		/// <param name="orient"></param>
-		public void SpawnFX ( string fxName, uint parentID, Vector3 origin, Vector3 target, Vector3 normal )
+		public void SpawnFX ( string fxName, uint parentID, Vector3 origin, Vector3 velocity, Quaternion rotation )
 		{
 			var fxID = GameServer.Atoms[ fxName ];
 
@@ -354,7 +355,35 @@ namespace ShooterDemo.Core {
 				Log.Warning("SpawnFX: bad atom {0}", fxName);
 			}
 
-			fxEvents.Add( new FXEvent(fxID, parentID, origin, target, normal ) );
+			fxEvents.Add( new FXEvent(fxID, parentID, origin, velocity, rotation ) );
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fxType"></param>
+		/// <param name="position"></param>
+		/// <param name="target"></param>
+		/// <param name="orient"></param>
+		public void SpawnFX ( string fxName, uint parentID, Vector3 origin, Vector3 forward )
+		{
+			forward	=	Vector3.Normalize( forward );
+			var rt	=	Vector3.Cross( forward, Vector3.Up );	
+
+			if (rt.LengthSquared()<0.001f) {
+				rt	=	Vector3.Cross( forward, Vector3.Right );
+			}
+
+			var up	=	Vector3.Cross( rt, forward );
+
+			var m	=	Matrix.Identity;
+			m.Forward	=	forward;
+			m.Right		=	rt;
+			m.Up		=	up;
+			
+			SpawnFX( fxName, parentID, origin, Vector3.Zero, Quaternion.RotationMatrix(m) );
 		}
 
 
@@ -368,7 +397,7 @@ namespace ShooterDemo.Core {
 		/// <param name="orient"></param>
 		public void SpawnFX ( string fxName, uint parentID, Vector3 origin )
 		{
-			SpawnFX( fxName, parentID, origin, origin, Vector3.Up );
+			SpawnFX( fxName, parentID, origin, Vector3.Zero, Quaternion.Identity );
 		}
 
 
@@ -377,22 +406,11 @@ namespace ShooterDemo.Core {
 		/// 
 		/// </summary>
 		/// <param name="fxType"></param>
-		public void RunFX ( FXEvent fxEvent )
+		public SfxInstance RunFX ( FXEvent fxEvent )
 		{
-			sfxSystem.RunFX( fxEvent );
+			return sfxSystem.RunFX( fxEvent );
 		}
 
-
-		public void RunFX ( string fxName, uint parentID, Vector3 origin )
-		{
-			var fxID = GameClient.Atoms[ fxName ];
-
-			if (fxID<0) {
-				Log.Warning("RunFX: bad atom {0}", fxName);
-			}
-
-			RunFX( new FXEvent(fxID, parentID, origin, origin, Vector3.Up ) );
-		}
 
 
 
