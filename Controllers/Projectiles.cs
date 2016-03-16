@@ -22,12 +22,15 @@ namespace ShooterDemo.Controllers {
 
 	public class Projectiles : EntityController<Projectiles.Projectile> {
 
+		Random rand = new Random();
+
 		public class Projectile {
 			public float Velocity;
 			public float Impulse;
 			public short Damage;
 			public float LifeTime;
 			public string ExplosionFX;
+			public float Radius;
 		}
 
 
@@ -70,7 +73,8 @@ namespace ShooterDemo.Controllers {
 		public void UpdateProjectile ( Entity projEntity, Projectile projectile, float elapsedTime )
 		{
 			var origin	=	projEntity.Position;
-			var target	=	origin + Matrix.RotationQuaternion( projEntity.Rotation ).Forward * projectile.Velocity * elapsedTime;
+			var dir		=	Matrix.RotationQuaternion( projEntity.Rotation ).Forward;
+			var target	=	origin + dir * projectile.Velocity * elapsedTime;
 
 			projectile.LifeTime -= elapsedTime;
 
@@ -86,9 +90,24 @@ namespace ShooterDemo.Controllers {
 
 			if ( world.RayCastAgainstAll( origin, target, out hitNormal, out hitPoint, out hitEntity, parent ) ) {
 				
-				if (hitEntity==null) {
-					///	damage :
+				if (hitEntity!=null) {
+					hitEntity.Kick( dir * projectile.Impulse, hitPoint );
 				}
+
+				if (projectile.Radius>0) {
+					
+					var list = world.WeaponOverlap( hitPoint, projectile.Radius, hitEntity );
+
+					foreach ( var e in list ) {
+						var delta = e.Position - hitPoint;
+						var dist  = delta.Length() + 0.00001f;
+						var ndir	 = delta / dist;
+						var imp   = Math.Max(0, (projectile.Radius - dist) / projectile.Radius * projectile.Impulse);
+
+						e.Kick( ndir * imp, e.Position + rand.UniformRadialDistribution(0, projectile.Radius/2) );
+					}
+				}
+
 
 				world.SpawnFX( projectile.ExplosionFX, projEntity.ParentID, hitPoint, hitPoint, hitNormal );
 				projEntity.Move( hitPoint, projEntity.Rotation );
@@ -127,7 +146,8 @@ namespace ShooterDemo.Controllers {
 				Damage		= damage, 
 				Velocity	= velocity, 
 				Impulse		= impulse, 
-				LifeTime	= lifeTime 
+				LifeTime	= lifeTime,
+				Radius		= radius,
 			};
 
 			AddObject( entity.ID, proj ); 

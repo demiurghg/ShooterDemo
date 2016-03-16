@@ -49,7 +49,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			SetupMotion		( ref p, pos, vel, -vel*1.5f );
 			SetupAngles		( ref p, 10 );
 			SetupColor		( ref p, 5, 0, 1.0f );
-			SetupTiming		( ref p, 1.5f, 0.2f, 0.2f );
+			SetupTiming		( ref p, 1.5f, 0.1f, 0.2f );
 			SetupSize		( ref p, 1.2f, 2 );
 		}
 
@@ -64,20 +64,6 @@ namespace ShooterDemo.SFX.WeaponFX {
 			SetupColor		( ref p, 2000, 0, 1.0f );
 			SetupTiming		( ref p, 0.4f, 0.01f, 0.8f );
 			SetupSize		( ref p, 2.0f, 2.0f );
-		}
-
-
-		void EmitFire2 ( ref Particle p, Vector3 _pos )
-		{
-			var dir = 	rand.UniformRadialDistribution(0,1);
-			var vel	=	dir * 1.0f;
-			var pos	=	fxEvent.Origin + dir * 0.5f;
-
-			SetupMotion		( ref p, pos, vel, -vel*1.5f );
-			SetupAngles		( ref p, 10 );
-			SetupColor		( ref p, 2000, 0, 1.0f );
-			SetupTiming		( ref p, 0.8f, 0.5f, 0.5f );
-			SetupSize		( ref p, 1.5f, 1.5f );
 		}
 	}
 }

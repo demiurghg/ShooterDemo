@@ -17,6 +17,7 @@ using ShooterDemo.Core;
 using ShooterDemo.Views;
 using ShooterDemo.Controllers;
 using BEPUphysics;
+using BU = BEPUutilities;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseSystems;
 using BEPUphysics.Entities.Prefabs;
@@ -82,6 +83,50 @@ namespace ShooterDemo {
 		}
 
 
+
+
+
+		/// <summary>
+		/// Returns the list of ConvexCollidable's and Entities inside or touching the specified sphere.
+		/// Result does not include static geometry and non-entity physical objects.
+		/// </summary>
+		/// <param name="world"></param>
+		/// <param name="origin"></param>
+		/// <param name="radius"></param>
+		/// <returns></returns>
+		public List<Entity> WeaponOverlap ( Vector3 origin, float radius, Entity entToSkip )
+		{
+			BU.BoundingSphere	sphere		= new BU.BoundingSphere(MathConverter.Convert(origin), radius);
+			SphereShape			sphereShape = new SphereShape(radius);
+			BU.Vector3			zeroSweep	= BU.Vector3.Zero;
+			BU.RigidTransform	rigidXForm	= new BU.RigidTransform( MathConverter.Convert(origin) );	
+
+			var candidates = PhysicsResources.GetBroadPhaseEntryList();
+            physSpace.BroadPhase.QueryAccelerator.BroadPhase.QueryAccelerator.GetEntries(sphere, candidates);
+			
+			var result = new List<Entity>();
+
+			foreach ( var candidate in candidates )	{
+
+				BU.RayHit rayHit;
+				bool r = candidate.ConvexCast( sphereShape, ref rigidXForm, ref zeroSweep, out rayHit );
+
+				if (r) {
+					
+					var collidable	=	candidate as ConvexCollidable;
+					var entity		=	collidable==null ? null : collidable.Entity.Tag as Entity;
+
+					if (collidable==null) continue;
+					if (entity==null) continue;
+
+					result.Add( entity );
+				}
+			}
+			
+			result.RemoveAll( e => e == entToSkip );
+
+			return result;
+		}
 
 		#if false
 		/// <summary>

@@ -78,6 +78,15 @@ namespace ShooterDemo.Controllers {
 					c.Body.AngularVelocity	=	MathConverter.Convert( e.AngularVelocity );
 
 				} else {
+
+					if (e.KickImpulse.Length()>0.01f) {
+						var i = MathConverter.Convert( e.KickImpulse );
+						var p = MathConverter.Convert( e.KickPoint );
+						c.Body.ApplyImpulse( p, i );
+						e.KickImpulse = Vector3.Zero;
+						e.KickPoint	  = Vector3.Zero;
+					}
+
 					Move( c, e );
 
 					e.Position			=	MathConverter.Convert( c.Body.Position ); 
