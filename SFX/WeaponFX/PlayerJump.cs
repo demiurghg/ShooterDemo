@@ -16,7 +16,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 		
 		public PlayerJump ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
-			AddSoundStage( @"sound\character\jump",	fxEvent.Origin, 4 );
+			AddSoundStage( @"sound\character\jump",	fxEvent.Origin, 4, false );
 		}
 	}
 }

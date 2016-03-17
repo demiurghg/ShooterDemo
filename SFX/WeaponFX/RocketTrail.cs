@@ -18,11 +18,11 @@ namespace ShooterDemo.SFX.WeaponFX {
 		{
 			//AddParticleStage("bulletSpark",		0.00f, 0.1f, 0.0f,  150, true, EmitSpark );
 			AddParticleStage("explosionFire",	0.00f, 0.2f, 0.0f,   90, true, EmitFire );
-			AddParticleStage("explosionSmoke",	0.00f, 0.2f, 0.0f,   60, true, EmitSmoke );
+			AddParticleStage("smoke",	0.00f, 0.2f, 0.0f,   60, true, EmitSmoke );
 
 			AddLightStage( fxEvent.Origin * 0.1f	, new Color4(100, 75, 50,1), 1, 100f, 3f );
 
-			AddSoundStage( @"sound\weapon\explosion",	fxEvent.Origin, 1 );
+			AddSoundStage( @"sound\weapon\rfly",	fxEvent.Origin, 1, true );
 		}
 
 
@@ -47,24 +47,24 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 			SetupMotion		( ref p, pos, vel, Vector3.Zero );
 			SetupAngles		( ref p, 0 );
-			SetupColor		( ref p, 1000, 0, 1.0f );
-			SetupTiming		( ref p, 0.2f, 0.01f, 0.1f );
-			SetupSize		( ref p, 0.2f, 0.6f );
+			SetupColor		( ref p,  500, 0, 1.0f );
+			SetupTiming		( ref p, 0.10f, 0.01f, 0.1f );
+			SetupSize		( ref p, 0.15f, 0.3f );
 		}
 
 		
 		
 		void EmitSmoke ( ref Particle p, FXEvent fxEvent )
 		{
-			var dir = 	rand.UniformRadialDistribution(0,1);
+			var dir = 	rand.UniformRadialDistribution(0,0.2f);
 			var vel	=	dir * 0.5f;
 			var pos	=	fxEvent.Origin;
 
-			SetupMotion		( ref p, pos, vel, -vel, 0, -0.1f );
+			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, -0.05f );
 			SetupAngles		( ref p, 10 );
 			SetupColor		( ref p, 5, 0, 1.0f );
-			SetupTiming		( ref p, 1.0f, 0.4f, 0.4f );
-			SetupSize		( ref p, 0.2f, 0.5f );
+			SetupTiming		( ref p, 1.5f, 0.1f, 0.1f );
+			SetupSize		( ref p, 0.15f, 0.5f );
 		}
 
 

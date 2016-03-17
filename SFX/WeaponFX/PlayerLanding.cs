@@ -19,7 +19,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			float fallSpeed = Math.Abs(fxEvent.Velocity.Y);
 			ShakeCamera(0, -30 * fallSpeed, rand.GaussDistribution(0, 10*fallSpeed));
 
-			AddSoundStage( @"sound\character\fall0", fxEvent.Origin, 4 );
+			AddSoundStage( @"sound\character\fall0", fxEvent.Origin, 4, false );
 		}
 		
 	}

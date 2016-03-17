@@ -20,7 +20,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 		{
 			ShakeCamera(0,0,15);
 			var name = "foot" + rand.Next(0,6);
-			AddSoundStage( @"sound\character\" + name,	fxEvent.Origin, 4 );
+			AddSoundStage( @"sound\character\" + name,	fxEvent.Origin, 4, false );
 		}
 	}
 
@@ -32,7 +32,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 		{
 			ShakeCamera(0,0,-15);
 			var name = "foot" + rand.Next(0,6);
-			AddSoundStage( @"sound\character\" + name,	fxEvent.Origin, 4 );
+			AddSoundStage( @"sound\character\" + name,	fxEvent.Origin, 4, false );
 		}
 	}
 }

@@ -175,9 +175,9 @@ namespace ShooterDemo.SFX {
 		}
 
 
-		protected void AddSoundStage ( string path, Vector3 position, float radius )
+		protected void AddSoundStage ( string path, Vector3 position, float radius, bool looped )
 		{
-			stages.Add( new SoundStage( this, position, radius, path ) );
+			stages.Add( new SoundStage( this, position, radius, path, looped ) );
 		}
 
 		/*-----------------------------------------------------------------------------------------

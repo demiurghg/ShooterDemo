@@ -24,7 +24,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 																					  
 			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(125,110, 35,1), 0.5f, 100f, 3f );
 
-			AddSoundStage( @"sound\weapon\bulletHit",	fxEvent.Origin, 1 );
+			AddSoundStage( @"sound\weapon\bulletHit",	fxEvent.Origin, 1, false );
 		}
 
 
