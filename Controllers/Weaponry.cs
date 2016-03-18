@@ -67,6 +67,9 @@ namespace ShooterDemo.Controllers {
 			entity.SetItemCount( Inventory.Rockets			,	150	);
 			entity.SetItemCount( Inventory.RocketLauncher	,	1	);
 
+			entity.SetItemCount( Inventory.Slugs			,	150	);
+			entity.SetItemCount( Inventory.Railgun			,	1	);
+
 		}
 
 
@@ -121,7 +124,7 @@ namespace ShooterDemo.Controllers {
 					case Inventory.RocketLauncher	:	FireRocket(world, entity, 400); break;
 					case Inventory.HyperBlaster		:	break;
 					case Inventory.Chaingun			:	break;
-					case Inventory.Railgun			:	break;
+					case Inventory.Railgun			:	FireRail(world, entity, 100, 100, 700 ); break;
 					case Inventory.BFG				:	break;
 					default: 
 						entity.ActiveItem = Inventory.Machinegun;
@@ -134,7 +137,8 @@ namespace ShooterDemo.Controllers {
 
 		Vector3 AttackPos ( Entity e )
 		{
-			return e.Position + Vector3.Up;
+			var m = Matrix.RotationQuaternion(e.Rotation);
+			return e.Position + Vector3.Up + m.Right * 0.1f + m.Down * 0.1f;
 		}
 
 
@@ -184,6 +188,42 @@ namespace ShooterDemo.Controllers {
 				}
 			} else {
 				world.SpawnFX( "MZMachinegun",	attacker.ID, origin, n );
+			}
+
+			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="damage"></param>
+		void FireRail ( MPWorld world, Entity attacker, int damage, float impulse, short cooldown )
+		{
+			if (!attacker.ConsumeItem( Inventory.Slugs, 1 )) {
+				return;
+			}
+
+			var view	=	Matrix.RotationQuaternion( attacker.Rotation );
+			Vector3 n,p;
+			Entity e;
+
+			var direction	=	view.Forward;
+			var origin		=	AttackPos( attacker );
+
+			if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {
+
+				world.SpawnFX( "RailHit",		attacker.ID, p, n );
+				world.SpawnFX( "RailMuzzle",	attacker.ID, origin, n );
+				world.SpawnFX( "RailTrail",		attacker.ID, origin, p - origin, attacker.Rotation );
+
+				if (e!=null) {
+					e.Kick( view.Forward * impulse, p );
+				}
+			} else {
+				world.SpawnFX( "RailMuzzle",	attacker.ID, origin, n );
 			}
 
 			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );

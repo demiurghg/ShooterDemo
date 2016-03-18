@@ -63,7 +63,7 @@ namespace ShooterDemo.SFX {
 		/// <param name="e"></param>
 		void Game_Reloading ( object sender, EventArgs e )
 		{
-			spriteSheet	=  client.Content.Load<TextureAtlas>(@"sprites\particles");
+			spriteSheet	=  client.Content.Load<TextureAtlas>(@"sprites\particles|srgb");
 
 			rw.ParticleSystem.Images	=	spriteSheet;	
 		}

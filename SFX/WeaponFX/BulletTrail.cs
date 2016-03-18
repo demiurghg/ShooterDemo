@@ -34,7 +34,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			var vel	=	sparkDir * rand.GaussDistribution(4,3) + rand.GaussRadialDistribution(0, 0.7f);
 			var pos	=	fxEvent.Origin;
 
-			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 1 );
+			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.3f );
 			SetupAngles		( ref p, 160 );
 			SetupColor		( ref p, 500, 0, 1 );
 			SetupTiming		( ref p, 0.5f, 0.01f, 0.9f );

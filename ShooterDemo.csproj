@@ -68,6 +68,7 @@
     <Compile Include="SFX\SfxInstance.ParticleStage.cs" />
     <Compile Include="SFX\SfxInstance.cs" />
     <Compile Include="SFX\WeaponFX\BulletTrail.cs" />
+    <Compile Include="SFX\WeaponFX\RailFX.cs" />
     <Compile Include="SFX\WeaponFX\MZRocketLauncher.cs" />
     <Compile Include="SFX\WeaponFX\MZMachinegun.cs" />
     <Compile Include="SFX\WeaponFX\Explosion.cs" />
