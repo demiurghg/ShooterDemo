@@ -300,7 +300,7 @@ namespace ShooterDemo {
 			}
 			if (e.Key==Config.UseWeapon6) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
-				weaponControl |= UserCtrlFlags.Machinegun;
+				weaponControl |= UserCtrlFlags.Chaingun;
 			}
 			if (e.Key==Config.UseWeapon7) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;

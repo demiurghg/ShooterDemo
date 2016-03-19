@@ -218,15 +218,10 @@ namespace ShooterDemo.SFX {
 		}
 
 
-		protected void	SetupColor ( ref Particle p, float intensity, float alpha0, float alpha1 ) 
-		{
-			p.Color0		=	new Color4( intensity, intensity, intensity, alpha0 );
-			p.Color1		=	new Color4( intensity, intensity, intensity, alpha1 );
-		}
-
-
 		protected void	SetupColor ( ref Particle p, float intensity0, float intensity1, float alpha0, float alpha1 ) 
 		{
+			intensity0 *= alpha0;
+			intensity1 *= alpha1;
 			p.Color0		=	new Color4( intensity0, intensity0, intensity0, alpha0 );
 			p.Color1		=	new Color4( intensity1, intensity1, intensity1, alpha1 );
 		}

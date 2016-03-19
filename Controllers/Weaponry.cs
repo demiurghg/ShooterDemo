@@ -117,14 +117,14 @@ namespace ShooterDemo.Controllers {
 
 			if (attack) {
 				switch (entity.ActiveItem) {
-					case Inventory.Machinegun		:	FireBullet(world, entity, 5, 5, 75); break;
+					case Inventory.Machinegun		:	FireBullet(world, entity, 5, 5, 75, 0.03f); break;
 					case Inventory.Shotgun			:	break;
 					case Inventory.SuperShotgun		:	break;
 					case Inventory.GrenadeLauncher	:	break;
 					case Inventory.RocketLauncher	:	FireRocket(world, entity, 400); break;
 					case Inventory.HyperBlaster		:	break;
-					case Inventory.Chaingun			:	break;
-					case Inventory.Railgun			:	FireRail(world, entity, 100, 100, 700 ); break;
+					case Inventory.Chaingun			:	FireBullet(world, entity, 5, 5, 20, 0.07f); break;
+					case Inventory.Railgun			:	FireRail(world, entity, 100, 200, 700 ); break;
 					case Inventory.BFG				:	break;
 					default: 
 						entity.ActiveItem = Inventory.Machinegun;
@@ -165,7 +165,7 @@ namespace ShooterDemo.Controllers {
 		/// </summary>
 		/// <param name="attacker"></param>
 		/// <param name="damage"></param>
-		void FireBullet ( MPWorld world, Entity attacker, int damage, float impulse, short cooldown )
+		void FireBullet ( MPWorld world, Entity attacker, int damage, float impulse, short cooldown, float spread )
 		{
 			if (!attacker.ConsumeItem( Inventory.Bullets, 1 )) {
 				return;
@@ -175,7 +175,7 @@ namespace ShooterDemo.Controllers {
 			Vector3 n,p;
 			Entity e;
 
-			var direction	=	view.Forward + rand.UniformRadialDistribution(0, 0.03f);
+			var direction	=	view.Forward + rand.UniformRadialDistribution(0, spread);
 			var origin		=	AttackPos( attacker );
 
 			if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {
