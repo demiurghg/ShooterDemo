@@ -224,6 +224,7 @@ namespace ShooterDemo.Controllers {
 				}
 			} else {
 				world.SpawnFX( "RailMuzzle",	attacker.ID, origin, n );
+				world.SpawnFX( "RailTrail",		attacker.ID, origin, direction * 400, attacker.Rotation );
 			}
 
 			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );

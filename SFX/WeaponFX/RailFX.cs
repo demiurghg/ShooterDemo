@@ -46,14 +46,14 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 		void EmitPuff ( ref Particle p, FXEvent fxEvent )
 		{
-			var vel	=	rand.GaussRadialDistribution(0, 0.7f);
+			var vel	=	rand.GaussRadialDistribution(0, 0.2f);
 			var pos	=	fxEvent.Origin;
 
-			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.0f );
+			SetupMotion		( ref p, pos, vel, -vel, 0, 0.0f );
 			SetupAngles		( ref p, 10 );
-			SetupColor		( ref p, 0, 5000, 0, 1 );
+			SetupColor		( ref p, 0, 500, 0, 1 );
 			SetupTiming		( ref p, 0.5f, 0.01f, 0.1f );
-			SetupSize		( ref p, 0.2f, 0.7f );
+			SetupSize		( ref p, 0.2f, 0.3f );
 		}
 	}
 
@@ -73,7 +73,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 																					  
 			AddLightStage( fxEvent.Origin, new Color4(135,135,239,1), 2.0f, 100f, 3f );
 
-			AddSoundStage( @"sound\weapon\railshot",	fxEvent.Origin, 1, false );
+			AddSoundStage( @"sound\weapon\railshot2",	fxEvent.Origin, 1, false );
 		}
 	}
 
@@ -99,7 +99,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			var up = m.Up;
 			var rt = m.Right;
 
-			int count = Math.Min((int)(fxEvent.Velocity.Length() * 10), 300);
+			int count = Math.Min((int)(fxEvent.Velocity.Length() * 2), 800);
 
 			for (int i=0; i<count; i++) {
 
@@ -132,8 +132,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 				
 				SetupMotion	( ref p, pos, Vector3.Zero, Vector3.Zero, 0, 0 );
 				SetupColor	( ref p, 0, 2000, 0, 1 );
-				SetupTiming	( ref p, rand.GaussDistribution(0.5f,0.1f), 0.01f, 0.9f );
-				SetupSize	( ref p, rand.GaussDistribution(0.3f,0.1f), 0 );
+				SetupTiming	( ref p, rand.GaussDistribution(0.5f,0.3f), 0.01f, 0.9f );
+				SetupSize	( ref p, rand.GaussDistribution(0.3f,0.3f), 0 );
 				SetupAngles	( ref p, 160 );
 
 				p.TailPosition	=	pos1;
