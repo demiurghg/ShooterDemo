@@ -12,7 +12,9 @@ using ShooterDemo.Core;
 using Fusion.Engine.Graphics;
 
 namespace ShooterDemo.SFX.WeaponFX {
+
 	class RailHit : SfxInstance {
+
 
 		Vector3 sparkDir;
 		
@@ -20,8 +22,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 		{
 			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
 
-			AddParticleStage("railSpark", 0, 0f, 0.1f, 100, false, EmitSpark );
-			AddParticleStage("railPuff" , 0, 0f, 0.1f,  30, false, EmitPuff );
+			AddParticleStage("railDot", 0, 0f, 0.1f, 100, false, EmitSpark );
+			AddParticleStage("railDot", 0, 0f, 0.1f,  30, false, EmitPuff );
 																					  
 			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(135,135,239,1), 1.0f, 100f, 3f );
 
@@ -37,9 +39,11 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.2f );
 			SetupAngles		( ref p, 160 );
-			SetupColor		( ref p, 5000, 5000, 0, 1 );
 			SetupTiming		( ref p, 0.5f, 0.01f, 0.9f );
 			SetupSize		( ref p, 0.1f, 0.00f );
+
+			p.Color0		=	GetRailColor();
+			p.Color1		=	GetRailColor();
 		}
 
 
@@ -51,9 +55,11 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 			SetupMotion		( ref p, pos, vel, -vel, 0, 0.0f );
 			SetupAngles		( ref p, 10 );
-			SetupColor		( ref p, 0, 500, 0, 1 );
 			SetupTiming		( ref p, 0.5f, 0.01f, 0.1f );
-			SetupSize		( ref p, 0.2f, 0.3f );
+			SetupSize		( ref p, 0.2f, 0.0f );
+
+			p.Color0		=	GetRailColor();
+			p.Color1		=	GetRailColor();
 		}
 	}
 
@@ -93,28 +99,92 @@ namespace ShooterDemo.SFX.WeaponFX {
 			var p = new Particle();
 
 			p.TimeLag		=	0;
-			p.ImageIndex	=	sfxSystem.GetSpriteIndex("railSpark");
 
 			var m = Matrix.RotationQuaternion( fxEvent.Rotation );
 			var up = m.Up;
 			var rt = m.Right;
 
-			int count = Math.Min((int)(fxEvent.Velocity.Length() * 2), 800);
+			int count = Math.Min((int)(fxEvent.Velocity.Length() * 20), 2000);
+
+			//
+			//	Overall color
+			//
+
+			//
+			//	Beam :
+			//
+			p.ImageIndex	=	sfxSystem.GetSpriteIndex("railTrace");
+
+			if (true) {
+				var pos		=	fxEvent.Origin;
+				var pos1	=	fxEvent.Origin + fxEvent.Velocity;
+				
+				SetupMotion	( ref p, pos, Vector3.Zero, Vector3.Zero, 0, 0 );
+				SetupTiming	( ref p, 0.2f, 0.01f, 0.9f );
+				SetupSize	( ref p, 0.1f, 0.0f );
+				SetupAngles	( ref p, 160 );
+
+				p.Color0		=	GetRailColor();
+				p.Color1		=	GetRailColor();
+
+				p.TailPosition	=	pos1;
+				p.Effects	|=	ParticleFX.Beam;
+ 
+				rw.ParticleSystem.InjectParticle( p );
+			}
+
+
+			//
+			//	Spiral :
+			//
+			p.ImageIndex	=	sfxSystem.GetSpriteIndex("railDot");
+			p.Effects		=	ParticleFX.None;
 
 			for (int i=0; i<count; i++) {
 
-				var t		=	i / 50.0f;
-				var pos		=	fxEvent.Origin + fxEvent.Velocity * (i+0)/(float)count;
-				var pos1	=	fxEvent.Origin + fxEvent.Velocity * (i+1)/(float)count;
-				var vel		=	rand.GaussRadialDistribution(0,0.05f);
+				var t		=	i * 0.1f;
+				var c		=	(float)Math.Cos(t);
+				var s		=	(float)Math.Sin(t);
+				var pos		=	fxEvent.Origin + rt * c * 0.05f + up * s * 0.05f + fxEvent.Velocity * (i+0)/(float)count;
+				var vel		=	rt * c * 0.15f + up * s * 0.15f + rand.GaussRadialDistribution(0,0.03f);
+				var time	=	rand.GaussDistribution(1, 0.2f);
 			
 				SetupMotion	( ref p, pos, vel, Vector3.Zero, 0, 0 );
-				SetupColor	( ref p, 0, 1000, 0, 1 );
-				SetupTiming	( ref p, 1, 0.5f, 0.5f );
+				SetupColor	( ref p, 1000, 1000, 1, 1 );
+				SetupTiming	( ref p, time, 0.5f, 0.5f );
 				SetupSize	( ref p, 0.03f, 0.0f );
 				SetupAngles	( ref p, 160 );
 
-				p.TailPosition	=	pos1;
+				p.Color0		=	GetRailColor();
+				p.Color1		=	GetRailColor();
+
+				p.TailPosition	=	Vector3.Zero;
+ 
+				//SfxInstance.rw.Debug.Trace( p.Position, 0.2f, Color.Yellow );
+				rw.ParticleSystem.InjectParticle( p );
+			}
+
+			//	
+			//	Trace
+			//
+			p.ImageIndex	=	sfxSystem.GetSpriteIndex("railDot");
+			p.Effects		=	ParticleFX.None;
+
+			for (int i=0; i<count/3; i++) {
+
+				var pos		=	fxEvent.Origin + fxEvent.Velocity * (i*3)/(float)count;
+				var vel		=	rand.GaussRadialDistribution(0,0.1f);
+			
+				SetupMotion	( ref p, pos, vel, Vector3.Zero, 0, 0 );
+				SetupColor	( ref p, 0, 200, 0, 1 );
+				SetupTiming	( ref p, 1, 0.5f, 0.5f );
+				SetupSize	( ref p, 0.05f, 0.0f );
+				SetupAngles	( ref p, 160 );
+
+				p.Color0		=	GetRailColor();
+				p.Color1		=	GetRailColor();
+
+				p.TailPosition	=	Vector3.Zero;
  
 				//SfxInstance.rw.Debug.Trace( p.Position, 0.2f, Color.Yellow );
 				rw.ParticleSystem.InjectParticle( p );
@@ -122,25 +192,6 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 
 
-			p.ImageIndex	=	sfxSystem.GetSpriteIndex("railTrace");
-			count = 1;//Math.Max(5, Math.Min((int)(fxEvent.Velocity.Length()/4), 16));
-
-			for (int i=0; i<3; i++) {	 
-
-				var pos		=	fxEvent.Origin;
-				var pos1	=	fxEvent.Origin + fxEvent.Velocity;
-				
-				SetupMotion	( ref p, pos, Vector3.Zero, Vector3.Zero, 0, 0 );
-				SetupColor	( ref p, 0, 2000, 0, 1 );
-				SetupTiming	( ref p, rand.GaussDistribution(0.5f,0.3f), 0.01f, 0.9f );
-				SetupSize	( ref p, rand.GaussDistribution(0.3f,0.3f), 0 );
-				SetupAngles	( ref p, 160 );
-
-				p.TailPosition	=	pos1;
-				p.Effects	|=	ParticleFX.Beam;
- 
-				rw.ParticleSystem.InjectParticle( p );
-			}
 		}
 	}
 }

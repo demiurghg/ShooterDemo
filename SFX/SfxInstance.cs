@@ -64,6 +64,17 @@ namespace ShooterDemo.SFX {
 		}
 
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public Color4 GetRailColor ()
+		{
+			//return new Color4(4000,100,100,1);
+			return new Color4(100,4000,100,1);
+			//return new Color4(100,100,8000,1);
+		}
+
 
 		/// <summary>
 		/// Immediatly removes all sfx instance stuff, 

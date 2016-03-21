@@ -138,7 +138,7 @@ namespace ShooterDemo.Controllers {
 		Vector3 AttackPos ( Entity e )
 		{
 			var m = Matrix.RotationQuaternion(e.Rotation);
-			return e.Position + Vector3.Up + m.Right * 0.1f + m.Down * 0.1f;
+			return e.Position + Vector3.Up + m.Right * 0.1f + m.Down * 0.1f + m.Forward * 0.2f;
 		}
 
 
@@ -213,7 +213,7 @@ namespace ShooterDemo.Controllers {
 			var direction	=	view.Forward;
 			var origin		=	AttackPos( attacker );
 
-			if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {
+			if (world.RayCastAgainstAll( origin, origin + direction * 200, out n, out p, out e, attacker )) {
 
 				world.SpawnFX( "RailHit",		attacker.ID, p, n );
 				world.SpawnFX( "RailMuzzle",	attacker.ID, origin, n );
@@ -224,7 +224,7 @@ namespace ShooterDemo.Controllers {
 				}
 			} else {
 				world.SpawnFX( "RailMuzzle",	attacker.ID, origin, n );
-				world.SpawnFX( "RailTrail",		attacker.ID, origin, direction * 400, attacker.Rotation );
+				world.SpawnFX( "RailTrail",		attacker.ID, origin, direction * 200, attacker.Rotation );
 			}
 
 			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );
