@@ -23,7 +23,6 @@ namespace ShooterDemo {
 		Random rand = new Random();
 
 
-		
 		public override void PlayerCommand ( Guid guid, byte[] command, float lag )
 		{
 			var userCmd =	UserCommand.FromBytes( command );

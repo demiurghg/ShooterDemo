@@ -68,10 +68,10 @@ namespace ShooterDemo.SFX {
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public Color4 GetRailColor ()
+		public Color4 GetRailColor (float intensity = 1)
 		{
 			//return new Color4(4000,100,100,1);
-			return new Color4(100,4000,100,1);
+			return new Color4(100 * intensity,4000 * intensity,100 * intensity,1);
 			//return new Color4(100,100,8000,1);
 		}
 
@@ -188,7 +188,12 @@ namespace ShooterDemo.SFX {
 
 		protected void AddSoundStage ( string path, Vector3 position, float radius, bool looped )
 		{
-			stages.Add( new SoundStage( this, position, radius, path, looped ) );
+			stages.Add( new SoundStage( this, position, radius, path, looped, false ) );
+		}
+
+		protected void AddSoundStage ( string path, bool looped )
+		{
+			stages.Add( new SoundStage( this, Vector3.Zero, 1, path, looped, true ) );
 		}
 
 		/*-----------------------------------------------------------------------------------------

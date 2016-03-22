@@ -37,7 +37,7 @@ namespace ShooterDemo.SFX {
 			/// <param name="instance"></param>
 			/// <param name="position"></param>
 			/// <param name="soundPath"></param>
-			public SoundStage ( SfxInstance instance, Vector3 position, float radius, string soundPath, bool looped ) : base(instance)
+			public SoundStage ( SfxInstance instance, Vector3 position, float radius, string soundPath, bool looped, bool local ) : base(instance)
 			{
 				var sound	=	instance.sfxSystem.LoadSound( soundPath );
 
@@ -50,6 +50,7 @@ namespace ShooterDemo.SFX {
 				emitter.DistanceScale	=	radius;
 				emitter.DopplerScale	=	1;
 				emitter.VolumeCurve		=	null;
+				emitter.LocalSound		=	local;
 
 				emitter.PlaySound( sound, looped ? PlayOptions.Looped : PlayOptions.None );
 			}
