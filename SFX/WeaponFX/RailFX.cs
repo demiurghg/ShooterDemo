@@ -155,6 +155,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 				SetupSize	( ref p, 0.03f, 0.0f );
 				SetupAngles	( ref p, 160 );
 
+				p.TimeLag		=	-0.1f;
 				p.Color0		=	GetRailColor();
 				p.Color1		=	GetRailColor();
 
@@ -181,6 +182,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 				SetupSize	( ref p, 0.05f, 0.0f );
 				SetupAngles	( ref p, 160 );
 
+				p.TimeLag		=	-0.1f;
 				p.Color0		=	GetRailColor();
 				p.Color1		=	GetRailColor();
 
@@ -188,7 +190,7 @@ namespace ShooterDemo.SFX.WeaponFX {
  
 				//SfxInstance.rw.Debug.Trace( p.Position, 0.2f, Color.Yellow );
 				rw.ParticleSystem.InjectParticle( p );
-			}
+			}	   
 
 
 
