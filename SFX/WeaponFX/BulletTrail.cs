@@ -18,7 +18,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 		
 		public BulletTrail ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
-			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
+			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward + rand.GaussRadialDistribution(0, 0.1f);
+			sparkDir.Normalize();
 
 			AddParticleStage("bulletSpark", 0, 0f, 0.1f, 30, false, EmitSpark );
 																					  

@@ -71,7 +71,8 @@ namespace ShooterDemo.SFX {
 		public Color4 GetRailColor (float intensity = 1)
 		{
 			//return new Color4(4000,100,100,1);
-			return new Color4(100 * intensity,4000 * intensity,100 * intensity,1);
+			return new Color4(100 * intensity,100 * intensity,4000 * intensity,1);
+			//return new Color4(100 * intensity,4000 * intensity,100 * intensity,1);
 			//return new Color4(100,100,8000,1);
 		}
 
