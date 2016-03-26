@@ -57,6 +57,15 @@ namespace ShooterDemo {
 
 			LoadContent();
 			Game.Reloading += (s,e) => LoadContent();
+
+			Game.GameClient.ClientStateChanged += GameClient_ClientStateChanged;
+		}
+
+		
+		
+		void GameClient_ClientStateChanged ( object sender, GameClient.ClientEventArgs e )
+		{
+			console.Show = false;
 		}
 
 
@@ -95,6 +104,17 @@ namespace ShooterDemo {
 
 			uiLayer.Clear();
 
+			var clientState	=	Game.GameClient.ClientState;
+
+			switch (clientState) {
+				case ClientState.StandBy		: DrawStandByScreen(); break;
+				case ClientState.Connecting		: DrawLoadingScreen("Connecting..."); break;
+				case ClientState.Loading		: DrawLoadingScreen("Loading..."); break;
+				case ClientState.Awaiting		: DrawLoadingScreen("Awaiting snapshot..."); break;
+				case ClientState.Disconnected	: DrawLoadingScreen("Disconnected."); break;
+				case ClientState.Active			: break;
+			}
+
 			if (ShowMenu) {
 
 				Game.Keyboard.ScanKeyboard	=	false;
@@ -102,22 +122,6 @@ namespace ShooterDemo {
 				Game.Mouse.IsMouseClipped	=	false;
 				Game.Mouse.IsMouseHidden	=	false;
 
-				var vp = Game.RenderSystem.DisplayBounds;
-
-				uiLayer.Draw( background, 0,0, vp.Width, vp.Height, Color.White );
-
-
-				uiLayer.Draw( null, 0,vp.Height/4, vp.Width, vp.Height/2, new Color(0,0,0,192) );
-
-				var h = textFont.LineHeight;
-				//titleFont.DrawString( uiLayer, "SHOOTER DEMO", 100,vp.Height/2 - h*2, new Color(242,242,242) );
-				titleFont.DrawString( uiLayer, "HEROES OF THE SHOOTER AGE", 100,vp.Height/2 - h*2, new Color(242,242,242) );
-				textFont.DrawString( uiLayer, "Fusion Engine Test Project", 100,vp.Height/2 - h, new Color(220,20,60) );
-
-				textFont.DrawString( uiLayer, "Press [~] to open console:", 100,vp.Height/2 + h, new Color(242,242,242) );
-				textFont.DrawString( uiLayer, "   - Enter \"map base1\" to start the game.", 100,vp.Height/2 + h*2, new Color(242,242,242) );
-				textFont.DrawString( uiLayer, "   - Enter \"killserver\" to stop the game.", 100,vp.Height/2 + h*3, new Color(242,242,242) );
-				textFont.DrawString( uiLayer, "   - Enter \"connect <IP:port>\" to connect to the remote game.", 100,vp.Height/2 + h*4, new Color(242,242,242) );
 			} else {
 
 				if (!console.Show) {
@@ -133,6 +137,51 @@ namespace ShooterDemo {
 				}
 			}
 		}
+
+
+
+		/// <summary>
+		/// Draw loading screen
+		/// </summary>
+		/// <param name="message"></param>
+		void DrawLoadingScreen ( string message )
+		{
+			var vp = Game.RenderSystem.DisplayBounds;
+
+			uiLayer.Draw( background, 0,0, vp.Width, vp.Height, Color.White );
+
+			uiLayer.Draw( null, 0,vp.Height/4, vp.Width, vp.Height/2, new Color(0,0,0,192) );
+
+			var h = textFont.LineHeight;
+
+			//titleFont.DrawString( uiLayer, message, 100,vp.Height/2 - h*2, new Color(242,242,242) );
+			textFont.DrawString( uiLayer, message, 100,vp.Height/2 - h, new Color(220,20,60) );
+		}
+
+
+		/// <summary>
+		/// Draws stand-by screen
+		/// </summary>
+		void DrawStandByScreen ()
+		{
+			var vp = Game.RenderSystem.DisplayBounds;
+
+			uiLayer.Draw( background, 0,0, vp.Width, vp.Height, Color.White );
+
+
+			uiLayer.Draw( null, 0,vp.Height/4, vp.Width, vp.Height/2, new Color(0,0,0,192) );
+
+			var h = textFont.LineHeight;
+			//titleFont.DrawString( uiLayer, "SHOOTER DEMO", 100,vp.Height/2 - h*2, new Color(242,242,242) );
+			titleFont.DrawString( uiLayer, "HEROES OF THE SHOOTER AGE", 100,vp.Height/2 - h*2, new Color(242,242,242) );
+			textFont.DrawString( uiLayer, "Fusion Engine Test Project", 100,vp.Height/2 - h, new Color(220,20,60) );
+
+			textFont.DrawString( uiLayer, "Press [~] to open console:", 100,vp.Height/2 + h, new Color(242,242,242) );
+			textFont.DrawString( uiLayer, "   - Enter \"map base1\" to start the game.", 100,vp.Height/2 + h*2, new Color(242,242,242) );
+			textFont.DrawString( uiLayer, "   - Enter \"killserver\" to stop the game.", 100,vp.Height/2 + h*3, new Color(242,242,242) );
+			textFont.DrawString( uiLayer, "   - Enter \"connect <IP:port>\" to connect to the remote game.", 100,vp.Height/2 + h*4, new Color(242,242,242) );
+		}
+
 
 
 

@@ -341,6 +341,16 @@ namespace ShooterDemo.Core {
 
 
 
+		public Entity Spawn( string prefab, uint parentId, Matrix transform )
+		{
+			var p	=	transform.TranslationVector;
+			var q	=	Quaternion.RotationMatrix( transform );
+
+			return Spawn( prefab, parentId, p, q );
+		}
+
+
+
 		public Entity Spawn( string prefab, uint parentId, Vector3 origin, float yaw )
 		{
 			return Spawn( prefab, parentId, origin, Quaternion.RotationYawPitchRoll( yaw,0,0 ) );

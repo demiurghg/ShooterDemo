@@ -70,6 +70,12 @@ namespace ShooterDemo.Views {
 
 			if (player==null) {
 				playerID = 0;
+
+				var camera	= World.GetEntityOrNull( e => e.Is("camera") );
+				var cp		= camera.Position;
+				var cm		= Matrix.RotationQuaternion( camera.Rotation );
+
+				rw.Camera.SetupCameraFov( cp, cm.Forward, cm.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
 				return;
 			}
 

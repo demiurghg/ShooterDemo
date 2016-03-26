@@ -74,6 +74,10 @@ namespace ShooterDemo {
 					continue;
 				}
 
+				if (name.StartsWith("camera")) {
+					Spawn("camera", 0, world );
+				}
+
 
 				if (mesh!=null) {
 					AddStaticCollisionMesh( mesh, world );
@@ -89,7 +93,7 @@ namespace ShooterDemo {
 
 			Random	r = new Random();
 
-			for (int i=0; i<1000; i++) {
+			for (int i=0; i<100; i++) {
 				Spawn("box", 0, Vector3.Up * 400 + r.GaussRadialDistribution(20,2), 0 );
 			}
 		}

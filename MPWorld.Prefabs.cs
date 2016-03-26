@@ -38,6 +38,7 @@ namespace ShooterDemo {
 
 
 			AddPrefab( "startPoint"	, PrefabDummy	);
+			AddPrefab( "camera"		, PrefabDummy	);
 			AddPrefab( "player"		, PrefabPlayer	);
 			AddPrefab( "box"		, PrefabBox		);
 			AddPrefab( "rocket"		, PrefabRocket	);
