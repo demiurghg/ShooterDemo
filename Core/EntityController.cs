@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fusion.Engine.Common;
+using Fusion.Core.Mathematics;
 
 
 namespace ShooterDemo.Core {
@@ -20,6 +21,7 @@ namespace ShooterDemo.Core {
 		/// <param name="entity"></param>
 		/// <param name="obj"></param>
 		protected delegate void IterateAction ( bool dirty, Entity entity, T obj );
+		protected delegate void ApplyAction ( Entity entity, T obj );
 
 
 		/// <summary>
@@ -33,6 +35,21 @@ namespace ShooterDemo.Core {
 			World	=	world;
 			Game	=	world.Game;
 		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="damage"></param>
+		/// <param name="kickImpulse"></param>
+		/// <param name="kickPoint"></param>
+		/// <param name="damageType"></param>
+		public virtual bool Damage ( uint targetID, uint attackerID, short damage, Vector3 kickImpulse, Vector3 kickPoint, DamageType damageType )
+		{
+			return false;
+		}
+
 
 
 		/// <summary>
@@ -76,6 +93,24 @@ namespace ShooterDemo.Core {
 				return default(T);
 			}
 		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="action"></param>
+		protected void ApplyToObject ( uint id, ApplyAction action )
+		{
+			Entity e = World.GetEntity(id);
+
+			T obj;
+			if (e!=null && dictionary.TryGetValue(id, out obj)) {
+				action( e, obj );
+			}
+		}
+
 
 
 		/// <summary>

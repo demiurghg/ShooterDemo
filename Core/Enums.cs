@@ -9,6 +9,7 @@ namespace ShooterDemo.Core {
 
 		Health,
 		Armor,
+		Countdown,
 
 		Machinegun,
 		Shotgun,
@@ -31,5 +32,13 @@ namespace ShooterDemo.Core {
 		QuadDamage,
 
 		Max,
+	}
+
+
+
+	public enum DamageType {
+		BulletHit,
+		RailHit,
+		RocketExplosion,
 	}
 }

@@ -420,6 +420,31 @@ namespace ShooterDemo.Core {
 
 
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <param name="damage"></param>
+		/// <param name="kickImpulse"></param>
+		/// <param name="kickPoint"></param>
+		/// <param name="damageType"></param>
+		public bool InflictDamage ( Entity entity, uint attackerID, short damage, Vector3 kickImpulse, Vector3 kickPoint, DamageType damageType )
+		{
+			if (entity==null) {
+				return false;
+			}
+
+			bool result = false;
+
+			foreach ( var c in controllers ) {
+				result |= c.Damage( entity.ID, attackerID, damage, kickImpulse, kickPoint, damageType );
+			}
+
+			return result;
+		}
+
+
+
 
 		/// <summary>
 		/// Check whether entity with id is dead.
@@ -435,7 +460,7 @@ namespace ShooterDemo.Core {
 
 		/// <summary>
 		/// Gets entity with current id.
-		/// If entity is dead -> exception...
+		/// If entity is dead -> returns null
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -461,6 +486,7 @@ namespace ShooterDemo.Core {
 		{
 			return entities.FirstOrDefault( pair => predicate( pair.Value ) ).Value;
 		}
+
 
 
 

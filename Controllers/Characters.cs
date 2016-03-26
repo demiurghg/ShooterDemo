@@ -56,6 +56,33 @@ namespace ShooterDemo.Controllers {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="targetID"></param>
+		/// <param name="attackerID"></param>
+		/// <param name="damage"></param>
+		/// <param name="kickImpulse"></param>
+		/// <param name="kickPoint"></param>
+		/// <param name="damageType"></param>
+		public override bool Damage ( uint targetID, uint attackerID, short damage, Vector3 kickImpulse, Vector3 kickPoint, DamageType damageType )
+		{
+			ApplyToObject( targetID, (e,ch) => {
+
+				var c = ch.Controller;
+
+				c.SupportFinder.ClearSupportData();
+				var i = MathConverter.Convert( kickImpulse );
+				var p = MathConverter.Convert( kickPoint );
+				c.Body.ApplyImpulse( p, i );
+				
+			});
+
+			return false;
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <param name="gameTime"></param>
 		public override void Update ( float elapsedTime, bool dirty )
 		{
@@ -78,15 +105,6 @@ namespace ShooterDemo.Controllers {
 					c.Body.AngularVelocity	=	MathConverter.Convert( e.AngularVelocity );
 
 				} else {
-
-					if (e.KickImpulse.Length()>0.01f) {
-						c.SupportFinder.ClearSupportData();
-						var i = MathConverter.Convert( e.KickImpulse );
-						var p = MathConverter.Convert( e.KickPoint );
-						c.Body.ApplyImpulse( p, i );
-						e.KickImpulse = Vector3.Zero;
-						e.KickPoint	  = Vector3.Zero;
-					}
 
 					Move( c, e );
 

@@ -85,7 +85,7 @@ namespace ShooterDemo {
 
 		public static void PrefabRocket ( World world, Entity entity )
 		{
-			world.GetController<Projectiles>().AddProjectile( entity, "Explosion", 30, 3, 100, 100, 5 );
+			world.GetController<Projectiles>().AddProjectile( entity, "Explosion", 30, 5, 100, 150, 5 );
 			
 			if (world.IsClientSide) {
 				world.GetView<ModelView>().AddModel( entity, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity );

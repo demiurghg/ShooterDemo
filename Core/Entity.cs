@@ -91,10 +91,6 @@ namespace ShooterDemo.Core {
 		public Inventory ActiveItem;
 
 
-		public Vector3 KickImpulse;
-		public Vector3 KickPoint;
-
-
 
 		/// <summary>
 		/// Used to replicate entity on client side.
@@ -178,17 +174,6 @@ namespace ShooterDemo.Core {
 			}
 		}
 
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="impulse"></param>
-		/// <param name="wsPoint"></param>
-		public void Kick ( Vector3 impulse, Vector3 wsPoint )
-		{
-			this.KickImpulse	=	impulse;
-			this.KickPoint		=	wsPoint;
-		}
 
 
 		/// <summary>

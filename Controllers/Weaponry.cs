@@ -183,9 +183,8 @@ namespace ShooterDemo.Controllers {
 				world.SpawnFX( "BulletTrail",		attacker.ID, p, n );
 				world.SpawnFX( "MZMachinegun",	attacker.ID, origin, n );
 
-				if (e!=null) {
-					e.Kick( view.Forward * impulse, p );
-				}
+				world.InflictDamage( e, attacker.ID, (short)damage, view.Forward * impulse, p, DamageType.BulletHit );
+
 			} else {
 				world.SpawnFX( "MZMachinegun",	attacker.ID, origin, n );
 			}
@@ -219,9 +218,8 @@ namespace ShooterDemo.Controllers {
 				world.SpawnFX( "RailMuzzle",	attacker.ID, origin, n );
 				world.SpawnFX( "RailTrail",		attacker.ID, origin, p - origin, attacker.Rotation );
 
-				if (e!=null) {
-					e.Kick( view.Forward * impulse, p );
-				}
+				world.InflictDamage( e, attacker.ID, (short)damage, view.Forward * impulse, p, DamageType.RailHit );
+
 			} else {
 				world.SpawnFX( "RailMuzzle",	attacker.ID, origin, n );
 				world.SpawnFX( "RailTrail",		attacker.ID, origin, direction * 200, attacker.Rotation );

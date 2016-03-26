@@ -23,7 +23,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
 
 			AddParticleStage("railDot", 0, 0f, 0.1f, 100, false, EmitSpark );
-			AddParticleStage("railDot", 0, 0f, 0.1f,  30, false, EmitPuff );
+			//AddParticleStage("railDot", 0, 0f, 0.1f,  30, false, EmitPuff );
 																					  
 			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, GetRailColor(0.03f), 1.0f, 100f, 3f );
 
@@ -34,12 +34,14 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 		void EmitSpark ( ref Particle p, FXEvent fxEvent )
 		{
-			var vel	=	sparkDir * rand.GaussDistribution(3,1) + rand.GaussRadialDistribution(0, 0.5f);
-			var pos	=	fxEvent.Origin;
+			var vel		=	(sparkDir * rand.GaussDistribution(1,1) + rand.GaussRadialDistribution(0, 1f))*0.7f;
+			var accel	=	-vel*2 + rand.GaussRadialDistribution(0, 1.2f);
+			var pos		=	fxEvent.Origin;
+			var time	=	rand.GaussDistribution(1,0.2f);
 
-			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.2f );
+			SetupMotion		( ref p, pos, vel, accel, 0, 0 );
 			SetupAngles		( ref p, 160 );
-			SetupTiming		( ref p, 0.5f, 0.01f, 0.9f );
+			SetupTiming		( ref p, time, 0.01f, 0.9f );
 			SetupSize		( ref p, 0.1f, 0.00f );
 
 			p.Color0		=	GetRailColor();
@@ -50,12 +52,12 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 		void EmitPuff ( ref Particle p, FXEvent fxEvent )
 		{
-			var vel	=	rand.GaussRadialDistribution(0, 0.2f);
+			var vel	=	rand.GaussRadialDistribution(0, 1.5f);
 			var pos	=	fxEvent.Origin;
 
-			SetupMotion		( ref p, pos, vel, -vel, 0, 0.0f );
+			SetupMotion		( ref p, pos, vel, vel, 0, 0.0f );
 			SetupAngles		( ref p, 10 );
-			SetupTiming		( ref p, 0.5f, 0.01f, 0.1f );
+			SetupTiming		( ref p, 1f, 0.01f, 0.1f );
 			SetupSize		( ref p, 0.2f, 0.0f );
 
 			p.Color0		=	GetRailColor();
@@ -149,8 +151,15 @@ namespace ShooterDemo.SFX.WeaponFX {
 				var t		=	i * 0.1f;
 				var c		=	(float)Math.Cos(t);
 				var s		=	(float)Math.Sin(t);
+
+				#if true
 				var pos		=	fxEvent.Origin + rt * c * 0.05f + up * s * 0.05f + fxEvent.Velocity * (i+0)/(float)count;
 				var vel		=	rt * c * 0.15f + up * s * 0.15f + rand.GaussRadialDistribution(0,0.03f);
+				#else
+				var pos		=	fxEvent.Origin + rt * c * 0.01f + up * s * 0.01f + fxEvent.Velocity * (i+0)/(float)count;
+				var vel		=	rt * c * 0.15f + up * s * 0.15f + rand.GaussRadialDistribution(0,0.02f);
+				#endif
+
 				var time	=	rand.GaussDistribution(1, 0.2f);
 			
 				SetupMotion	( ref p, pos, vel, Vector3.Zero, 0, 0 );

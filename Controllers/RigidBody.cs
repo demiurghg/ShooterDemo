@@ -36,6 +36,35 @@ namespace ShooterDemo.Controllers {
 			this.space	=	space;
 		}
 
+		Random rand = new Random();
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="targetID"></param>
+		/// <param name="attackerID"></param>
+		/// <param name="damage"></param>
+		/// <param name="kickImpulse"></param>
+		/// <param name="kickPoint"></param>
+		/// <param name="damageType"></param>
+		public override bool Damage ( uint targetID, uint attackerID, short damage, Vector3 kickImpulse, Vector3 kickPoint, DamageType damageType )
+		{
+			ApplyToObject( targetID, (e,box) => {
+
+				var i = MathConverter.Convert( kickImpulse );
+				var p = MathConverter.Convert( kickPoint );
+				box.ApplyImpulse( p, i );
+
+				e.SetItemCount(Inventory.Countdown, (short)rand.Next(500,1000));
+				
+			});
+
+			return false;
+		}
+
+
+
 
 		
 		/// <summary>
@@ -59,12 +88,17 @@ namespace ShooterDemo.Controllers {
 
 				} else {
 
-					if (e.KickImpulse.Length()>0.01f) {
-						var i = MathConverter.Convert( e.KickImpulse );
-						var p = MathConverter.Convert( e.KickPoint );
-						rb.ApplyImpulse( p, i );
-						e.KickImpulse = Vector3.Zero;
-						e.KickPoint	  = Vector3.Zero;
+					if (e.GetItemCount(Inventory.Countdown) > 0) {
+						short delta = (short)(elapsedTime*1000);
+						var count = e.GetItemCount(Inventory.Countdown);
+
+						if (count<=delta) {
+							World.GetController<Projectiles>().Explode( "Explosion", 0, e, e.Position, Vector3.Up, 3, 50, 100, DamageType.RocketExplosion );
+							e.SetItemCount(Inventory.Countdown, 0);
+							World.Kill( e.ID );
+						} else {
+							e.ConsumeItem(Inventory.Countdown, delta);
+						}
 					}
 
 					e.Position			=	MathConverter.Convert( rb.Position ); 

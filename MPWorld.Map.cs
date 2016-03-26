@@ -89,8 +89,8 @@ namespace ShooterDemo {
 
 			Random	r = new Random();
 
-			for (int i=0; i<100; i++) {
-				Spawn("box", 0, Vector3.Up * 400 + r.GaussRadialDistribution(2,2), 0 );
+			for (int i=0; i<1000; i++) {
+				Spawn("box", 0, Vector3.Up * 400 + r.GaussRadialDistribution(20,2), 0 );
 			}
 		}
 

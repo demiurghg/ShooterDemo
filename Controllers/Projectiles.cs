@@ -89,27 +89,32 @@ namespace ShooterDemo.Controllers {
 			}
 
 			if ( world.RayCastAgainstAll( origin, target, out hitNormal, out hitPoint, out hitEntity, parent ) ) {
-				
-				if (hitEntity!=null) {
-					hitEntity.Kick( dir * projectile.Impulse, hitPoint );
-				}
 
-				if (projectile.Radius>0) {
+				//	inflict damage to hit object:
+				world.InflictDamage( hitEntity, projEntity.ParentID, projectile.Damage, dir * projectile.Impulse, hitPoint, DamageType.RocketExplosion );
+
+				Explode( projectile.ExplosionFX, projEntity.ID, hitEntity, hitPoint, hitNormal, projectile.Radius, projectile.Damage, projectile.Impulse, DamageType.RocketExplosion );
+				////	inflict splash damage to nearby objects:
+				//if (projectile.Radius>0) {
 					
-					var list = world.WeaponOverlap( hitPoint, projectile.Radius, hitEntity );
+				//	var list = world.WeaponOverlap( hitPoint, projectile.Radius, hitEntity );
 
-					foreach ( var e in list ) {
-						var delta = e.Position - hitPoint;
-						var dist  = delta.Length() + 0.00001f;
-						var ndir  = delta / dist;
-						var imp   = Math.Max(0, (projectile.Radius - dist) / projectile.Radius * projectile.Impulse);
+				//	foreach ( var e in list ) {
+				//		var delta	= e.Position - hitPoint;
+				//		var dist	= delta.Length() + 0.00001f;
+				//		var ndir	= delta / dist;
+				//		var factor	= MathUtil.Clamp((projectile.Radius - dist) / projectile.Radius, 0, 1);
+				//		var imp		= factor * projectile.Impulse;
+				//		var impV	= ndir * imp;
+				//		var impP	= e.Position + rand.UniformRadialDistribution(0.1f, 0.1f);
+				//		var dmg		= (short)( factor * projectile.Damage );
 
-						e.Kick( ndir * imp, e.Position + rand.UniformRadialDistribution(0.1f, 0.1f) );
-					}
-				}
+				//		world.InflictDamage( e, projEntity.ParentID, dmg, impV, impP, DamageType.RocketExplosion );
+				//	}
+				//}
 
 
-				world.SpawnFX( projectile.ExplosionFX, projEntity.ParentID, hitPoint, hitNormal );
+				//world.SpawnFX( projectile.ExplosionFX, projEntity.ParentID, hitPoint, hitNormal );
 				projEntity.Move( hitPoint, projEntity.Rotation, dir * projectile.Velocity );
 
 				world.Kill( projEntity.ID );
@@ -119,6 +124,37 @@ namespace ShooterDemo.Controllers {
 			}
 		}
 
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="origin"></param>
+		/// <param name="damage"></param>
+		/// <param name="impulse"></param>
+		/// <param name="damageType"></param>
+		public void Explode ( string sfxName, uint attacker, Entity ignore, Vector3 hitPoint, Vector3 hitNormal, float radius, short damage, float impulse, DamageType damageType )
+		{
+			if (radius>0) {
+				var list = world.WeaponOverlap( hitPoint, radius, ignore );
+
+				foreach ( var e in list ) {
+					var delta	= e.Position - hitPoint;
+					var dist	= delta.Length() + 0.00001f;
+					var ndir	= delta / dist;
+					var factor	= MathUtil.Clamp((radius - dist) / radius, 0, 1);
+					var imp		= factor * impulse;
+					var impV	= ndir * imp;
+					var impP	= e.Position + rand.UniformRadialDistribution(0.1f, 0.1f);
+					var dmg		= (short)( factor * damage );
+
+					world.InflictDamage( e, attacker, dmg, impV, impP, DamageType.RocketExplosion );
+				}
+			}
+
+			world.SpawnFX( sfxName, attacker, hitPoint, hitNormal );
+		}
 
 
 
