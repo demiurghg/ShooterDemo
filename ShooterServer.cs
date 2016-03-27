@@ -176,10 +176,9 @@ namespace ShooterDemo {
 		/// <summary>
 		/// Notifies server that client connected.
 		/// </summary>
-		public override void ClientConnected ( Guid id, string userInfo )
+		public override void ClientConnected ( Guid guid, string userInfo )
 		{
-			NotifyClients( "CONNECTED: {0} - {1}", id, userInfo );
-			Log.Message( "CONNECTED: {0} - {1}", id, userInfo );
+			gameWorld.PlayerConnected( guid, userInfo );
 		}
 
 
@@ -198,10 +197,9 @@ namespace ShooterDemo {
 		/// <summary>
 		/// Notifies server that client disconnected.
 		/// </summary>
-		public override void ClientDisconnected ( Guid id )
+		public override void ClientDisconnected ( Guid guid )
 		{
-			NotifyClients( "DISCONNECTED: {0}", id );
-			Log.Message( "DISCONNECTED: {0}", id );
+			gameWorld.PlayerDisconnected( guid );
 		}
 
 
@@ -211,9 +209,8 @@ namespace ShooterDemo {
 		/// </summary>
 		public override bool ApproveClient ( Guid id, string userInfo, out string reason )
 		{
-			Log.Message( "APPROVE: {0} {1}", id, userInfo );
-			reason = "";
-			return true;
+			reason = "Access denied.";
+			return gameWorld.ApprovePlayer( id, userInfo );
 		}
 	}
 }

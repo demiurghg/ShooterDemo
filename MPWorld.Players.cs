@@ -22,20 +22,93 @@ namespace ShooterDemo {
 
 		Random rand = new Random();
 
+		/// <summary>
+		/// List of players;
+		/// </summary>
+		public readonly List<Player> Players = new List<Player>();
 
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <returns></returns>
+		Player GetPlayer ( Guid guid )
+		{
+			return Players.LastOrDefault( p => p.Guid==guid );
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <param name="n"></param>
+		public void AddScore ( Guid guid, int n )
+		{
+			var p = GetPlayer(guid);
+			if (p!=null) {
+				p.Score += n;
+			}
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="dt"></param>
+		public void UpdatePlayers ( float dt )
+		{
+			foreach ( var player in	Players ) {
+				player.Update(this, dt);
+			}
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <param name="command"></param>
+		/// <param name="lag"></param>
 		public override void PlayerCommand ( Guid guid, byte[] command, float lag )
 		{
-			var userCmd =	UserCommand.FromBytes( command );
-
-			var player	=	GetEntityOrNull( e => e.Is("player") && e.UserGuid == guid );
-
-			if (player==null) {
-				return;
+			var p = GetPlayer(guid);
+			if (p!=null) {
+				p.FeedCommand(command);
 			}
-
-			player.Rotation				=	Quaternion.RotationYawPitchRoll( userCmd.Yaw, userCmd.Pitch, userCmd.Roll );
-			player.UserCtrlFlags		=	userCmd.CtrlFlags;
 		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <param name="userInfo"></param>
+		/// <returns></returns>
+		public override bool ApprovePlayer ( Guid guid, string userInfo )
+		{
+			return !Players.Any( p => p.Guid == guid );
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <param name="userInfo"></param>
+		public override void PlayerConnected ( Guid guid, string userInfo )
+		{
+			LogTrace("player connected: {0} {1}", guid, userInfo );
+			Players.Add( new Player( guid, userInfo ) );
+		}
+
 
 
 		/// <summary>
@@ -46,15 +119,11 @@ namespace ShooterDemo {
 		{
 			LogTrace("player entered: {0}", guid );
 
-			var sp = GetEntities("startPoint").OrderBy( e => rand.Next() ).FirstOrDefault();
+			var p = GetPlayer(guid);
 
-			if (sp==null) {
-				throw new GameException("No starting points found");
+			if (p!=null) {
+				p.Ready = true;
 			}
-
-			var ent = Spawn( "player", 0, sp.Position, 0 );
-
-			ent.UserGuid = guid;
 		}
 
 
@@ -72,6 +141,18 @@ namespace ShooterDemo {
 			if (ent!=null) {
 				Kill( ent.ID );
 			}
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="guid"></param>
+		public override void PlayerDisconnected ( Guid guid )
+		{
+			LogTrace("player diconnected: {0}", guid );
+			Players.RemoveAll( p => p.Guid == guid );
 		}
 
 	}

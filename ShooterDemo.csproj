@@ -56,6 +56,7 @@
     <Compile Include="Controllers\Characters.cs" />
     <Compile Include="Controllers\Projectiles.cs" />
     <Compile Include="Controllers\Weaponry.cs" />
+    <Compile Include="MPWorld.Player.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\FXEvent.cs" />
     <Compile Include="Core\Oscillator.cs" />

@@ -571,7 +571,20 @@ namespace ShooterDemo.Core {
 		}
 
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <param name="userInfo"></param>
+		/// <returns></returns>
+		public abstract bool ApprovePlayer ( Guid guid, string userInfo );
 
+		/// <summary>
+		/// Called when player connected.
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <param name="userInfo"></param>
+		public abstract void PlayerConnected ( Guid guid, string userInfo );
 
 		/// <summary>
 		/// Called when player enetered.
@@ -584,6 +597,12 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <param name="guid"></param>
 		public abstract void PlayerLeft ( Guid guid );
+
+		/// <summary>
+		/// Called when player disconnected.
+		/// </summary>
+		/// <param name="guid"></param>
+		public abstract void PlayerDisconnected ( Guid guid );
 
 		/// <summary>
 		/// Called when player left.

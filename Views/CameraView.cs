@@ -75,7 +75,7 @@ namespace ShooterDemo.Views {
 				var cp		= camera.Position;
 				var cm		= Matrix.RotationQuaternion( camera.Rotation );
 
-				rw.Camera.SetupCameraFov( cp, cm.Forward, cm.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
+				rw.Camera.SetupCameraFov( cp, cp + cm.Right, cm.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
 				return;
 			}
 

@@ -93,9 +93,6 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 	class RailTrail : SfxInstance {
 
-		Vector3 sparkDir;
-
-
 		float sin ( float a ) { return (float)Math.Sin(a*6.28f); }
 		float cos ( float a ) { return (float)Math.Cos(a*6.28f); }
 
