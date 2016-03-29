@@ -69,6 +69,7 @@ namespace ShooterDemo.Views {
 			var player	=	World.GetEntityOrNull( e => e.Is("player") && e.UserGuid == World.UserGuid );
 
 			if (player==null) {
+
 				playerID = 0;
 
 				var camera	= World.GetEntityOrNull( e => e.Is("camera") );

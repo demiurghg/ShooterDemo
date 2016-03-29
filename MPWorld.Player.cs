@@ -48,7 +48,7 @@ namespace ShooterDemo {
 			/// <summary>
 			/// 
 			/// </summary>
-			public UserCommand UserCmd;
+			public UserCommand UserCmd = new UserCommand();
 
 
 			/// <summary>
@@ -89,12 +89,15 @@ namespace ShooterDemo {
 
 				var player = world.GetEntityOrNull( e => e.UserGuid==Guid );
 
-				if (player==null) {
+				if (player!=null) {
+					player.Rotation			=	Quaternion.RotationYawPitchRoll( UserCmd.Yaw, UserCmd.Pitch, UserCmd.Roll );
+					player.UserCtrlFlags	=	UserCmd.CtrlFlags;
+				}
+
+				if (player==null && UserCmd.CtrlFlags.HasFlag(UserCtrlFlags.Attack)) {
 					player	=	Respawn(world);
 				}
 
-				player.Rotation			=	Quaternion.RotationYawPitchRoll( UserCmd.Yaw, UserCmd.Pitch, UserCmd.Roll );
-				player.UserCtrlFlags	=	UserCmd.CtrlFlags;
 			}
 
 
