@@ -58,23 +58,29 @@ namespace ShooterDemo.SFX {
 
 			public override void Stop ( bool immediate )
 			{
-				emitter.StopSound( immediate );
+				if (emitter!=null) {
+					emitter.StopSound( immediate );
+				}
 			}
 
 			public override bool IsExhausted ()
 			{
-				return (emitter.SoundState==SoundState.Stopped);
+				return (emitter==null || emitter.SoundState==SoundState.Stopped);
 			}
 
 			public override void Kill ()
 			{
-				SfxInstance.sw.FreeEmitter( emitter );
+				if (emitter!=null) {
+					SfxInstance.sw.FreeEmitter( emitter );
+				}
 			}
 
 			public override void Update ( float dt, FXEvent fxEvent )
 			{
-				emitter.Position	=	fxEvent.Origin;
-				emitter.Velocity	=	fxEvent.Velocity;
+				if (emitter!=null) {
+					emitter.Position	=	fxEvent.Origin;
+					emitter.Velocity	=	fxEvent.Velocity;
+				}
 			}
 
 		}
