@@ -88,18 +88,18 @@ namespace ShooterDemo.Controllers {
 
 				} else {
 
-					if (e.GetItemCount(Inventory.Countdown) > 0) {
-						short delta = (short)(elapsedTime*1000);
-						var count = e.GetItemCount(Inventory.Countdown);
+					//if (e.GetItemCount(Inventory.Countdown) > 0) {
+					//	short delta = (short)(elapsedTime*1000);
+					//	var count = e.GetItemCount(Inventory.Countdown);
 
-						if (count<=delta) {
-							World.GetController<Projectiles>().Explode( "Explosion", 0, e, e.Position, Vector3.Up, 3, 50, 100, DamageType.RocketExplosion );
-							e.SetItemCount(Inventory.Countdown, 0);
-							World.Kill( e.ID );
-						} else {
-							e.ConsumeItem(Inventory.Countdown, delta);
-						}
-					}
+					//	if (count<=delta) {
+					//		World.GetController<Projectiles>().Explode( "Explosion", 0, e, e.Position, Vector3.Up, 3, 50, 100, DamageType.RocketExplosion );
+					//		e.SetItemCount(Inventory.Countdown, 0);
+					//		World.Kill( e.ID );
+					//	} else {
+					//		e.ConsumeItem(Inventory.Countdown, delta);
+					//	}
+					//}
 
 					e.Position			=	MathConverter.Convert( rb.Position ); 
 					e.Rotation			=	MathConverter.Convert( rb.Orientation ); 

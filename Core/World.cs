@@ -138,7 +138,17 @@ namespace ShooterDemo.Core {
 
 		public bool IsPlayer ( uint id )
 		{
-			return (GameClient!=null) && (entities[id].UserGuid == GameClient.Guid);
+			if (GameClient==null) {
+				return false;
+			}
+
+			Entity e;
+
+			if (entities.TryGetValue(id, out e)) {
+				return e.UserGuid == GameClient.Guid;
+			} else {
+				return false;
+			}
 		}
 
 

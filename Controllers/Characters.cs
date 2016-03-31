@@ -72,6 +72,19 @@ namespace ShooterDemo.Controllers {
 				var i = MathConverter.Convert( kickImpulse );
 				var p = MathConverter.Convert( kickPoint );
 				c.Body.ApplyImpulse( p, i );
+
+
+				//
+				//	calc health :
+				//
+				var health	=	e.GetItemCount( Inventory.Health );
+				health -= damage;
+
+				if (health<0) {
+					World.Kill( targetID );
+				}
+
+				e.SetItemCount( Inventory.Health, health );
 				
 			});
 

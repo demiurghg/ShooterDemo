@@ -148,9 +148,15 @@ namespace ShooterDemo.Core {
 
 
 
+		/// <summary>
+		/// sets item count 
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="count"></param>
 		public void SetItemCount ( Inventory item, short count ) 
 		{
-			if (count<0) {
+			if (count<0 && item!=Inventory.Health) {
+				//	only health could be negative
 				Log.Warning("SetItemCount: count of {0} < 0. Forced zero.", item);
 				count = 0;
 			}
@@ -158,12 +164,24 @@ namespace ShooterDemo.Core {
 		}
 
 
+		/// <summary>
+		/// Gets item count
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
 		public short GetItemCount ( Inventory item ) 
 		{
 			return inventory[(byte)item];
 		}
 
 
+		/// <summary>
+		/// Consumes specified amount of items if inventory containg enough.
+		/// Returns True if consumption was successfull. False otherwice.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
 		public bool ConsumeItem ( Inventory item, short amount )
 		{
 			if (inventory[(byte)item] >= amount) {
