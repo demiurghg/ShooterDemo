@@ -19,26 +19,18 @@ using BEPUphysics.Character;
 
 
 namespace ShooterDemo.Controllers {
-	public class Characters : EntityController<Characters.Character> {
+	public class Characters : EntityController {
 
 		readonly Space space;
-
 
 		const float StepRate = 0.3f;
 
 
-		public class Character {
-
-			public Character ( CharacterController controller ) {
-				this.Controller = controller;
-			}
-			
-			readonly public CharacterController Controller;
-			public float StepCounter;
-			public bool	 RLStep;
-			public bool	 OldTraction = true;
-			public Vector3 OldVelocity = Vector3.Zero;
-		}
+		CharacterController controller;
+		float		stepCounter = 0;
+		bool		rlStep		= false;
+		bool		oldTraction = true;
+		Vector3		oldVelocity = Vector3.Zero;
 
 
 		/// <summary>
@@ -46,9 +38,54 @@ namespace ShooterDemo.Controllers {
 		/// </summary>
 		/// <param name="game"></param>
 		/// <param name="space"></param>
-		public Characters ( World world, Space space ) : base(world)
+		public Characters ( Entity entity, World world,
+ 			float height = 1.7f, 
+			float crouchingHeight = 1.19f, 
+			float radius = 0.6f, 
+			float margin = 0.1f, 
+			float mass = 10f, 
+			float maximumTractionSlope = 0.8f, 
+			float maximumSupportSlope = 1.3f, 
+			float standingSpeed = 8f, 
+			float crouchingSpeed = 3f, 
+			float tractionForce = 1000f, 
+			float slidingSpeed = 6f, 
+			float slidingForce = 50f, 
+			float airSpeed = 1f, 
+			float airForce = 250f, 
+			float jumpSpeed = 6f, 
+			float slidingJumpSpeed = 3f, 
+			float maximumGlueForce = 5000f ) : base(entity,world)
 		{
-			this.space	=	space;
+			this.space	=	((MPWorld)world).PhysSpace;
+
+			var pos = MathConverter.Convert( entity.Position );
+
+			controller = new CharacterController( pos, 
+					height					, 
+					crouchingHeight			, 
+					radius					, 
+					margin					, 
+					mass					,
+					maximumTractionSlope	, 
+					maximumSupportSlope		, 
+					standingSpeed			,
+					crouchingSpeed			,
+					tractionForce			, 
+					slidingSpeed			,
+					slidingForce			,
+					airSpeed				,
+					airForce				, 
+					jumpSpeed				, 
+					slidingJumpSpeed		,
+					maximumGlueForce		);
+
+
+			controller.StepManager.MaximumStepHeight	=	0.5f;
+			controller.Body.Tag	=	entity;
+			controller.Tag		=	entity;
+
+			space.Add( controller );
 		}
 
 
@@ -64,29 +101,27 @@ namespace ShooterDemo.Controllers {
 		/// <param name="damageType"></param>
 		public override bool Damage ( uint targetID, uint attackerID, short damage, Vector3 kickImpulse, Vector3 kickPoint, DamageType damageType )
 		{
-			ApplyToObject( targetID, (e,ch) => {
+			var c = controller;
+			var e = Entity;
 
-				var c = ch.Controller;
-
-				c.SupportFinder.ClearSupportData();
-				var i = MathConverter.Convert( kickImpulse );
-				var p = MathConverter.Convert( kickPoint );
-				c.Body.ApplyImpulse( p, i );
+			c.SupportFinder.ClearSupportData();
+			var i = MathConverter.Convert( kickImpulse );
+			var p = MathConverter.Convert( kickPoint );
+			c.Body.ApplyImpulse( p, i );
 
 
-				//
-				//	calc health :
-				//
-				var health	=	e.GetItemCount( Inventory.Health );
-				health -= damage;
+			//
+			//	calc health :
+			//
+			var health	=	e.GetItemCount( Inventory.Health );
+			health -= damage;
 
-				if (health<0) {
-					World.Kill( targetID );
-				}
+			if (health<0) {
+				World.Kill( targetID );
+				return true;
+			}
 
-				e.SetItemCount( Inventory.Health, health );
-				
-			});
+			e.SetItemCount( Inventory.Health, health );
 
 			return false;
 		}
@@ -97,62 +132,47 @@ namespace ShooterDemo.Controllers {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( float elapsedTime, bool dirty )
+		public override void Update ( float elapsedTime )
 		{
-			IterateObjects( dirty, (d,e,ch) => {
+			var c = controller;
+			var e = Entity;
 
-				var c = ch.Controller;
 
-				if (dirty) {
 
-					Move( c, e );
+			Move();
 
-					foreach (var pair in c.Body.CollisionInformation.Pairs) {
-						pair.ClearContacts();
-					}
+			e.Position			=	MathConverter.Convert( c.Body.Position ); 
+			e.LinearVelocity	=	MathConverter.Convert( c.Body.LinearVelocity );
+			e.AngularVelocity	=	MathConverter.Convert( c.Body.AngularVelocity );
 
-					c.SupportFinder.ClearSupportData();
+			if (c.SupportFinder.HasTraction) {
+				e.State |= EntityState.HasTraction;
+			} else {
+				e.State &= ~EntityState.HasTraction;
+			}
 
-					c.Body.Position			=	MathConverter.Convert( e.Position );
-					c.Body.LinearVelocity	=	MathConverter.Convert( e.LinearVelocity );
-					c.Body.AngularVelocity	=	MathConverter.Convert( e.AngularVelocity );
 
-				} else {
 
-					Move( c, e );
-
-					e.Position			=	MathConverter.Convert( c.Body.Position ); 
-					e.LinearVelocity	=	MathConverter.Convert( c.Body.LinearVelocity );
-					e.AngularVelocity	=	MathConverter.Convert( c.Body.AngularVelocity );
-
-					if (c.SupportFinder.HasTraction) {
-						e.State |= EntityState.HasTraction;
-					} else {
-						e.State &= ~EntityState.HasTraction;
-					}
-				}
-
-				UpdateWalkSFX( e, ch, elapsedTime );
-				UpdateFallSFX( e, ch, elapsedTime );
-			});
+			UpdateWalkSFX( e, elapsedTime );
+			UpdateFallSFX( e, elapsedTime );
 		}
 
 
 
-		void UpdateWalkSFX ( Entity e, Character ch, float elapsedTime )
+		void UpdateWalkSFX ( Entity e, float elapsedTime )
 		{					
-			ch.StepCounter -= elapsedTime;
-			if (ch.StepCounter<=0) {
-				ch.StepCounter = StepRate;
-				ch.RLStep = !ch.RLStep;
+			stepCounter -= elapsedTime;
+			if (stepCounter<=0) {
+				stepCounter = StepRate;
+				rlStep = !rlStep;
 
 				bool step	=	e.UserCtrlFlags.HasFlag( UserCtrlFlags.Forward )
 							|	e.UserCtrlFlags.HasFlag( UserCtrlFlags.Backward )
 							|	e.UserCtrlFlags.HasFlag( UserCtrlFlags.StrafeLeft )
 							|	e.UserCtrlFlags.HasFlag( UserCtrlFlags.StrafeRight );
 
-				if (step && ch.Controller.SupportFinder.HasTraction) {
-					if (ch.RLStep) {
+				if (step && controller.SupportFinder.HasTraction) {
+					if (rlStep) {
 						World.SpawnFX("PlayerFootStepR", e.ID, e.Position );
 					} else {
 						World.SpawnFX("PlayerFootStepL", e.ID, e.Position );
@@ -163,64 +183,27 @@ namespace ShooterDemo.Controllers {
 
 
 
-		void UpdateFallSFX ( Entity e, Character ch, float elapsedTime )
+		void UpdateFallSFX ( Entity e, float elapsedTime )
 		{
-			bool newTraction = ch.Controller.SupportFinder.HasTraction;
+			bool newTraction = controller.SupportFinder.HasTraction;
 			
-			if (ch.OldTraction!=newTraction && newTraction) {
+			if (oldTraction!=newTraction && newTraction) {
 				if (((ShooterServer)World.GameServer).Config.ShowFallings) {
-					Log.Verbose("{0} falls : {1}", e.ID, ch.OldVelocity.Y );
+					Log.Verbose("{0} falls : {1}", e.ID, oldVelocity.Y );
 				}
 
-				if (ch.OldVelocity.Y<-10) {
+				if (oldVelocity.Y<-10) {
 					//	medium landing :
-					World.SpawnFX( "PlayerLanding", e.ID, e.Position, ch.OldVelocity, Quaternion.Identity );
+					World.SpawnFX( "PlayerLanding", e.ID, e.Position, oldVelocity, Quaternion.Identity );
 				} else {
 					//	light landing :
 					World.SpawnFX( "PlayerFootStepL", e.ID, e.Position );
 				}
 			}
 
-			ch.OldTraction = newTraction;
-			ch.OldVelocity = MathConverter.Convert(ch.Controller.Body.LinearVelocity);
+			oldTraction = newTraction;
+			oldVelocity = MathConverter.Convert(controller.Body.LinearVelocity);
 		}
-
-		#if false
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="gameTime"></param>
-		public override void Update ( float elapsedTime, bool dirty )
-		{
-			IterateObjects( dirty, (d,e,c) => {
-
-				var delta	=	MathConverter.Convert( c.Body.LinearVelocity ) * e.Lag;
-
-				if(true) {
-					Move( c, e );
-
-					e.Position			= MathConverter.Convert( c.Body.Position ); 
-					e.LinearVelocity	= MathConverter.Convert( c.Body.LinearVelocity );
-					e.AngularVelocity	= MathConverter.Convert( c.Body.AngularVelocity );
-				}
-
-				if (e.RemoteEntity!=null) {
-
-					var dist 	= Vector3.Distance( e.Position, e.RemoteEntity.Position );
-					Log.Message("error - {0}", dist );
-
-					if (dist<0.1f) {
-
-						e.RemoteEntity = null;
-					} else {
-						var re			=	e.RemoteEntity;
-						var pos			= Vector3.Lerp(e.Position - delta, re.Position - re.LinearVelocity * re.Lag, 0.5f );
-						c.Body.Position = MathConverter.Convert( pos );
-					}
-				} 
-			});
-		}
-		#endif
 
 
 
@@ -228,13 +211,9 @@ namespace ShooterDemo.Controllers {
 		/// 
 		/// </summary>
 		/// <param name="id"></param>
-		public override void Kill ( uint id )
+		public override void Killed ()
 		{
-			Character character;
-			
-			if ( RemoveObject( id, out character ) ) {
-				space.Remove( character.Controller );
-			}
+			space.Remove( controller );
 		}
 
 
@@ -244,8 +223,9 @@ namespace ShooterDemo.Controllers {
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="moveVector"></param>
-		void Move ( CharacterController controller, Entity ent )
+		void Move ()
 		{
+			var ent	=	Entity;
 			var m	=	Matrix.RotationQuaternion( ent.Rotation );
 
 			var move = Vector3.Zero;
@@ -273,60 +253,6 @@ namespace ShooterDemo.Controllers {
 			/*if (jump) {
 				controller.Jump();
 			} */
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="entity"></param>
-		public void AddCharacter ( Entity entity, 
-			float height = 1.7f, 
-			float crouchingHeight = 1.19f, 
-			float radius = 0.6f, 
-			float margin = 0.1f, 
-			float mass = 10f, 
-			float maximumTractionSlope = 0.8f, 
-			float maximumSupportSlope = 1.3f, 
-			float standingSpeed = 8f, 
-			float crouchingSpeed = 3f, 
-			float tractionForce = 1000f, 
-			float slidingSpeed = 6f, 
-			float slidingForce = 50f, 
-			float airSpeed = 1f, 
-			float airForce = 250f, 
-			float jumpSpeed = 6f, 
-			float slidingJumpSpeed = 3f, 
-			float maximumGlueForce = 5000f )
-		{
-			var pos = MathConverter.Convert( entity.Position );
-			var controller = new CharacterController( pos, 
-					height					, 
-					crouchingHeight			, 
-					radius					, 
-					margin					, 
-					mass					,
-					maximumTractionSlope	, 
-					maximumSupportSlope		, 
-					standingSpeed			,
-					crouchingSpeed			,
-					tractionForce			, 
-					slidingSpeed			,
-					slidingForce			,
-					airSpeed				,
-					airForce				, 
-					jumpSpeed				, 
-					slidingJumpSpeed		,
-					maximumGlueForce		);
-
-			controller.StepManager.MaximumStepHeight	=	0.5f;
-			controller.Body.Tag	=	entity;
-			controller.Tag		=	entity;
-
-			space.Add( controller );
-
-			AddObject( entity.ID, new Character(controller) );
 		}
 	}
 }

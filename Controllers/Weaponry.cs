@@ -23,7 +23,7 @@ namespace ShooterDemo.Controllers {
 	/// <summary>
 	/// Player's weaponry controller.
 	/// </summary>
-	public class Weaponry : EntityController<object> {
+	public class Weaponry : EntityController {
 
 		Random	rand	=	new Random();
 
@@ -33,33 +33,8 @@ namespace ShooterDemo.Controllers {
 		/// </summary>
 		/// <param name="game"></param>
 		/// <param name="space"></param>
-		public Weaponry ( World world ) : base(world)
+		public Weaponry ( Entity entity, World world ) : base(entity, world)
 		{
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="gameTime"></param>
-		public override void Update ( float elapsedTime, bool dirty )
-		{
-			this.IterateObjects( false, (d,e,o) => {
-				UpdateWeaponState( e, (short)(elapsedTime*1000) );
-			});
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="entity"></param>
-		public void Attach ( Entity entity )
-		{
-			AddObject( entity.ID, null );
-
 			entity.ActiveItem	=	Inventory.Machinegun;
 			entity.SetItemCount( Inventory.Bullets			,	999	);
 			entity.SetItemCount( Inventory.Machinegun		,	1	);
@@ -69,19 +44,19 @@ namespace ShooterDemo.Controllers {
 
 			entity.SetItemCount( Inventory.Slugs			,	150	);
 			entity.SetItemCount( Inventory.Railgun			,	1	);
-
 		}
+
 
 
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="id"></param>
-		public override void Kill ( uint id )
+		/// <param name="gameTime"></param>
+		public override void Update ( float elapsedTime )
 		{
-			object obj;
-			RemoveObject( id, out obj );
+			UpdateWeaponState( Entity, (short)(elapsedTime*1000) );
 		}
+
 
 
 		/// <summary>
@@ -124,7 +99,7 @@ namespace ShooterDemo.Controllers {
 					case Inventory.RocketLauncher	:	FireRocket(world, entity, 400); break;
 					case Inventory.HyperBlaster		:	break;
 					case Inventory.Chaingun			:	FireBullet(world, entity, 5, 5, 20, 0.07f); break;
-					case Inventory.Railgun			:	FireRail(world, entity, 100, 200, 700 ); break;
+					case Inventory.Railgun			:	FireRail(world, entity, 100, 100, 700 ); break;
 					case Inventory.BFG				:	break;
 					default: 
 						entity.ActiveItem = Inventory.Machinegun;
@@ -180,7 +155,7 @@ namespace ShooterDemo.Controllers {
 
 			if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {
 
-				world.SpawnFX( "BulletTrail",		attacker.ID, p, n );
+				world.SpawnFX( "BulletTrail",	attacker.ID, p, n );
 				world.SpawnFX( "MZMachinegun",	attacker.ID, origin, n );
 
 				world.InflictDamage( e, attacker.ID, (short)damage, view.Forward * impulse, p, DamageType.BulletHit );

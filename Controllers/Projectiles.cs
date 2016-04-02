@@ -20,18 +20,16 @@ using BEPUphysics.PositionUpdating;
 
 namespace ShooterDemo.Controllers {
 
-	public class Projectiles : EntityController<Projectiles.Projectile> {
+	public class Projectiles : EntityController {
 
 		Random rand = new Random();
 
-		public class Projectile {
-			public float Velocity;
-			public float Impulse;
-			public short Damage;
-			public float LifeTime;
-			public string ExplosionFX;
-			public float Radius;
-		}
+		public float Velocity;
+		public float Impulse;
+		public short DamageValue;
+		public float LifeTime;
+		public string ExplosionFX;
+		public float Radius;
 
 
 		readonly Space space;
@@ -42,10 +40,18 @@ namespace ShooterDemo.Controllers {
 		/// </summary>
 		/// <param name="game"></param>
 		/// <param name="space"></param>
-		public Projectiles ( World world, Space space ) : base(world)
+		public Projectiles ( Entity entity, World world, string explosionFX, float velocity, float radius, short damage, float impulse, float lifeTime ) : base(entity,world)
 		{
+			this.space	=	((MPWorld)world).PhysSpace;
 			this.world	=	(MPWorld)world;
-			this.space	=	space;
+
+			Velocity	=	velocity;
+			Impulse		=	impulse;	
+			DamageValue	=	damage;
+			LifeTime	=	lifeTime;
+			ExplosionFX	=	explosionFX;
+			Radius		=	radius;
+
 		}
 
 
@@ -54,13 +60,9 @@ namespace ShooterDemo.Controllers {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public override void Update ( float elapsedTime, bool dirty )
+		public override void Update ( float elapsedTime )
 		{
-			IterateObjects( dirty, (d,e,proj) => {
-				
-				UpdateProjectile( e, proj, elapsedTime );
-
-			});
+			UpdateProjectile( Entity, elapsedTime );
 		}
 
 
@@ -70,13 +72,13 @@ namespace ShooterDemo.Controllers {
 		/// </summary>
 		/// <param name="projEntity"></param>
 		/// <param name="projectile"></param>
-		public void UpdateProjectile ( Entity projEntity, Projectile projectile, float elapsedTime )
+		public void UpdateProjectile ( Entity projEntity, float elapsedTime )
 		{
 			var origin	=	projEntity.Position;
 			var dir		=	Matrix.RotationQuaternion( projEntity.Rotation ).Forward;
-			var target	=	origin + dir * projectile.Velocity * elapsedTime;
+			var target	=	origin + dir * Velocity * elapsedTime;
 
-			projectile.LifeTime -= elapsedTime;
+			LifeTime -= elapsedTime;
 
 			Vector3 hitNormal, hitPoint;
 			Entity  hitEntity;
@@ -84,16 +86,16 @@ namespace ShooterDemo.Controllers {
 			var parent	=	world.GetEntity( projEntity.ParentID );
 
 
-			if ( projectile.LifeTime <= 0 ) {
+			if ( LifeTime <= 0 ) {
 				world.Kill( projEntity.ID );
 			}
 
 			if ( world.RayCastAgainstAll( origin, target, out hitNormal, out hitPoint, out hitEntity, parent ) ) {
 
 				//	inflict damage to hit object:
-				world.InflictDamage( hitEntity, projEntity.ParentID, projectile.Damage, dir * projectile.Impulse, hitPoint, DamageType.RocketExplosion );
+				world.InflictDamage( hitEntity, projEntity.ParentID, DamageValue, dir * Impulse, hitPoint, DamageType.RocketExplosion );
 
-				Explode( projectile.ExplosionFX, projEntity.ID, hitEntity, hitPoint, hitNormal, projectile.Radius, projectile.Damage, projectile.Impulse, DamageType.RocketExplosion );
+				Explode( ExplosionFX, projEntity.ID, hitEntity, hitPoint, hitNormal, Radius, DamageValue, Impulse, DamageType.RocketExplosion );
 				////	inflict splash damage to nearby objects:
 				//if (projectile.Radius>0) {
 					
@@ -115,12 +117,12 @@ namespace ShooterDemo.Controllers {
 
 
 				//world.SpawnFX( projectile.ExplosionFX, projEntity.ParentID, hitPoint, hitNormal );
-				projEntity.Move( hitPoint, projEntity.Rotation, dir * projectile.Velocity );
+				projEntity.Move( hitPoint, projEntity.Rotation, dir * Velocity );
 
 				world.Kill( projEntity.ID );
 
 			} else {
-				projEntity.Move( target, projEntity.Rotation, dir.Normalized() * projectile.Velocity );
+				projEntity.Move( target, projEntity.Rotation, dir.Normalized() * Velocity );
 			}
 		}
 
@@ -162,31 +164,8 @@ namespace ShooterDemo.Controllers {
 		/// 
 		/// </summary>
 		/// <param name="id"></param>
-		public override void Kill ( uint id )
+		public override void Killed ()
 		{
-			Projectile obj;
-			
-			if ( RemoveObject( id, out obj ) ) {
-			}
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public void AddProjectile ( Entity entity, string explosionFX, float velocity, float radius, short damage, float impulse, float lifeTime )
-		{
-			var proj = new Projectile {	
-				ExplosionFX = explosionFX, 
-				Damage		= damage, 
-				Velocity	= velocity, 
-				Impulse		= impulse, 
-				LifeTime	= lifeTime,
-				Radius		= radius,
-			};
-
-			AddObject( entity.ID, proj ); 
 		}
 	}
 }

@@ -29,7 +29,6 @@ namespace ShooterDemo.Core {
 		public delegate void EntityEventHandler ( object sender, EntityEventArgs e );
 
 		List<IEntityView> views = new List<IEntityView>();
-		List<IEntityController> controllers = new List<IEntityController>();
 
 		Dictionary<uint, Prefab> prefabs = new Dictionary<uint,Prefab>();
 		List<uint> entityToKill = new List<uint>();
@@ -184,17 +183,6 @@ namespace ShooterDemo.Core {
 
 
 		/// <summary>
-		/// Adds controller.
-		/// </summary>
-		/// <param name="controller"></param>
-		public void AddController ( IEntityController controller )
-		{
-			controllers.Add( controller );
-		}
-
-
-
-		/// <summary>
 		/// Gets view by its type
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -202,18 +190,6 @@ namespace ShooterDemo.Core {
 		public T GetView<T>() where T: IEntityView 
 		{
 			return (T)views.FirstOrDefault( v => v is T );
-		}
-
-
-
-		/// <summary>
-		/// Gets controller by its type
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public T GetController<T>() where T: IEntityController 
-		{
-			return (T)controllers.FirstOrDefault( c => c is T );
 		}
 
 
@@ -253,9 +229,8 @@ namespace ShooterDemo.Core {
 		/// <param name="entity"></param>
 		void Destruct ( Entity entity )
 		{
-			foreach ( var controller in controllers ) {
-				controller.Kill( entity.ID );
-			}
+			entity.ForeachController( c => c.Killed() );
+
 			foreach ( var view in views ) {
 				view.Kill( entity.ID );
 			}
@@ -272,9 +247,7 @@ namespace ShooterDemo.Core {
 			//
 			//	Control entities :
 			//
-			foreach ( var controller in controllers ) {
-				controller.Update( deltaTime, snapshotDirty && IsClientSide );
-			}
+			ForEachEntity( e => e.ForeachController( c => c.Update( deltaTime ) ) );
 
 			//
 			//	Kill entities :
@@ -448,19 +421,13 @@ namespace ShooterDemo.Core {
 		/// <param name="kickImpulse"></param>
 		/// <param name="kickPoint"></param>
 		/// <param name="damageType"></param>
-		public bool InflictDamage ( Entity entity, uint attackerID, short damage, Vector3 kickImpulse, Vector3 kickPoint, DamageType damageType )
+		public void InflictDamage ( Entity entity, uint attackerID, short damage, Vector3 kickImpulse, Vector3 kickPoint, DamageType damageType )
 		{
 			if (entity==null) {
-				return false;
+				return;
 			}
 
-			bool result = false;
-
-			foreach ( var c in controllers ) {
-				result |= c.Damage( entity.ID, attackerID, damage, kickImpulse, kickPoint, damageType );
-			}
-
-			return result;
+			entity.ForeachController( c => c.Damage( entity.ID, attackerID, damage, kickImpulse, kickPoint, damageType ) );
 		}
 
 
@@ -530,8 +497,10 @@ namespace ShooterDemo.Core {
 		/// <param name="action"></param>
 		public void ForEachEntity ( Action<Entity> action )
 		{
-			foreach ( var pair in entities ) {
-				action( pair.Value );
+			var list = entities.Select( p => p.Value ).ToList();
+
+			foreach ( var e in list ) {
+				action( e );
 			}
 		}
 

@@ -131,24 +131,6 @@ namespace ShooterDemo.Core {
 
 
 		/// <summary>
-		/// Immediatly put entity in given position without interpolation :
-		/// </summary>
-		/// <param name="position"></param>
-		/// <param name="orient"></param>
-		void SetPose ( Vector3 position, Quaternion orient )
-		{
-			TeleportCount++;
-			TeleportCount &= 0x7F;
-
-			Position		=	position;
-			Rotation		=	orient;
-			PositionOld		=	position;
-			RotationOld		=	orient;
-		}
-
-
-
-		/// <summary>
 		/// sets item count 
 		/// </summary>
 		/// <param name="item"></param>
@@ -190,6 +172,26 @@ namespace ShooterDemo.Core {
 			} else {
 				return false;
 			}
+		}
+
+
+
+
+
+		/// <summary>
+		/// Immediatly put entity in given position without interpolation :
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="orient"></param>
+		void SetPose ( Vector3 position, Quaternion orient )
+		{
+			TeleportCount++;
+			TeleportCount &= 0x7F;
+
+			Position		=	position;
+			Rotation		=	orient;
+			PositionOld		=	position;
+			RotationOld		=	orient;
 		}
 
 
@@ -328,6 +330,32 @@ namespace ShooterDemo.Core {
 		{
 			//return Position;
 			return Vector3.Lerp( PositionOld, Position, MathUtil.Clamp(lerpFactor,0,2f) );
+		}
+
+
+		/*-----------------------------------------------------------------------------------------------
+		 * 
+		 *	Entity controllers :
+		 * 
+		-----------------------------------------------------------------------------------------------*/
+		List<EntityController> controllers = new List<EntityController>();
+
+		/// <summary>
+		/// Attaches controller to entity.
+		/// </summary>
+		/// <param name="controller"></param>
+		public void Attach ( EntityController controller )
+		{
+			controllers.Add( controller );
+		}
+
+
+
+		public void ForeachController ( Action<EntityController> action )
+		{
+			foreach ( var c in controllers ) {
+				action(c);
+			}
 		}
 	}
 }
