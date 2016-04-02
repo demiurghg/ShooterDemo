@@ -26,11 +26,6 @@ namespace ShooterDemo {
 		/// </summary>
 		void InitializePrefabs ()
 		{
-			AddController( new Weaponry(this) );
-			AddController( new Projectiles(this, PhysSpace) );
-			AddController( new Characters(this, PhysSpace) );
-			AddController( new RigidBody(this, PhysSpace) );
-
 			AddView( new ModelView(this) );
 			AddView( new SfxView(this) );
 			AddView( new CameraView(this) );
@@ -71,8 +66,8 @@ namespace ShooterDemo {
 		/// <param name="serverSide"></param>
 		public static void PrefabPlayer ( World world, Entity entity )
 		{
-			world.GetController<Characters>().AddCharacter( entity );
-			world.GetController<Weaponry>().Attach( entity );
+			entity.Attach( new Characters( entity, world ) );
+			entity.Attach( new Weaponry( entity, world ) );
 
 			if (world.IsClientSide) {
 				world.GetView<ModelView>().AddModel( entity, @"scenes\characters\marine\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) );
@@ -86,7 +81,7 @@ namespace ShooterDemo {
 
 		public static void PrefabRocket ( World world, Entity entity )
 		{
-			world.GetController<Projectiles>().AddProjectile( entity, "Explosion", 30, 5, 100, 150, 5 );
+			entity.Attach( new Projectiles( entity, world, "Explosion", 30, 5, 100, 100, 5 ) );
 			
 			if (world.IsClientSide) {
 				world.GetView<ModelView>().AddModel( entity, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity );
@@ -104,7 +99,7 @@ namespace ShooterDemo {
 
 		public static void PrefabBox ( World world, Entity entity )
 		{
-			world.GetController<RigidBody>().AddBox( entity, 1.0f, 0.75f, 0.75f,5 );
+			entity.Attach( new RigidBody(entity, world, 1.0f, 0.75f, 0.75f,5 ) ); 
 
 			if (world.IsClientSide) {
 				world.GetView<ModelView>().AddModel( entity, @"scenes\boxes\boxModel", "pCube1", Matrix.Identity, Matrix.Identity );
