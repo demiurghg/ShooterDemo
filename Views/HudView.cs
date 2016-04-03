@@ -19,7 +19,7 @@ using BEPUphysics.Character;
 
 
 namespace ShooterDemo.Views {
-	public class HudView : EntityView<object> {
+	public class HudView : WorldView {
 
 		DiscTexture	crosshair;
 		SpriteFont	hudFont;
@@ -142,21 +142,6 @@ namespace ShooterDemo.Views {
 		{
 			var r = hudFont.MeasureStringF( text, -4 );
 			hudFont.DrawString( layer, text, x-r.Width, y, color, -4 );
-		}
-
-
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="id"></param>
-		public override void Kill ( uint id )
-		{
-			/*object controller;
-			
-			if ( RemoveObject( id, out controller ) ) {
-				space.Remove( controller );
-			} */
 		}
 	}
 }

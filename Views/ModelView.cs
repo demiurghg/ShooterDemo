@@ -17,69 +17,29 @@ using ShooterDemo.Core;
 
 
 namespace ShooterDemo.Views {
-	public class ModelView : EntityView<ModelView.Model> {
+	public class ModelView : EntityView {
 
-		
-		public class Model {
-			readonly public string ScenePath;
-			readonly public string NodeName;
-			readonly public Matrix PreTransform;
-			readonly public Matrix PostTransform;
-			public MeshInstance Instance;
-
-			public Model ( string scenePath, string nodeName, Matrix preTransform, Matrix postTransform )
-			{
-				 ScenePath		=	scenePath;
-				 NodeName		=	nodeName;
-				 PreTransform	=	preTransform;
-				 PostTransform	=	postTransform;
-			}
-
-
-			public void Reload ( RenderSystem rs, ContentManager content )
-			{
-				if (Instance!=null) {
-					if (!rs.RenderWorld.Instances.Remove( Instance )) {
-						Log.Warning("Failed to remove {0}|{1}", ScenePath, NodeName );
-					}
-				}
-
-				var scene = content.Load<Scene>( ScenePath, (Scene)null );
-
-				if (scene==null) {
-					return;
-				}
-
-				var node  = scene.Nodes.FirstOrDefault( n => n.Name == NodeName );
-
-				if (node==null) {
-					Log.Warning("Scene '{0}' does not contain node '{1}'", ScenePath, NodeName );
-					return;
-				}
-
-				if (node.MeshIndex<0) {
-					Log.Warning("Node '{0}|{1}' does not contain mesh", ScenePath, NodeName );
-					return;
-				}
-
-				var mesh		=	scene.Meshes[node.MeshIndex];
-
-				var defMtrl		=	rs.DefaultMaterial;
-				var materials	=	scene.Materials.Select( m => content.Load<MaterialInstance>( m.Name, defMtrl ) ).ToArray();
-
-				Instance		= new MeshInstance( rs, scene, mesh, materials );
-
-				rs.RenderWorld.Instances.Add( Instance );
-			}
-		}
+		readonly public string scenePath;
+		readonly public string nodeName;
+		readonly public Matrix preTransform;
+		readonly public Matrix postTransform;
+		public MeshInstance meshInstance;
 
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="game"></param>
-		public ModelView ( World world ) : base(world)
+		public ModelView ( Entity entity, World world, string scenePath, string nodeName, Matrix preTransform, Matrix postTransform ) 
+		 : base(entity,world)
 		{
+			this.scenePath		=	scenePath;
+			this.nodeName		=	nodeName;
+			this.preTransform	=	preTransform;
+			this.postTransform	=	postTransform;
+
+			Reload ( Game.RenderSystem, World.Content );
+
 			Game.Reloading += Game_Reloading;
 		}
 
@@ -87,27 +47,47 @@ namespace ShooterDemo.Views {
 
 		void Game_Reloading ( object sender, EventArgs e )
 		{
-			IterateObjects( (ent,m) => m.Reload(Game.RenderSystem, World.Content) );
+			Reload( Game.RenderSystem, World.Content );
 		}
 
 
 
-
-
-		/// <summary>
-		/// Hot reload?
-		/// </summary>
-		/// <param name="scenePath"></param>
-		/// <param name="nodeName"></param>
-		/// <param name="preTransform"></param>
-		public void AddModel ( Entity entity, string scenePath, string nodeName, Matrix preTransform, Matrix postTransform )
+		void Reload ( RenderSystem rs, ContentManager content )
 		{
-			var model = new Model( scenePath, nodeName, preTransform, postTransform ); 
+			if (meshInstance!=null) {
+				if (!rs.RenderWorld.Instances.Remove( meshInstance )) {
+					Log.Warning("Failed to remove {0}|{1}", scenePath, nodeName );
+				}
+			}
 
-			model.Reload( Game.RenderSystem, World.Content );
+			var scene = content.Load<Scene>( scenePath, (Scene)null );
 
-			AddObject( entity.ID, model ); 
-		} 
+			if (scene==null) {
+				return;
+			}
+
+			var node  = scene.Nodes.FirstOrDefault( n => n.Name == nodeName );
+
+			if (node==null) {
+				Log.Warning("Scene '{0}' does not contain node '{1}'", scenePath, nodeName );
+				return;
+			}
+
+			if (node.MeshIndex<0) {
+				Log.Warning("Node '{0}|{1}' does not contain mesh", scenePath, nodeName );
+				return;
+			}
+
+			var mesh		=	scene.Meshes[node.MeshIndex];
+
+			var defMtrl		=	rs.DefaultMaterial;
+			var materials	=	scene.Materials.Select( m => content.Load<MaterialInstance>( m.Name, defMtrl ) ).ToArray();
+
+			meshInstance		= new MeshInstance( rs, scene, mesh, materials );
+
+			rs.RenderWorld.Instances.Add( meshInstance );
+		}
+
 
 
 
@@ -117,10 +97,8 @@ namespace ShooterDemo.Views {
 		/// <param name="gameTime"></param>
 		public override void Update ( float elapsedTime, float lerpFactor )
 		{
-			IterateObjects( (e,m) => {
-				m.Instance.World	=	m.PreTransform * e.GetWorldMatrix(lerpFactor) * m.PostTransform;
-				m.Instance.Visible	=	e.UserGuid != World.GameClient.Guid;
-			});
+			meshInstance.World		=	preTransform * Entity.GetWorldMatrix(lerpFactor) * postTransform;
+			meshInstance.Visible	=	Entity.UserGuid != World.GameClient.Guid;
 		}
 
 
@@ -129,13 +107,9 @@ namespace ShooterDemo.Views {
 		/// Removes entity
 		/// </summary>
 		/// <param name="id"></param>
-		public override void Kill ( uint id )
+		public override void Killed ()
 		{	
-			Model model;
-
-			if ( RemoveObject( id, out model ) ) {
-				Game.RenderSystem.RenderWorld.Instances.Remove( model.Instance );
-			}
+			Game.RenderSystem.RenderWorld.Instances.Remove( meshInstance );
 		}
 
 	}

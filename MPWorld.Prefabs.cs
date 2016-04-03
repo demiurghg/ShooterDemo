@@ -26,17 +26,14 @@ namespace ShooterDemo {
 		/// </summary>
 		void InitializePrefabs ()
 		{
-			AddView( new ModelView(this) );
-			AddView( new SfxView(this) );
 			AddView( new HudView(this) );
-
+			AddView( new CameraView(this) );
 
 			AddPrefab( "startPoint"	, PrefabDummy	);
 			AddPrefab( "camera"		, PrefabDummy	);
 			AddPrefab( "player"		, PrefabPlayer	);
 			AddPrefab( "box"		, PrefabBox		);
 			AddPrefab( "rocket"		, PrefabRocket	);
-			AddPrefab( "explosion"	, PrefabExplosion );
 		}
 
 
@@ -69,7 +66,7 @@ namespace ShooterDemo {
 			entity.Attach( new Weaponry( entity, world ) );
 
 			if (world.IsClientSide) {
-				world.GetView<ModelView>().AddModel( entity, @"scenes\characters\marine\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) );
+				entity.Attach( new ModelView( entity, world, @"scenes\characters\marine\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) ) );
 			}
 
 			entity.SetItemCount( Inventory.Health	,	100	);
@@ -83,15 +80,9 @@ namespace ShooterDemo {
 			entity.Attach( new Projectiles( entity, world, "Explosion", 30, 5, 100, 100, 5 ) );
 			
 			if (world.IsClientSide) {
-				world.GetView<ModelView>().AddModel( entity, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity );
-				world.GetView<SfxView>().AttachSFX ( entity, "RocketTrail" );
+				entity.Attach( new ModelView( entity, world, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity ) );
+				entity.Attach( new SfxView( entity, world, "RocketTrail" ) );
 			}
-		}
-
-
-
-		public static void PrefabExplosion ( World world, Entity entity )
-		{
 		}
 
 
@@ -101,7 +92,7 @@ namespace ShooterDemo {
 			entity.Attach( new RigidBody(entity, world, 1.0f, 0.75f, 0.75f,5 ) ); 
 
 			if (world.IsClientSide) {
-				world.GetView<ModelView>().AddModel( entity, @"scenes\boxes\boxModel", "pCube1", Matrix.Identity, Matrix.Identity );
+				entity.Attach( new ModelView( entity, world, @"scenes\boxes\boxModel", "pCube1", Matrix.Identity, Matrix.Identity ) );
 			}
 		}
 

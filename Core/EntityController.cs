@@ -24,6 +24,7 @@ namespace ShooterDemo.Core {
 		{
 			this.World	=	world;
 			this.Entity	=	entity;
+			this.Game	=	world.Game;
 		}
 
 

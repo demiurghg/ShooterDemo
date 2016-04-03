@@ -18,32 +18,22 @@ using ShooterDemo.SFX;
 
 
 namespace ShooterDemo.Views {
-	public class SfxView : EntityView<SfxInstance> {
+	public class SfxView : EntityView {
 
+		SfxInstance sfx;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="game"></param>
-		public SfxView ( World world ) : base(world)
-		{
-		}
-
-
-
-		/// <summary>
-		/// Hot reload?
-		/// </summary>
-		/// <param name="scenePath"></param>
-		/// <param name="nodeName"></param>
-		/// <param name="preTransform"></param>
-		public void AttachSFX ( Entity entity, string sfxName )
+		public SfxView ( Entity entity, World world, string sfxName ) : base(entity, world)
 		{
 			var fxID	=	World.GameClient.Atoms[ sfxName ];
 			var	fxEvent	=	new FXEvent(fxID, entity.ID, entity.Position, entity.LinearVelocity, entity.Rotation);
 			
-			AddObject( entity.ID, World.RunFX( fxEvent ) ); 
-		} 
+			sfx = World.RunFX( fxEvent ); 
+		}
+
 
 
 
@@ -53,13 +43,10 @@ namespace ShooterDemo.Views {
 		/// <param name="gameTime"></param>
 		public override void Update ( float elapsedTime, float lerpFactor )
 		{
-			IterateObjects( (e,sfx) => {
-				var p	=	e.LerpPosition( lerpFactor );
-				var q   =	e.LerpRotation( lerpFactor );
-				var v	=	e.LinearVelocity;
-				sfx.Move( p,v,q );
-				//Game.RenderSystem.RenderWorld.Debug.Trace( e.Position, 0.5f, Color.Yellow );
-			});
+			var p	=	Entity.LerpPosition( lerpFactor );
+			var q   =	Entity.LerpRotation( lerpFactor );
+			var v	=	Entity.LinearVelocity;
+			sfx.Move( p,v,q );
 		}
 
 
@@ -68,13 +55,9 @@ namespace ShooterDemo.Views {
 		/// Removes entity
 		/// </summary>
 		/// <param name="id"></param>
-		public override void Kill ( uint id )
+		public override void Killed ()
 		{	
-			SfxInstance sfx;
-
-			if ( RemoveObject( id, out sfx ) ) {
-				sfx.Kill();
-			}
+			sfx.Kill();
 		}
 
 	}

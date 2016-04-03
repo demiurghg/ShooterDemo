@@ -28,8 +28,6 @@ namespace ShooterDemo.Core {
 		public delegate void EntityConstructor ( World world, Entity entity );
 		public delegate void EntityEventHandler ( object sender, EntityEventArgs e );
 
-		List<IEntityView> views = new List<IEntityView>();
-
 		Dictionary<uint, Prefab> prefabs = new Dictionary<uint,Prefab>();
 		List<uint> entityToKill = new List<uint>();
 
@@ -38,6 +36,16 @@ namespace ShooterDemo.Core {
 
 		public event EntityEventHandler ReplicaSpawned;
 		public event EntityEventHandler ReplicaKilled;
+
+		/// <summary>
+		/// Gets list of world views.
+		/// </summary>
+		readonly List<WorldView> views = new List<WorldView>();
+
+		/// <summary>
+		/// Gets list of world controllers.
+		/// </summary>
+		readonly List<WorldController> controllers = new List<WorldController>();
 
 
 		List<FXEvent> fxEvents = new List<FXEvent>();
@@ -171,7 +179,7 @@ namespace ShooterDemo.Core {
 		/// Adds view.
 		/// </summary>
 		/// <param name="view"></param>
-		public void AddView( IEntityView view )
+		public void AddView( WorldView view )
 		{
 			if (IsServerSide) {
 				return;
@@ -187,7 +195,7 @@ namespace ShooterDemo.Core {
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T GetView<T>() where T: IEntityView 
+		public T GetView<T>() where T: WorldView
 		{
 			return (T)views.FirstOrDefault( v => v is T );
 		}
@@ -229,10 +237,12 @@ namespace ShooterDemo.Core {
 		/// <param name="entity"></param>
 		void Destruct ( Entity entity )
 		{
-			entity.ForeachController( c => c.Killed() );
+			if (IsServerSide) {
+				entity.ForeachController( c => c.Killed() );
+			}
 
-			foreach ( var view in views ) {
-				view.Kill( entity.ID );
+			if (IsClientSide) {
+				entity.ForeachViews( v => v.Killed() );	
 			}
 		}
 
@@ -268,6 +278,7 @@ namespace ShooterDemo.Core {
 		{
 			var dr = Game.RenderSystem.RenderWorld.Debug;
 
+			ForEachEntity( e => e.ForeachViews( v => v.Update( deltaTime, lerpFactor ) ) );
 
 			if (IsClientSide) {
 				foreach ( var view in views ) {

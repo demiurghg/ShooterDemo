@@ -19,24 +19,18 @@ using Fusion.Engine.Audio;
 
 
 
-namespace ShooterDemo {
-	public class GameCamera {
+namespace ShooterDemo.Views {
+	public class CameraView : WorldView {
 
 		uint playerID = 0;
-
-		readonly Game Game;
-		readonly World world;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="game"></param>
 		/// <param name="space"></param>
-		public GameCamera ( World world )
+		public CameraView ( World world ) : base( world )
 		{
-			this.Game	=	world.Game;
-			this.world	=	world;
-
 			if (world.IsClientSide) {
 				currentFov	=	(world.GameClient as ShooterClient).Config.Fov;
 			}
@@ -51,7 +45,7 @@ namespace ShooterDemo {
 		/// </summary>
 		public float Sensitivity {
 			get {
-				var cfg = ((ShooterClient)world.GameClient).Config;
+				var cfg = ((ShooterClient)World.GameClient).Config;
 				return currentFov / cfg.Fov * cfg.Sensitivity;
 			}
 		}
@@ -61,24 +55,24 @@ namespace ShooterDemo {
 		/// 
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public void Update ( float elapsedTime, float lerpFactor )
+		public override void Update ( float elapsedTime, float lerpFactor )
 		{
 			var rw	= Game.RenderSystem.RenderWorld;
 			var sw	= Game.SoundSystem.SoundWorld;
 			var vp	= Game.RenderSystem.DisplayBounds;
-			var cfg	= ((ShooterClient)world.GameClient).Config;
+			var cfg	= ((ShooterClient)World.GameClient).Config;
 
 			var aspect	=	(vp.Width) / (float)vp.Height;
 		
 			//rw.Camera.SetupCameraFov( new Vector3(10,4,10), new Vector3(0,4,0), Vector3.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
 
-			var player	=	world.GetEntityOrNull( e => e.Is("player") && e.UserGuid == world.UserGuid );
+			var player	=	World.GetEntityOrNull( e => e.Is("player") && e.UserGuid == World.UserGuid );
 
 			if (player==null) {
 
 				playerID = 0;
 
-				var camera	= world.GetEntityOrNull( e => e.Is("camera") );
+				var camera	= World.GetEntityOrNull( e => e.Is("camera") );
 				var cp		= camera.Position;
 				var cm		= Matrix.RotationQuaternion( camera.Rotation );
 
@@ -89,7 +83,7 @@ namespace ShooterDemo {
 			playerID	=	player.ID;
 			CalcBobbing( player, elapsedTime );
 
-			var uc	=	(world.GameClient as ShooterClient).UserCommand;
+			var uc	=	(World.GameClient as ShooterClient).UserCommand;
 
 			var m	= 	Matrix.RotationYawPitchRoll(	
 							uc.Yaw	 + MathUtil.Rad( bobYaw.Offset), 
@@ -99,7 +93,7 @@ namespace ShooterDemo {
 
 			var ppos	=	player.LerpPosition(lerpFactor);
 
-			float backoffset = ((ShooterClient)world.GameClient).Config.ThirdPerson ? 2 : 0;
+			float backoffset = ((ShooterClient)World.GameClient).Config.ThirdPerson ? 2 : 0;
 			var pos		=	ppos + Vector3.Up * 1.0f + m.Backward * backoffset;
 
 			var fwd	=	pos + m.Forward;
@@ -160,7 +154,7 @@ namespace ShooterDemo {
 		/// <returns></returns>
 		void CalcBobbing ( Entity player, float elapsedTime )
 		{	
-			var clientCfg	=	((ShooterClient)world.GameClient).Config;
+			var clientCfg	=	((ShooterClient)World.GameClient).Config;
 
 			bool hasTraction	=	player.State.HasFlag(EntityState.HasTraction);	
 

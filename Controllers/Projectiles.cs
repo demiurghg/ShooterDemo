@@ -24,12 +24,12 @@ namespace ShooterDemo.Controllers {
 
 		Random rand = new Random();
 
-		public float Velocity;
-		public float Impulse;
-		public short DamageValue;
-		public float LifeTime;
-		public string ExplosionFX;
-		public float Radius;
+		public float velocity;
+		public float impulse;
+		public short damageValue;
+		public float lifeTime;
+		public string explosionFX;
+		public float radius;
 
 
 		readonly Space space;
@@ -45,12 +45,12 @@ namespace ShooterDemo.Controllers {
 			this.space	=	((MPWorld)world).PhysSpace;
 			this.world	=	(MPWorld)world;
 
-			Velocity	=	velocity;
-			Impulse		=	impulse;	
-			DamageValue	=	damage;
-			LifeTime	=	lifeTime;
-			ExplosionFX	=	explosionFX;
-			Radius		=	radius;
+			this.velocity		=	velocity;
+			this.impulse		=	impulse;	
+			this.damageValue	=	damage;
+			this.lifeTime		=	lifeTime;
+			this.explosionFX	=	explosionFX;
+			this.radius			=	radius;
 
 		}
 
@@ -76,9 +76,9 @@ namespace ShooterDemo.Controllers {
 		{
 			var origin	=	projEntity.Position;
 			var dir		=	Matrix.RotationQuaternion( projEntity.Rotation ).Forward;
-			var target	=	origin + dir * Velocity * elapsedTime;
+			var target	=	origin + dir * velocity * elapsedTime;
 
-			LifeTime -= elapsedTime;
+			lifeTime -= elapsedTime;
 
 			Vector3 hitNormal, hitPoint;
 			Entity  hitEntity;
@@ -86,16 +86,16 @@ namespace ShooterDemo.Controllers {
 			var parent	=	world.GetEntity( projEntity.ParentID );
 
 
-			if ( LifeTime <= 0 ) {
+			if ( lifeTime <= 0 ) {
 				world.Kill( projEntity.ID );
 			}
 
 			if ( world.RayCastAgainstAll( origin, target, out hitNormal, out hitPoint, out hitEntity, parent ) ) {
 
 				//	inflict damage to hit object:
-				world.InflictDamage( hitEntity, projEntity.ParentID, DamageValue, dir * Impulse, hitPoint, DamageType.RocketExplosion );
+				world.InflictDamage( hitEntity, projEntity.ParentID, damageValue, dir * impulse, hitPoint, DamageType.RocketExplosion );
 
-				Explode( ExplosionFX, projEntity.ID, hitEntity, hitPoint, hitNormal, Radius, DamageValue, Impulse, DamageType.RocketExplosion );
+				Explode( explosionFX, projEntity.ID, hitEntity, hitPoint, hitNormal, radius, damageValue, impulse, DamageType.RocketExplosion );
 				////	inflict splash damage to nearby objects:
 				//if (projectile.Radius>0) {
 					
@@ -117,12 +117,12 @@ namespace ShooterDemo.Controllers {
 
 
 				//world.SpawnFX( projectile.ExplosionFX, projEntity.ParentID, hitPoint, hitNormal );
-				projEntity.Move( hitPoint, projEntity.Rotation, dir * Velocity );
+				projEntity.Move( hitPoint, projEntity.Rotation, dir * velocity );
 
 				world.Kill( projEntity.ID );
 
 			} else {
-				projEntity.Move( target, projEntity.Rotation, dir.Normalized() * Velocity );
+				projEntity.Move( target, projEntity.Rotation, dir.Normalized() * velocity );
 			}
 		}
 

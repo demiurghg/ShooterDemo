@@ -153,7 +153,7 @@ namespace ShooterDemo.SFX {
 		/// <param name="roll"></param>
 		public void ShakeCamera ( float yaw, float pitch, float roll )
 		{
-			((MPWorld)sfxSystem.world).Camera.Shake( fxEvent.ParentID, yaw, pitch, roll );
+			sfxSystem.world.GetView<CameraView>().Shake( fxEvent.ParentID, yaw, pitch, roll );
 		}
 
 		/*-----------------------------------------------------------------------------------------
