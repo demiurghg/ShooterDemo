@@ -57,6 +57,7 @@
     <Compile Include="Controllers\Projectiles.cs" />
     <Compile Include="Controllers\Weaponry.cs" />
     <Compile Include="Core\EntityController.cs" />
+    <Compile Include="GameCamera.cs" />
     <Compile Include="MPWorld.Player.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\FXEvent.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="SFX\SfxInstance.ParticleStage.cs" />
     <Compile Include="SFX\SfxInstance.cs" />
     <Compile Include="SFX\WeaponFX\BulletTrail.cs" />
+    <Compile Include="SFX\WeaponFX\PlayerPain.cs" />
     <Compile Include="SFX\WeaponFX\RailFX.cs" />
     <Compile Include="SFX\WeaponFX\MZRocketLauncher.cs" />
     <Compile Include="SFX\WeaponFX\MZMachinegun.cs" />
@@ -81,7 +83,6 @@
     <Compile Include="ShooterServerConfig.cs" />
     <Compile Include="Core\EntityEventArgs.cs" />
     <Compile Include="ShooterClientConfig.cs" />
-    <Compile Include="Views\CameraView.cs" />
     <Compile Include="Controllers\RigidBody.cs" />
     <Compile Include="MPWorld.Prefabs.cs" />
     <Compile Include="MPWorld.Players.cs" />

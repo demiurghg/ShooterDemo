@@ -28,7 +28,6 @@ namespace ShooterDemo {
 		{
 			AddView( new ModelView(this) );
 			AddView( new SfxView(this) );
-			AddView( new CameraView(this) );
 			AddView( new HudView(this) );
 
 

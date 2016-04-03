@@ -123,6 +123,8 @@ namespace ShooterDemo.Controllers {
 
 			e.SetItemCount( Inventory.Health, health );
 
+			World.SpawnFX("PlayerPain", targetID, e.Position );
+
 			return false;
 		}
 

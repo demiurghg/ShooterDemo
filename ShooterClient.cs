@@ -340,7 +340,7 @@ namespace ShooterDemo {
 			//	Q3A: 16200 dot per 360 turn:
 			var vp		=	Game.RenderSystem.DisplayBounds;
 			var ui		=	Game.GameInterface as ShooterInterface;
-			var cam		=	World.GetView<CameraView>();
+			var cam		=	((MPWorld)World).Camera;
 
 			if (!ui.Console.Show) {
 				UserCommand.CtrlFlags	=	flags | weaponControl;

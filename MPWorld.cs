@@ -23,6 +23,8 @@ namespace ShooterDemo {
 		
 		readonly string mapName;
 
+		public GameCamera Camera { get; private set; }
+
 		
 		public MPWorld( GameServer server, string map ) : base(server)
 		{
@@ -45,6 +47,8 @@ namespace ShooterDemo {
 			InitializePrefabs();
 
 			var scene = Content.Load<Scene>(@"scenes\" + serverInfo );
+
+			Camera	=	new GameCamera(this);
 
 			ReadMapFromScene( Content, scene, IsClientSide );
 		}
@@ -70,6 +74,16 @@ namespace ShooterDemo {
 		public override string ServerInfo ()
 		{
 			return mapName;
+		}
+
+
+		public override void PresentWorld ( float deltaTime, float lerpFactor )
+		{
+			if (IsClientSide) {
+				Camera.Update( deltaTime, lerpFactor );
+			}
+
+			base.PresentWorld( deltaTime, lerpFactor );
 		}
 
 
