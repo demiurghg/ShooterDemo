@@ -72,8 +72,7 @@ namespace ShooterDemo.Views {
 
 
 
-
-
+			//hudLayer.SetSpriteFrame( 0, new Rectangle(10,10,vp.Width-20, vp.Height-20), Color.Red );
 
 			hudLayer.DrawSprite( crosshair, vp.Width/2, vp.Height/2, crosshair.Width, 0, Color.White ); 
 
@@ -116,26 +115,26 @@ namespace ShooterDemo.Views {
 		void SmallTextLJ ( SpriteLayer layer, string text, int x, int y, Color color )
 		{
 			var r = hudFontSmall.MeasureStringF( text, -2 );
-			hudFontSmall.DrawString( layer, text, x, y, color, -2 );
+			hudFontSmall.DrawString( layer, text, x, y, color, 0, -2 );
 		}
 
 		void SmallTextRJ ( SpriteLayer layer, string text, int x, int y, Color color )
 		{
 			var r = hudFontSmall.MeasureStringF( text, -2 );
-			hudFontSmall.DrawString( layer, text, x-r.Width, y, color, -2 );
+			hudFontSmall.DrawString( layer, text, x-r.Width, y, color, 0, -2 );
 		}
 
 		void MicroTextRJ ( SpriteLayer layer, string text, int x, int y, Color color )
 		{
 			var r = hudFontMicro.MeasureStringF( text, -1 );
-			hudFontMicro.DrawString( layer, text, x-r.Width, y, color, -1 );
+			hudFontMicro.DrawString( layer, text, x-r.Width, y, color, 0, -1 );
 		}
 
 
 		void BigTextLJ ( SpriteLayer layer, string text, int x, int y, Color color )
 		{
 			var r = hudFont.MeasureStringF( text, -4 );
-			hudFont.DrawString( layer, text, x, y, color, -4 );
+			hudFont.DrawString( layer, text, x, y, color, 0, -4, true, false );
 		}
 
 		void BugTextRJ ( SpriteLayer layer, string text, int x, int y, Color color )

@@ -36,6 +36,8 @@ namespace ShooterDemo.Core {
 
 		public event EntityEventHandler ReplicaSpawned;
 		public event EntityEventHandler ReplicaKilled;
+		public event EntityEventHandler EntitySpawned;
+		public event EntityEventHandler EntityKilled;
 
 		/// <summary>
 		/// Gets list of world views.
@@ -330,6 +332,10 @@ namespace ShooterDemo.Core {
 
 			LogTrace("spawn: {0} - #{1}", prefab, id );
 
+			if (EntitySpawned!=null) {
+				EntitySpawned( this, new EntityEventArgs(entity) );
+			}
+
 			return entity;
 		}
 
@@ -539,6 +545,10 @@ namespace ShooterDemo.Core {
 
 				if (IsClientSide && ReplicaKilled!=null) {
 					ReplicaKilled( this, new EntityEventArgs(ent) );
+				}
+				
+				if (IsServerSide && EntityKilled!=null) {
+					EntityKilled( this, new EntityEventArgs(ent) );
 				}
 				
 				entities.Remove( id );

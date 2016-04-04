@@ -45,6 +45,12 @@ namespace ShooterDemo {
 			public bool Ready;
 
 
+			float respawnTime = 9999;
+
+
+			public Entity PlayerEntity { get; private set; }
+
+
 			/// <summary>
 			/// 
 			/// </summary>
@@ -63,6 +69,15 @@ namespace ShooterDemo {
 				Score		=	0;
 			}
 
+
+
+			/// <summary>
+			/// Called when player's entity was killed
+			/// </summary>
+			public void Killed ( Entity entity )
+			{
+				respawnTime	=	0;
+			}
 
 
 			/// <summary>
@@ -87,6 +102,10 @@ namespace ShooterDemo {
 					return;
 				}
 
+				if (respawnTime<20) {
+					respawnTime += dt;
+				}
+
 				var player = world.GetEntityOrNull( e => e.UserGuid==Guid );
 
 				if (player!=null) {
@@ -94,11 +113,13 @@ namespace ShooterDemo {
 					player.UserCtrlFlags	=	UserCmd.CtrlFlags;
 				}
 
-				if (player==null && UserCmd.CtrlFlags.HasFlag(UserCtrlFlags.Attack)) {
-					player	=	Respawn(world);
+				if (player==null) {
+					if ( UserCmd.CtrlFlags.HasFlag(UserCtrlFlags.Attack) && respawnTime>5 || respawnTime>20 ) {
+						player	=	Respawn(world);
+					}
 				}
-
 			}
+
 
 
 			/// <summary>
@@ -115,6 +136,9 @@ namespace ShooterDemo {
 
 				var ent = world.Spawn( "player", 0, sp.Position, sp.Rotation );
 				ent.UserGuid = Guid;
+
+				PlayerEntity = ent;
+
 				return ent;
 			}
 		}

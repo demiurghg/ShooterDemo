@@ -88,6 +88,21 @@ namespace ShooterDemo {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		void MPWorld_EntityKilled ( object sender, EntityEventArgs e )
+		{
+			foreach ( var pe in Players.Where( p => p.PlayerEntity == e.Entity ) ) {
+				pe.Killed(e.Entity);
+			}
+			
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <param name="guid"></param>
 		/// <param name="userInfo"></param>
 		/// <returns></returns>

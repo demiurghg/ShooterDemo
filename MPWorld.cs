@@ -34,6 +34,8 @@ namespace ShooterDemo {
 			var scene = Content.Load<Scene>(@"scenes\" + map );
 
 			ReadMapFromScene( Content, scene, IsClientSide );
+
+			EntityKilled += MPWorld_EntityKilled;
 		}
 
 
