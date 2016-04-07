@@ -116,14 +116,32 @@ namespace ShooterDemo.Controllers {
 			var health	=	e.GetItemCount( Inventory.Health );
 			health -= damage;
 
-			if (health<0) {
+			var dir = kickImpulse.Normalized();
+
+			if (health>75) {
+				World.SpawnFX("PlayerPain25", targetID, kickPoint, dir );
+			} else
+			if (health>50) {
+				World.SpawnFX("PlayerPain50", targetID, kickPoint, dir );
+			} else
+			if (health>25) {
+				World.SpawnFX("PlayerPain75", targetID, kickPoint, dir );
+			} else
+			if (health>0) {
+				World.SpawnFX("PlayerPain100", targetID, kickPoint, dir );
+			} else
+			if (health>-25) {
+				World.SpawnFX("PlayerDeath", targetID, e.Position, dir );
+			} else {
+				World.SpawnFX("PlayerDeathMeat", targetID, e.Position, dir );
+			}
+
+			if (health<=0) {
 				World.Kill( targetID );
 				return true;
 			}
 
 			e.SetItemCount( Inventory.Health, health );
-
-			World.SpawnFX("PlayerPain", targetID, e.Position );
 
 			return false;
 		}

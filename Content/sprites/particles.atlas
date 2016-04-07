@@ -1,7 +1,7 @@
-#bloodSpray01.tga
-#bloodSpray02.tga
-#bloodSpray03.tga
-#bloodSpray04.tga
+bloodSpray01.tga
+bloodSpray02.tga
+bloodSpray03.tga
+bloodSpray04.tga
 explosionFire.tga
 explosionFire2.tga
 explosionSmoke.tga
@@ -16,3 +16,4 @@ railCore.tga
 railTrace.tga
 laserTrace.tga
 railDot.tga
+teleportSpark.tga

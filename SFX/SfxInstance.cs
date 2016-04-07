@@ -173,6 +173,9 @@ namespace ShooterDemo.SFX {
 		/// <param name="emit"></param>
 		protected void AddParticleStage ( string spriteName, float delay, float period, float sleep, int count, bool looped, EmitFunction emit )
 		{
+			if (count==0) {
+				return;
+			}
 			var spriteIndex		=	sfxSystem.GetSpriteIndex( spriteName );
 			var stage			=	new ParticleStage( this, spriteIndex, delay, period, sleep, count, looped, emit );
 			stages.Add( stage );

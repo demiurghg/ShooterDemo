@@ -59,6 +59,7 @@
     <Compile Include="Core\EntityController.cs" />
     <Compile Include="Core\WorldController.cs" />
     <Compile Include="Core\WorldView.cs" />
+    <Compile Include="SFX\WeaponFX\TeleportFX.cs" />
     <Compile Include="Views\CameraView.cs" />
     <Compile Include="MPWorld.Player.cs" />
     <Compile Include="Core\Enums.cs" />
