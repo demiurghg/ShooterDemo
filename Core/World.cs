@@ -384,7 +384,7 @@ namespace ShooterDemo.Core {
 		/// <param name="position"></param>
 		/// <param name="target"></param>
 		/// <param name="orient"></param>
-		public void SpawnFX ( string fxName, uint parentID, Vector3 origin, Vector3 forward )
+		public void SpawnFX ( string fxName, uint parentID, Vector3 origin, Vector3 velocity, Vector3 forward )
 		{
 			forward	=	Vector3.Normalize( forward );
 			var rt	=	Vector3.Cross( forward, Vector3.Up );	
@@ -400,9 +400,21 @@ namespace ShooterDemo.Core {
 			m.Right		=	rt;
 			m.Up		=	up;
 			
-			SpawnFX( fxName, parentID, origin, Vector3.Zero, Quaternion.RotationMatrix(m) );
+			SpawnFX( fxName, parentID, origin, velocity, Quaternion.RotationMatrix(m) );
 		}
 
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fxName"></param>
+		/// <param name="parentID"></param>
+		/// <param name="origin"></param>
+		/// <param name="forward"></param>
+		public void SpawnFX ( string fxName, uint parentID, Vector3 origin, Vector3 forward )
+		{
+			SpawnFX( fxName, parentID, origin, Vector3.Zero, forward );
+		}
 
 
 		/// <summary>

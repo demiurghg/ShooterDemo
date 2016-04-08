@@ -46,8 +46,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 		void EmitGib ( ref Particle p, FXEvent fxEvent )
 		{
 			var m   =	Matrix.RotationQuaternion( fxEvent.Rotation );
-			var dir =	rand.UniformRadialDistribution(0.1f,0.1f);
-			var vel	=	Vector3.Up * 3 + rand.GaussRadialDistribution(1,1);
+			var dir =	rand.UniformRadialDistribution(0.1f,0.1f) + fxEvent.Velocity;
+			var vel	=	Vector3.Up * 3 + rand.GaussRadialDistribution(0.5f,0.5f) + fxEvent.Velocity * rand.NextFloat(0,0.1f);
 			var pos	=	fxEvent.Origin;
 
 			var time = rand.NextFloat(0.7f, 1.3f);

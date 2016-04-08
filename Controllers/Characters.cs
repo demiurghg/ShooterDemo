@@ -133,7 +133,7 @@ namespace ShooterDemo.Controllers {
 			if (health>-25) {
 				World.SpawnFX("PlayerDeath", targetID, e.Position, dir );
 			} else {
-				World.SpawnFX("PlayerDeathMeat", targetID, e.Position, dir );
+				World.SpawnFX("PlayerDeathMeat", targetID, e.Position, kickImpulse, dir );
 			}
 
 			if (health<=0) {
