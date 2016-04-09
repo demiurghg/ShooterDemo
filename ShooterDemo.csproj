@@ -59,6 +59,7 @@
     <Compile Include="Core\EntityController.cs" />
     <Compile Include="Core\WorldController.cs" />
     <Compile Include="Core\WorldView.cs" />
+    <Compile Include="SFX\WeaponFX\MZShotgun.cs" />
     <Compile Include="SFX\WeaponFX\PlasmaExplosion.cs" />
     <Compile Include="SFX\WeaponFX\PlasmaTrail.cs" />
     <Compile Include="SFX\WeaponFX\MZBlaster.cs" />

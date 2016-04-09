@@ -38,7 +38,39 @@ namespace ShooterDemo.SFX.WeaponFX {
 			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.3f );
 			SetupAngles		( ref p, 160 );
 			SetupColor		( ref p, 500, 500, 0, 1 );
-			SetupTiming		( ref p, 0.5f, 0.01f, 0.9f );
+			SetupTiming		( ref p, 0.3f, 0.01f, 0.9f );
+			SetupSize		( ref p, 0.1f, 0.00f );
+		}
+	}
+
+
+	class ShotTrail : SfxInstance {
+
+		Vector3 sparkDir;
+		
+		public ShotTrail ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
+		{
+			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward + rand.GaussRadialDistribution(0, 0.1f);
+			sparkDir.Normalize();
+
+			AddParticleStage("bulletSpark", 0, 0f, 0.1f, 10, false, EmitSpark );
+																					  
+			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(125,110, 35,1), 0.5f, 100f, 3f );
+
+			//AddSoundStage( @"sound\weapon\bulletHit",	fxEvent.Origin, 1, false );
+		}
+
+
+
+		void EmitSpark ( ref Particle p, FXEvent fxEvent )
+		{
+			var vel	=	sparkDir * rand.GaussDistribution(4,3) + rand.GaussRadialDistribution(0, 0.7f);
+			var pos	=	fxEvent.Origin;
+
+			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.3f );
+			SetupAngles		( ref p, 160 );
+			SetupColor		( ref p, 500, 500, 0, 1 );
+			SetupTiming		( ref p, 0.3f, 0.01f, 0.9f );
 			SetupSize		( ref p, 0.1f, 0.00f );
 		}
 	}

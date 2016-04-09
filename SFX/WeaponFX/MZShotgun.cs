@@ -12,24 +12,24 @@ using ShooterDemo.Core;
 using Fusion.Engine.Graphics;
 
 namespace ShooterDemo.SFX.WeaponFX {
-	class MZBlaster : SfxInstance {
+	class MZShotgun : SfxInstance {
 
 		Vector3 sparkDir;
 		
-		public MZBlaster ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
+		public MZShotgun ( SfxSystem sfxSystem, FXEvent fxEvent ) : base(sfxSystem, fxEvent)
 		{
-			ShakeCamera( rand.GaussDistribution(0,5), rand.GaussDistribution(5,5), rand.GaussDistribution(0,5) );
+			ShakeCamera( rand.GaussDistribution(0,10), rand.GaussDistribution(0,10), rand.GaussDistribution(0,10) );
 
 
 			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
 			//AddParticleStage("bulletSpark", 0, 0f, 0.1f, 30, EmitSpark );
 																					  
-			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(137,137,228,1), 1, 100f, 3f );
+			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(125,110, 35,1), 1, 100f, 3f );
 
 			if (sfxSystem.world.IsPlayer(fxEvent.ParentID)) {
-				AddSoundStage( @"sound\weapon\plasma",	false );
+				AddSoundStage( @"sound\weapon\spas12_shot2",	false );
 			} else {
-				AddSoundStage( @"sound\weapon\plasma", fxEvent.Origin, 1, false );
+				AddSoundStage( @"sound\weapon\spas12_shot2", fxEvent.Origin, 1, false );
 			}
 		}
 

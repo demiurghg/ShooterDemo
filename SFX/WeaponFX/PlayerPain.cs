@@ -18,7 +18,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 		{
 			ShakeCamera( rand.GaussDistribution(0,shake), rand.GaussDistribution(0,shake), rand.GaussDistribution(0,shake) );
 
-			AddParticleStage("bloodSpray01", 0, 0f, 0.1f, bloodAmount, false, EmitBlood );
+			AddParticleStage("bloodSpray04", 0, 0f, 0.1f, bloodAmount, false, EmitBlood );
 			AddParticleStage("bloodSpray04", 0, 0f, 0.1f, gibAmount,   false, EmitGib );
 			
 			if (sfxSystem.world.IsPlayer(fxEvent.ParentID)) {
@@ -31,15 +31,28 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 		void EmitBlood ( ref Particle p, FXEvent fxEvent )
 		{
+			//var m   =	Matrix.RotationQuaternion( fxEvent.Rotation );
+			//var vel	=	-m.Forward * rand.GaussDistribution(3,1) + rand.GaussRadialDistribution(0, 1.0f);
+			//var pos	=	fxEvent.Origin;
+
+			//SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.7f );
+			//SetupAngles		( ref p, 10 );
+			//SetupColor		( ref p, 10, 10, 1, 1 );
+			//SetupTiming		( ref p, 0.5f, 0.01f, 0.9f );
+			//SetupSize		( ref p, 0.3f, 0.00f );
+
 			var m   =	Matrix.RotationQuaternion( fxEvent.Rotation );
-			var vel	=	-m.Forward * rand.GaussDistribution(3,1) + rand.GaussRadialDistribution(0, 1.0f);
+			var dir =	rand.UniformRadialDistribution(0.1f,0.1f) + fxEvent.Velocity;
+			var vel	=	Vector3.Up * 3 + rand.GaussRadialDistribution(0.5f,0.5f) + fxEvent.Velocity * rand.NextFloat(0,0.1f);
 			var pos	=	fxEvent.Origin;
 
-			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.7f );
-			SetupAngles		( ref p, 10 );
-			SetupColor		( ref p, 10, 10, 1, 1 );
-			SetupTiming		( ref p, 0.5f, 0.01f, 0.9f );
-			SetupSize		( ref p, 0.3f, 0.00f );
+			var time = rand.NextFloat(0.7f, 1.3f);
+
+			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, 0.8f );
+			SetupAngles		( ref p, 50 );
+			SetupColor		( ref p, 20, 20, 0, 1 );
+			SetupTiming		( ref p, time, 0.01f, 0.1f );
+			SetupSize		( ref p, 0.5f, 0.7f );
 		}
 
 

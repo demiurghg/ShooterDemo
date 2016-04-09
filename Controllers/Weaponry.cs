@@ -96,7 +96,7 @@ namespace ShooterDemo.Controllers {
 			if (attack) {
 				switch (entity.ActiveItem) {
 					case Inventory.Machinegun		:	FireBullet(world, entity, 5, 5, 75, 0.03f); break;
-					case Inventory.Shotgun			:	break;
+					case Inventory.Shotgun			:	FireShot( world, entity, 10,10, 5.0f, 500, 0.1f); break;
 					case Inventory.SuperShotgun		:	break;
 					case Inventory.GrenadeLauncher	:	break;
 					case Inventory.RocketLauncher	:	FireRocket(world, entity, 400); break;
@@ -192,6 +192,43 @@ namespace ShooterDemo.Controllers {
 
 			} else {
 				world.SpawnFX( "MZMachinegun",	attacker.ID, origin, n );
+			}
+
+			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );
+		}
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="damage"></param>
+		void FireShot ( MPWorld world, Entity attacker, int damage, int count, float impulse, short cooldown, float spread )
+		{
+			if (!attacker.ConsumeItem( Inventory.Bullets, 1 )) {
+				return;
+			}
+
+			var view	=	Matrix.RotationQuaternion( attacker.Rotation );
+			Vector3 n,p;
+			Entity e;
+
+			var origin		=	AttackPos( attacker );
+
+			world.SpawnFX( "MZShotgun",	attacker.ID, origin );
+
+			for (int i=0; i<count; i++) {
+				
+				var direction	=	view.Forward + rand.UniformRadialDistribution(0, spread);
+
+				if (world.RayCastAgainstAll( origin, origin + direction * 400, out n, out p, out e, attacker )) {
+
+					world.SpawnFX( "ShotTrail",	attacker.ID, p, n );
+
+					world.InflictDamage( e, attacker.ID, (short)damage, view.Forward * impulse, p, DamageType.BulletHit );
+
+				} 
 			}
 
 			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );
