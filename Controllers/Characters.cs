@@ -109,6 +109,17 @@ namespace ShooterDemo.Controllers {
 			var p = MathConverter.Convert( kickPoint );
 			c.Body.ApplyImpulse( p, i );
 
+			/**************************************************
+			 * 
+			 *	1. Accumulate damage and emit FX according to 
+			 *	maximum inflicted damage.
+			 *	Probably we have to add new controller stage 
+			 *	for FX processing (e.g. Update and UpdateFX).
+			 *	
+			 *	2. Do not scream at each damage. 
+			 *	Screams should not overlap!
+			 * 
+			**************************************************/
 
 			//
 			//	calc health :
