@@ -21,7 +21,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
 
 			AddParticleStage("plasmaCore",		0.00f, 0.0f, 0.1f,  50, false, EmitSpark );
-			//AddParticleStage("plasmaPuff",	0.10f, 0.1f, 1.0f,   15, false, EmitSmoke );
+			AddParticleStage("plasmaCore",		0.10f, 0.1f, 1.0f,   5, false, EmitBall );
 			//AddParticleStage("plasmaPuff",	0.10f, 0.1f, 1.0f,   15, false, EmitSmoke );
 			AddParticleStage("plasmaFire",	0.00f, 0.1f, 1.0f,   15, false, EmitFire );
 
@@ -46,7 +46,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			//SetupColor		( ref p, 500, 500, 0, 1 );
 
 			var vel		=	rand.GaussRadialDistribution(0, 3.0f) + sparkDir * 2;
-			var pos		=	fxEvent.Origin + rand.UniformRadialDistribution(1,1) * 0.3f;
+			var pos		=	fxEvent.Origin;// + rand.UniformRadialDistribution(1,1) * 0.0f;
 			var accel	=	-vel*2 + rand.GaussRadialDistribution(0, 1.2f);
 
 			SetupMotion		( ref p, pos, vel, accel );
@@ -57,34 +57,34 @@ namespace ShooterDemo.SFX.WeaponFX {
 		}
 
 
-		void EmitSmoke ( ref Particle p, FXEvent fxEvent )
+		void EmitBall ( ref Particle p, FXEvent fxEvent )
 		{
 			var dir = 	rand.UniformRadialDistribution(0,1);
-			var vel	=	dir * 0.25f;
-			var pos	=	fxEvent.Origin + dir;
+			var vel	=	Vector3.Zero;
+			var pos	=	fxEvent.Origin;
 
-			float time	=	rand.NextFloat(1.4f, 1.6f);
+			float time	=	rand.NextFloat(0.05f, 0.10f);
 
-			SetupMotion		( ref p, pos, vel, -vel*1.5f );
-			SetupAngles		( ref p, 10 );
-			SetupColor		( ref p, 500, 500, 0, 1.0f );
+			SetupMotion		( ref p, pos, Vector3.Zero, Vector3.Zero );
+			SetupAngles		( ref p, 100 );
+			SetupColor		( ref p, 1000, 1000, 0, 1.0f );
 			SetupTiming		( ref p, time, 0.1f, 0.2f );
-			SetupSize		( ref p, 0.6f, 1 );
+			SetupSize		( ref p, 0.2f, 0.5f );
 		}
 
 
 		void EmitFire ( ref Particle p, FXEvent fxEvent )
 		{
 			var vel	=	rand.UniformRadialDistribution(0, 0.5f);
-			var pos	=	fxEvent.Origin + rand.UniformRadialDistribution(1,1) * 0.25f;
+			var pos	=	fxEvent.Origin + rand.UniformRadialDistribution(1,1) * 0.1f;
 
-			float time	=	rand.NextFloat(0.2f, 0.3f);
+			float time	=	rand.NextFloat(0.1f, 0.3f);
 
 			SetupMotion		( ref p, pos, vel, Vector3.Zero );
 			SetupAngles		( ref p, 1 );
 			SetupColor		( ref p, 1000, 1000, 0, 1.0f );
 			SetupTiming		( ref p, time, 0.01f, 0.1f );
-			SetupSize		( ref p, 0.4f, 0.6f );
+			SetupSize		( ref p, 0.3f, 0.7f );
 		}
 	}
 }

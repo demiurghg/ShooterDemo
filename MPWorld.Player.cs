@@ -114,7 +114,7 @@ namespace ShooterDemo {
 				}
 
 				if (player==null) {
-					if ( UserCmd.CtrlFlags.HasFlag(UserCtrlFlags.Attack) && respawnTime>5 || respawnTime>20 ) {
+					if ( UserCmd.CtrlFlags.HasFlag(UserCtrlFlags.Attack) && respawnTime>1 || respawnTime>3 ) {
 						player	=	Respawn(world);
 					}
 				}
@@ -135,6 +135,7 @@ namespace ShooterDemo {
 				}
 
 				var ent = world.Spawn( "player", 0, sp.Position, sp.Rotation );
+				world.SpawnFX("TeleportOut", ent.ID, sp.Position );
 				ent.UserGuid = Guid;
 
 				PlayerEntity = ent;

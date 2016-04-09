@@ -219,6 +219,7 @@ namespace ShooterDemo.Controllers {
 
 			if (world.RayCastAgainstAll( origin, origin + direction * 200, out n, out p, out e, attacker )) {
 
+				//world.SpawnFX( "PlayerDeathMeat", attacker.ID, p, n );
 				world.SpawnFX( "RailHit",		attacker.ID, p, n );
 				world.SpawnFX( "RailMuzzle",	attacker.ID, origin, n );
 				world.SpawnFX( "RailTrail",		attacker.ID, origin, p - origin, attacker.Rotation );

@@ -70,6 +70,8 @@ namespace ShooterDemo.Views {
 
 			if (player==null) {
 
+				StopShaking();
+
 				playerID = 0;
 
 				var camera	= World.GetEntityOrNull( e => e.Is("camera") );
