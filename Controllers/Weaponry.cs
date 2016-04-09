@@ -44,6 +44,9 @@ namespace ShooterDemo.Controllers {
 
 			entity.SetItemCount( Inventory.Slugs			,	150	);
 			entity.SetItemCount( Inventory.Railgun			,	1	);
+
+			entity.SetItemCount( Inventory.Cells			,	999	);
+			entity.SetItemCount( Inventory.HyperBlaster		,	1	);
 		}
 
 
@@ -97,7 +100,7 @@ namespace ShooterDemo.Controllers {
 					case Inventory.SuperShotgun		:	break;
 					case Inventory.GrenadeLauncher	:	break;
 					case Inventory.RocketLauncher	:	FireRocket(world, entity, 400); break;
-					case Inventory.HyperBlaster		:	break;
+					case Inventory.HyperBlaster		:	FirePlasma(world, entity, 75); break;
 					case Inventory.Chaingun			:	FireBullet(world, entity, 5, 5, 20, 0.07f); break;
 					case Inventory.Railgun			:	FireRail(world, entity, 100, 100, 700 ); break;
 					case Inventory.BFG				:	break;
@@ -113,11 +116,38 @@ namespace ShooterDemo.Controllers {
 		Vector3 AttackPos ( Entity e )
 		{
 			var m = Matrix.RotationQuaternion(e.Rotation);
-			return e.Position + Vector3.Up + m.Right * 0.1f + m.Down * 0.1f + m.Forward * 0.2f;
+			return e.Position + Vector3.Up + m.Right * 0.1f + m.Down * 0.1f + m.Forward * 0.3f;
 		}
 
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="world"></param>
+		/// <param name="attacker"></param>
+		/// <param name="cooldown"></param>
+		void FirePlasma( MPWorld world, Entity attacker, short cooldown )
+		{
+			if (!attacker.ConsumeItem( Inventory.Cells, 1 )) {
+				return;
+			}
 
+			var origin = AttackPos(attacker);
+
+			var e = world.Spawn( "plasma", attacker.ID, origin, attacker.Rotation );
+
+			world.SpawnFX( "MZBlaster",	attacker.ID, origin );
+
+			attacker.SetItemCount( Inventory.WeaponCooldown, cooldown );
+		}
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="world"></param>
+		/// <param name="attacker"></param>
+		/// <param name="cooldown"></param>
 		void FireRocket( MPWorld world, Entity attacker, short cooldown )
 		{
 			if (!attacker.ConsumeItem( Inventory.Rockets, 1 )) {

@@ -34,6 +34,7 @@ namespace ShooterDemo {
 			AddPrefab( "player"		, PrefabPlayer	);
 			AddPrefab( "box"		, PrefabBox		);
 			AddPrefab( "rocket"		, PrefabRocket	);
+			AddPrefab( "plasma"		, PrefabPlasma	);
 		}
 
 
@@ -62,8 +63,8 @@ namespace ShooterDemo {
 		/// <param name="serverSide"></param>
 		public static void PrefabPlayer ( World world, Entity entity )
 		{
-			entity.Attach( new Characters( entity, world ) );
 			entity.Attach( new Weaponry( entity, world ) );
+			entity.Attach( new Characters( entity, world ) );
 
 			if (world.IsClientSide) {
 				entity.Attach( new ModelView( entity, world, @"scenes\characters\marine\marine", "marine", Matrix.Scaling(0.1f) * Matrix.RotationY(MathUtil.Pi), Matrix.Translation(0,-0.85f,0) ) );
@@ -82,6 +83,18 @@ namespace ShooterDemo {
 			if (world.IsClientSide) {
 				entity.Attach( new ModelView( entity, world, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity ) );
 				entity.Attach( new SfxView( entity, world, "RocketTrail" ) );
+			}
+		}
+
+
+
+		public static void PrefabPlasma ( World world, Entity entity )
+		{
+			entity.Attach( new Projectiles( entity, world, "PlasmaExplosion", 50, 0, 17, 20, 3 ) );
+			
+			if (world.IsClientSide) {
+				//entity.Attach( new ModelView( entity, world, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity ) );
+				entity.Attach( new SfxView( entity, world, "PlasmaTrail" ) );
 			}
 		}
 
