@@ -22,7 +22,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 		{
 			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
 
-			AddParticleStage("teleportSpark", 0, 0f, 0.1f, 200, false, EmitSpark );
+			AddParticleStage("teleportSpark", 0, 0f, 0.1f, 150, false, EmitSpark );
 																					  
 			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, GetRailColor(0.03f), 1.0f, 100f, 3f );
 
@@ -45,7 +45,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			SetupMotion		( ref p, pos, vel, accel, 0, 0 );
 			SetupAngles		( ref p, 160 );
 			SetupTiming		( ref p, time, 0.01f, 0.9f );
-			SetupSize		( ref p, 0.2f, 0.00f );
+			SetupSize		( ref p, 0.25f, 0.00f );
 
 			p.Color0		=	GetRailColor();
 			p.Color1		=	GetRailColor();
