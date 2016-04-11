@@ -101,6 +101,10 @@ namespace ShooterDemo.Controllers {
 		/// <param name="damageType"></param>
 		public override bool Damage ( uint targetID, uint attackerID, short damage, Vector3 kickImpulse, Vector3 kickPoint, DamageType damageType )
 		{
+			if (damage<=0) {
+				return false;
+			}
+
 			var c = controller;
 			var e = Entity;
 
