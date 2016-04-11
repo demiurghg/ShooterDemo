@@ -52,6 +52,10 @@ namespace ShooterDemo.Controllers {
 			this.explosionFX	=	explosionFX;
 			this.radius			=	radius;
 
+			//	step projectile forward compensate server latency
+			if (world.IsServerSide) {
+				UpdateProjectile( entity, 1.0f / world.GameServer.TargetFrameRate );
+			}
 		}
 
 
@@ -96,25 +100,6 @@ namespace ShooterDemo.Controllers {
 				world.InflictDamage( hitEntity, projEntity.ParentID, damageValue, dir * impulse, hitPoint, DamageType.RocketExplosion );
 
 				Explode( explosionFX, projEntity.ID, hitEntity, hitPoint, hitNormal, radius, damageValue, impulse, DamageType.RocketExplosion );
-				////	inflict splash damage to nearby objects:
-				//if (projectile.Radius>0) {
-					
-				//	var list = world.WeaponOverlap( hitPoint, projectile.Radius, hitEntity );
-
-				//	foreach ( var e in list ) {
-				//		var delta	= e.Position - hitPoint;
-				//		var dist	= delta.Length() + 0.00001f;
-				//		var ndir	= delta / dist;
-				//		var factor	= MathUtil.Clamp((projectile.Radius - dist) / projectile.Radius, 0, 1);
-				//		var imp		= factor * projectile.Impulse;
-				//		var impV	= ndir * imp;
-				//		var impP	= e.Position + rand.UniformRadialDistribution(0.1f, 0.1f);
-				//		var dmg		= (short)( factor * projectile.Damage );
-
-				//		world.InflictDamage( e, projEntity.ParentID, dmg, impV, impP, DamageType.RocketExplosion );
-				//	}
-				//}
-
 
 				//world.SpawnFX( projectile.ExplosionFX, projEntity.ParentID, hitPoint, hitNormal );
 				projEntity.Move( hitPoint, projEntity.Rotation, dir * velocity );
