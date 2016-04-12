@@ -78,7 +78,7 @@ namespace ShooterDemo.Views {
 				var cp		= camera.Position;
 				var cm		= Matrix.RotationQuaternion( camera.Rotation );
 
-				rw.Camera.SetupCameraFov( cp, cp + cm.Right, cm.Up, MathUtil.Rad(90), 0.125f, 1024f, 1, 0, aspect );
+				rw.Camera.SetupCameraFov( cp, cp + cm.Right, cm.Up, MathUtil.Rad(90), 0.125f, 1024f, 2, 0.05f, aspect );
 				return;
 			}
 
@@ -106,7 +106,7 @@ namespace ShooterDemo.Views {
 
 			currentFov		=	MathUtil.Drift( currentFov, targetFov, 360*elapsedTime, 360*elapsedTime );
 
-			rw.Camera.SetupCameraFov( pos, fwd, up, MathUtil.Rad(currentFov), 0.125f, 1024f, 1, 0, aspect );
+			rw.Camera.SetupCameraFov( pos, fwd, up, MathUtil.Rad(currentFov), 0.125f, 1024f, 2, 0.05f, aspect );
 
 			sw.Listener	=	new AudioListener();
 			sw.Listener.Position	=	pos;

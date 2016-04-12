@@ -133,6 +133,8 @@ namespace ShooterDemo {
 			rw.LightSet.DirectLight.Direction	=	rw.SkySettings.SunLightDirection;
 			rw.LightSet.DirectLight.Intensity	=	rw.SkySettings.SunLightColor;
 
+			rw.LightSet.AmbientLevel	=	rw.SkySettings.AmbientLevel;
+
 			rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(0,4,0), 1, 500 ) );
 			for (float x=-32; x<=32; x+=16 ) {
 				for (float y=-32; y<=32; y+=16 ) {

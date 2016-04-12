@@ -20,7 +20,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			AddParticleStage("plasmaCore",	0.00f, 0.2f, 0.0f,   30, true, EmitFire );
 			//AddParticleStage("smoke",	0.00f, 0.2f, 0.0f,   60, true, EmitSmoke );
 
-			AddLightStage( fxEvent.Origin * 0.1f	, new Color4(100, 75, 50,1), 1, 100f, 3f );
+			AddLightStage( fxEvent.Origin * 0.1f	, new Color4(195, 195, 250,1), 2, 100f, 3f );
 
 			AddSoundStage( @"sound\weapon\rfly",	fxEvent.Origin, 1, true );
 		}
@@ -49,7 +49,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			SetupAngles		( ref p, 0 );
 			SetupColor		( ref p, 1500, 1500, 0, 1.0f );
 			SetupTiming		( ref p, 0.05f, 0.01f, 0.1f );
-			SetupSize		( ref p, 0.10f, 0.2f );
+			SetupSize		( ref p, 0.20f, 0.3f );
 		}
 
 		

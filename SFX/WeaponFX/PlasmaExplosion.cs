@@ -25,7 +25,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 			//AddParticleStage("plasmaPuff",	0.10f, 0.1f, 1.0f,   15, false, EmitSmoke );
 			AddParticleStage("plasmaFire",	0.00f, 0.1f, 1.0f,   15, false, EmitFire );
 
-			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(137,137,228,1), 1, 100f, 3f );
+			AddLightStage( fxEvent.Origin - sparkDir * 0.1f	, new Color4(195, 195, 250,1), 2, 100f, 3f );
 
 			AddSoundStage( @"sound\weapon\plasmaHit",	fxEvent.Origin, 1, false );
 		}
