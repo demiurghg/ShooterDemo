@@ -55,6 +55,7 @@ namespace ShooterDemo.Core {
 		SFX.SfxSystem	sfxSystem;
 
 
+
 		/// <summary>
 		/// We just received snapshot.
 		/// Need to update client-side controllers.
@@ -256,6 +257,8 @@ namespace ShooterDemo.Core {
 		/// <param name="gameTime"></param>
 		public virtual void SimulateWorld ( float deltaTime )
 		{
+			fxSpawnSequnce++;
+
 			//
 			//	Control entities :
 			//
@@ -267,6 +270,8 @@ namespace ShooterDemo.Core {
 			CommitKilledEntities();
 		}
 
+
+		byte fxSpawnSequnce	=	0;
 
 		List<Vector3> clPos = new List<Vector3>();
 		List<Vector3> visPos = new List<Vector3>();
@@ -670,6 +675,8 @@ namespace ShooterDemo.Core {
 		}
 
 
+		int sendSnapshotCounter = 1;
+
 		/// <summary>
 		/// Writes world state to stream writer.
 		/// </summary>
@@ -677,6 +684,9 @@ namespace ShooterDemo.Core {
 		public virtual void WriteToSnapshot ( BinaryWriter writer )
 		{
 			var entArray = entities.OrderBy( pair => pair.Key ).ToArray();
+
+			writer.Write( sendSnapshotCounter );
+			sendSnapshotCounter++;
 
 			//
 			//	Write fat entities :
@@ -697,13 +707,16 @@ namespace ShooterDemo.Core {
 			writer.Write( fxEvents.Count );
 			
 			foreach ( var fxe in fxEvents ) {
+				fxe.SendCount ++;
 				fxe.Write( writer );
 			}
 
-			fxEvents.Clear();
+			fxEvents.RemoveAll( fx => fx.SendCount >= 3 );
 		}
 
 
+
+		int recvSnapshotCounter = 0;
 
 		/// <summary>
 		/// Reads world state from stream reader.
@@ -711,6 +724,10 @@ namespace ShooterDemo.Core {
 		/// <param name="writer"></param>
 		public virtual void ReadFromSnapshot ( BinaryReader reader, uint ackCmdID, float lerpFactor )
 		{
+			int snapshotCounter			=	reader.ReadInt32();
+			int snapshotCountrerDelta	=	snapshotCounter - recvSnapshotCounter;
+			recvSnapshotCounter			=	snapshotCounter;
+
 			reader.ExpectFourCC("ENT0", "Bad snapshot");
 
 			int length	=	reader.ReadInt32();
@@ -760,7 +777,10 @@ namespace ShooterDemo.Core {
 			for (int i=0; i<count; i++) {
 				var fxe = new FXEvent();
 				fxe.Read( reader );
-				RunFX( fxe );
+
+				if (fxe.SendCount<=snapshotCountrerDelta) {
+					RunFX( fxe );
+				}
 			}
 		}
 	}

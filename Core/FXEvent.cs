@@ -13,12 +13,16 @@ namespace ShooterDemo.Core {
 
 
 	public class FXEvent {
-		
+
 		/// <summary>
 		/// FX Event type.
 		/// </summary>
 		public short FXAtomID;
 
+		/// <summary>
+		/// Reliability counter
+		/// </summary>
+		public byte SendCount;
 		
 		/// <summary>
 		/// Parent entity ID
@@ -61,6 +65,8 @@ namespace ShooterDemo.Core {
 			this.Origin		=	origin;
 			this.Velocity	=	velocity;
 			this.Rotation	=	rotation;
+
+			SendCount		=	0;
 		}
 
 
@@ -71,6 +77,7 @@ namespace ShooterDemo.Core {
 		public void Write ( BinaryWriter writer )
 		{
 			writer.Write( FXAtomID );
+			writer.Write( SendCount );
 			writer.Write( ParentID );
 			writer.Write( Origin );
 			writer.Write( Velocity );
@@ -85,6 +92,7 @@ namespace ShooterDemo.Core {
 		public void Read ( BinaryReader reader )
 		{
 			FXAtomID	=	reader.ReadInt16();
+			SendCount	=	reader.ReadByte();
 			ParentID	=	reader.ReadUInt32();
 			Origin		=	reader.Read<Vector3>();
 			Velocity	=	reader.Read<Vector3>();

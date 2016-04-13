@@ -21,9 +21,9 @@ namespace ShooterDemo.SFX.WeaponFX {
 			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
 
 			AddParticleStage("plasmaCore",		0.00f, 0.0f, 0.1f,  50, false, EmitSpark );
-			AddParticleStage("plasmaCore",		0.10f, 0.1f, 1.0f,   5, false, EmitBall );
+			AddParticleStage("plasmaCore",		0.00f, 0.1f, 1.0f,   5, false, EmitBall );
 			//AddParticleStage("plasmaPuff",	0.10f, 0.1f, 1.0f,   15, false, EmitSmoke );
-			AddParticleStage("plasmaFire",	0.00f, 0.1f, 1.0f,   15, false, EmitFire );
+			AddParticleStage("plasmaFire",	0.05f, 0.1f, 1.0f,   15, false, EmitFire );
 
 			AddLightStage( fxEvent.Origin - sparkDir * 0.1f	, new Color4(195, 195, 250,1), 2, 100f, 3f );
 
