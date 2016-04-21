@@ -110,6 +110,7 @@ namespace ShooterDemo.Views {
 		public override void Killed ()
 		{	
 			Game.RenderSystem.RenderWorld.Instances.Remove( meshInstance );
+			Game.Reloading -= Game_Reloading;
 		}
 
 	}
