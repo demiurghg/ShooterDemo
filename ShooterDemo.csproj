@@ -87,9 +87,9 @@
     <Compile Include="SFX\WeaponFX\PlayerJump.cs" />
     <Compile Include="SFX\WeaponFX\PlayerFootStep.cs" />
     <Compile Include="SFX\WeaponFX\RocketTrail.cs" />
-    <Compile Include="ShooterServerConfig.cs" />
+    <Compile Include="ShooterServer.Config.cs" />
     <Compile Include="Core\EntityEventArgs.cs" />
-    <Compile Include="ShooterClientConfig.cs" />
+    <Compile Include="ShooterClient.Config.cs" />
     <Compile Include="Controllers\RigidBody.cs" />
     <Compile Include="MPWorld.Prefabs.cs" />
     <Compile Include="MPWorld.Players.cs" />

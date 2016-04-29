@@ -223,7 +223,7 @@ namespace ShooterDemo.Controllers {
 			bool newTraction = controller.SupportFinder.HasTraction;
 			
 			if (oldTraction!=newTraction && newTraction) {
-				if (((ShooterServer)World.GameServer).Config.ShowFallings) {
+				if (((ShooterServer)World.GameServer).ShowFallings) {
 					Log.Verbose("{0} falls : {1}", e.ID, oldVelocity.Y );
 				}
 

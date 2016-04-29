@@ -62,7 +62,6 @@ namespace ShooterDemo.Views {
 
 			var rw	= Game.RenderSystem.RenderWorld;
 			var vp	= Game.RenderSystem.DisplayBounds;
-			var cfg	= ((ShooterClient)World.GameClient).Config;
 
 			var player	=	World.GetEntityOrNull( e => e.Is("player") && e.UserGuid == World.UserGuid );
 

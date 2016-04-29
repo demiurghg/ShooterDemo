@@ -13,23 +13,19 @@ using Fusion.Engine.Server;
 using Fusion.Core.Content;
 using Fusion.Engine.Graphics;
 using ShooterDemo.Core;
+using Fusion.Core.Configuration;
 
 namespace ShooterDemo {
-	public class ShooterServerConfig {
+	public partial class ShooterServer : GameServer {
 
-		public int TargetFrameRate { get; set; }
-
-		public float ServerTimeDriftRate { get; set; }
-
-		public int SimulateDelay { get; set; }
-
-		public bool ShowFootSteps { get; set; }
-
-		public bool ShowFallings { get; set; }
+		[Config] public float ServerTimeDriftRate { get; set; }
+		[Config] public int SimulateDelay { get; set; }
+		[Config] public bool ShowFootSteps { get; set; }
+		[Config] public bool ShowFallings { get; set; }
 
 
 
-		public ShooterServerConfig()
+		void SetDefaults ()
 		{
 			TargetFrameRate		=	60;
 			SimulateDelay		=	0;

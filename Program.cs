@@ -52,7 +52,7 @@ namespace ShooterDemo {
 				game.LoadConfiguration( "Config.ini" );
 
 				//	enable and disable debug direct3d device :
-				game.RenderSystem.Config.UseDebugDevice = false;
+				game.RenderSystem.UseDebugDevice = false;
 
 				//	enable and disable object tracking :
 				game.TrackObjects = false;

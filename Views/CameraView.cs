@@ -32,7 +32,7 @@ namespace ShooterDemo.Views {
 		public CameraView ( World world ) : base( world )
 		{
 			if (world.IsClientSide) {
-				currentFov	=	(world.GameClient as ShooterClient).Config.Fov;
+				currentFov	=	(world.GameClient as ShooterClient).Fov;
 			}
 		}
 
@@ -45,8 +45,8 @@ namespace ShooterDemo.Views {
 		/// </summary>
 		public float Sensitivity {
 			get {
-				var cfg = ((ShooterClient)World.GameClient).Config;
-				return currentFov / cfg.Fov * cfg.Sensitivity;
+				var cl = ((ShooterClient)World.GameClient);
+				return currentFov / cl.Fov * cl.Sensitivity;
 			}
 		}
 
@@ -60,7 +60,7 @@ namespace ShooterDemo.Views {
 			var rw	= Game.RenderSystem.RenderWorld;
 			var sw	= Game.SoundSystem.SoundWorld;
 			var vp	= Game.RenderSystem.DisplayBounds;
-			var cfg	= ((ShooterClient)World.GameClient).Config;
+			var cl	= ((ShooterClient)World.GameClient);
 
 			var aspect	=	(vp.Width) / (float)vp.Height;
 		
@@ -95,14 +95,14 @@ namespace ShooterDemo.Views {
 
 			var ppos	=	player.LerpPosition(lerpFactor);
 
-			float backoffset = ((ShooterClient)World.GameClient).Config.ThirdPerson ? 2 : 0;
+			float backoffset = ((ShooterClient)World.GameClient).ThirdPerson ? 2 : 0;
 			var pos		=	ppos + Vector3.Up * 1.0f + m.Backward * backoffset;
 
 			var fwd	=	pos + m.Forward;
 			var up	=	m.Up;
 
 
-			var targetFov	=	MathUtil.Clamp( uc.CtrlFlags.HasFlag( UserCtrlFlags.Zoom ) ? cfg.ZoomFov : cfg.Fov, 10, 140 );
+			var targetFov	=	MathUtil.Clamp( uc.CtrlFlags.HasFlag( UserCtrlFlags.Zoom ) ? cl.ZoomFov : cl.Fov, 10, 140 );
 
 			currentFov		=	MathUtil.Drift( currentFov, targetFov, 360*elapsedTime, 360*elapsedTime );
 
@@ -150,24 +150,24 @@ namespace ShooterDemo.Views {
 		Oscillator bobRoll	= new Oscillator(75,15);
 		Oscillator bobYaw	= new Oscillator(75,15);
 
+		const float BobStrafe = 1;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <returns></returns>
 		void CalcBobbing ( Entity player, float elapsedTime )
 		{	
-			var clientCfg	=	((ShooterClient)World.GameClient).Config;
-
 			bool hasTraction	=	player.State.HasFlag(EntityState.HasTraction);	
 
 			var rollPull = 0.0f;
 
 			if (hasTraction) {
 				if (player.UserCtrlFlags.HasFlag(UserCtrlFlags.StrafeRight)) {
-					rollPull	-=	clientCfg.BobStrafe;
+					rollPull	-=	BobStrafe;
 				} 
 				if (player.UserCtrlFlags.HasFlag(UserCtrlFlags.StrafeLeft)) {
-					rollPull	+=	clientCfg.BobStrafe;
+					rollPull	+=	BobStrafe;
 				} 
 			}
 

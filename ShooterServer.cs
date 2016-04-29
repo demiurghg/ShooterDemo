@@ -27,20 +27,13 @@ namespace ShooterDemo {
 
 
 		/// <summary>
-		/// 
-		/// </summary>
-		[Config]
-		public ShooterServerConfig	Config { get; set; }
-
-
-		/// <summary>
 		/// Ctor
 		/// </summary>
 		/// <param name="engine"></param>
 		public ShooterServer ( Game game )
 			: base( game )
 		{
-			Config	=	new ShooterServerConfig();
+			SetDefaults();
 		}
 
 
@@ -74,8 +67,6 @@ namespace ShooterDemo {
 		/// <param name="map"></param>
 		public override void LoadContent ( string map )
 		{
-			TargetFrameRate	=	Config.TargetFrameRate;		
-
 			SFX.SfxInstance.EnumerateSFX( (t) => Atoms.Add( t.Name ) );			
 
 			gameWorld	=	new MPWorld( this, map );
@@ -107,8 +98,6 @@ namespace ShooterDemo {
 		/// <returns>Snapshot bytes</returns>
 		public override byte[] Update ( GameTime gameTime )
 		{
-			//Log.Verbose("----");
-			TargetFrameRate	=	Config.TargetFrameRate;			
 
 			//	update world
 			gameWorld.SimulateWorld( gameTime.ElapsedSec );

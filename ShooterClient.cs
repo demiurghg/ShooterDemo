@@ -18,7 +18,7 @@ using ShooterDemo.Views;
 
 
 namespace ShooterDemo {
-	public class ShooterClient : Fusion.Engine.Client.GameClient {
+	public partial class ShooterClient : Fusion.Engine.Client.GameClient {
 
 		World gameWorld;
 
@@ -26,9 +26,6 @@ namespace ShooterDemo {
 			get { return gameWorld; }
 		}
 
-
-		[Config]
-		public ShooterClientConfig Config { get; set; }
 
 
 		SpriteLayer	hudLayer;
@@ -45,7 +42,7 @@ namespace ShooterDemo {
 		public ShooterClient ( Game game )
 			: base( game )
 		{
-			this.Config	=	new ShooterClientConfig();
+			SetDefaults();
 		}
 
 
@@ -280,39 +277,39 @@ namespace ShooterDemo {
 
 		void Keyboard_KeyDown ( object sender, KeyEventArgs e )
 		{
-			if (e.Key==Config.UseWeapon1) {	
+			if (e.Key==UseWeapon1) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.Machinegun;
 			}
-			if (e.Key==Config.UseWeapon2) {	
+			if (e.Key==UseWeapon2) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.Shotgun;
 			}
-			if (e.Key==Config.UseWeapon3) {	
+			if (e.Key==UseWeapon3) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.SuperShotgun;
 			}
-			if (e.Key==Config.UseWeapon4) {	
+			if (e.Key==UseWeapon4) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.GrenadeLauncher;
 			}
-			if (e.Key==Config.UseWeapon5) {	
+			if (e.Key==UseWeapon5) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.RocketLauncher;
 			}
-			if (e.Key==Config.UseWeapon6) {	
+			if (e.Key==UseWeapon6) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.Chaingun;
 			}
-			if (e.Key==Config.UseWeapon7) {	
+			if (e.Key==UseWeapon7) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.Railgun;
 			}
-			if (e.Key==Config.UseWeapon8) {	
+			if (e.Key==UseWeapon8) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.HyperBlaster;
 			}
-			if (e.Key==Config.UseWeapon9) {	
+			if (e.Key==UseWeapon9) {	
 				weaponControl &= ~UserCtrlFlags.AllWeapon;
 				weaponControl |= UserCtrlFlags.BFG;
 			}
@@ -326,16 +323,15 @@ namespace ShooterDemo {
 		void UpdateInput ( ref UserCommand userCommand )
 		{
 			var flags = UserCtrlFlags.None;
-			var cfg	  = Config;
 			
-			if (Game.Keyboard.IsKeyDown( cfg.MoveForward	)) flags |= UserCtrlFlags.Forward;
-			if (Game.Keyboard.IsKeyDown( cfg.MoveBackward	)) flags |= UserCtrlFlags.Backward;
-			if (Game.Keyboard.IsKeyDown( cfg.StrafeLeft		)) flags |= UserCtrlFlags.StrafeLeft;
-			if (Game.Keyboard.IsKeyDown( cfg.StrafeRight	)) flags |= UserCtrlFlags.StrafeRight;
-			if (Game.Keyboard.IsKeyDown( cfg.Jump			)) flags |= UserCtrlFlags.Jump;
-			if (Game.Keyboard.IsKeyDown( cfg.Crouch			)) flags |= UserCtrlFlags.Crouch;
-			if (Game.Keyboard.IsKeyDown( cfg.Zoom			)) flags |= UserCtrlFlags.Zoom;
-			if (Game.Keyboard.IsKeyDown( cfg.Attack			)) flags |= UserCtrlFlags.Attack;
+			if (Game.Keyboard.IsKeyDown( MoveForward	)) flags |= UserCtrlFlags.Forward;
+			if (Game.Keyboard.IsKeyDown( MoveBackward	)) flags |= UserCtrlFlags.Backward;
+			if (Game.Keyboard.IsKeyDown( StrafeLeft		)) flags |= UserCtrlFlags.StrafeLeft;
+			if (Game.Keyboard.IsKeyDown( StrafeRight	)) flags |= UserCtrlFlags.StrafeRight;
+			if (Game.Keyboard.IsKeyDown( Jump			)) flags |= UserCtrlFlags.Jump;
+			if (Game.Keyboard.IsKeyDown( Crouch			)) flags |= UserCtrlFlags.Crouch;
+			if (Game.Keyboard.IsKeyDown( Zoom			)) flags |= UserCtrlFlags.Zoom;
+			if (Game.Keyboard.IsKeyDown( Attack			)) flags |= UserCtrlFlags.Attack;
 
 
 			//	http://eliteownage.com/mousesensitivity.html 
@@ -347,7 +343,7 @@ namespace ShooterDemo {
 			if (!ui.Console.Show) {
 				UserCommand.CtrlFlags	=	flags | weaponControl;
 				UserCommand.Yaw			-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
-				UserCommand.Pitch		-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( Config.InvertMouse ? -1 : 1 );
+				UserCommand.Pitch		-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( InvertMouse ? -1 : 1 );
 				UserCommand.Roll		=	0;
 			}
 		}
