@@ -123,14 +123,25 @@ namespace ShooterDemo {
 			rw.HdrSettings.DirtAmount	= 0.0f;
 			rw.HdrSettings.KeyValue		= 0.18f;
 
-			rw.SkySettings.SunPosition			=	new Vector3(2,3,1);
+			rw.SkySettings.SunPosition			=	new Vector3(1.2f,1.4f,1.3f);
 			rw.SkySettings.SunLightIntensity	=	100;
-			rw.SkySettings.SkyTurbidity			=	6;
+			rw.SkySettings.SkyTurbidity			=	8;
 
 			rw.LightSet.DirectLight.Direction	=	rw.SkySettings.SunLightDirection;
 			rw.LightSet.DirectLight.Intensity	=	rw.SkySettings.SunLightColor;
 
 			rw.LightSet.AmbientLevel	=	rw.SkySettings.AmbientLevel;
+			rw.LightSet.SpotAtlas		=	Content.Load<TextureAtlas>(@"spots\spots");
+
+			for (int i=0; i<1; i++) {
+				var spot = new SpotLight();
+				spot.SpotView		=	Matrix.LookAtRH( new Vector3(8,10,7), Vector3.Zero, Vector3.Up );
+				spot.Intensity		=	new Color4(500,500,500,1);
+				spot.Projection		=	Matrix.PerspectiveRH(0.1f, 0.1f, 0.1f, 100 );
+				spot.RadiusOuter	=	100;
+				spot.TextureIndex	=	0;
+				rw.LightSet.SpotLights.Add( spot );
+			}
 
 			rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(0,4,0), 1, 500 ) );
 			for (float x=-32; x<=32; x+=16 ) {

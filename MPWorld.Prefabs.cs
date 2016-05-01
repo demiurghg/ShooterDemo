@@ -35,6 +35,7 @@ namespace ShooterDemo {
 			AddPrefab( "box"		, PrefabBox		);
 			AddPrefab( "rocket"		, PrefabRocket	);
 			AddPrefab( "plasma"		, PrefabPlasma	);
+			AddPrefab( "mist"		, PrefabMist	);
 		}
 
 
@@ -95,6 +96,16 @@ namespace ShooterDemo {
 			if (world.IsClientSide) {
 				//entity.Attach( new ModelView( entity, world, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity ) );
 				entity.Attach( new SfxView( entity, world, "PlasmaTrail" ) );
+			}
+		}
+
+
+
+		public static void PrefabMist ( World world, Entity entity )
+		{
+			if (world.IsClientSide) {
+				//entity.Attach( new ModelView( entity, world, @"scenes\weapon\projRocket", "rocket", Matrix.Scaling(0.1f), Matrix.Identity ) );
+				entity.Attach( new SfxView( entity, world, "Mist" ) );
 			}
 		}
 
