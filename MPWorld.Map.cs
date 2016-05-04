@@ -97,7 +97,7 @@ namespace ShooterDemo {
 				Spawn("box", 0, Vector3.Up * 400 + r.GaussRadialDistribution(20,2), 0 );
 			}
 
-			Spawn("mist", 0, Vector3.Up * 5, 0);
+			///Spawn("mist", 0, Vector3.Up * 5, 0);
 		}
 
 	}

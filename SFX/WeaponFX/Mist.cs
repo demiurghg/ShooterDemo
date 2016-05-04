@@ -63,7 +63,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 			p.Color0		=	new Color4(0.0f, 0.0f, 0.0f, 0.0f);
 			p.Color1		=	new Color4(0.2f, 0.2f, 0.2f, 0.2f);
-			p.Effects		=	ParticleFX.Lit | ParticleFX.Shadow;
+			p.Effects		=	ParticleFX.LitShadow;
 		}
 	}
 }

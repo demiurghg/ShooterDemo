@@ -65,6 +65,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 			SetupColor		( ref p, 1, 1, 0, 1.0f );
 			SetupTiming		( ref p, 1.5f, 0.1f, 0.1f );
 			SetupSize		( ref p, 0.30f, 0.9f );
+
+			p.Effects	=	ParticleFX.LitShadow;
 		}
 
 

@@ -21,8 +21,8 @@ namespace ShooterDemo.SFX.WeaponFX {
 			sparkDir = Matrix.RotationQuaternion(fxEvent.Rotation).Forward;
 
 			AddParticleStage("bulletSpark",		0.00f, 0.0f, 0.1f,  150, false, EmitSpark );
-			AddParticleStage("explosionSmoke",	0.10f, 0.1f, 1.0f,  15*2, false, EmitSmoke );
-			AddParticleStage("explosionSmoke2",	0.10f, 0.1f, 1.0f,  15*2, false, EmitSmoke );
+			AddParticleStage("explosionSmoke",	0.10f, 0.1f, 1.0f,  15*3, false, EmitSmoke );
+			AddParticleStage("explosionSmoke2",	0.10f, 0.1f, 1.0f,  15*3, false, EmitSmoke );
 			AddParticleStage("explosionFire",	0.00f, 0.1f, 1.0f,  30*2, false, EmitFire );
 
 			AddLightStage( fxEvent.Origin + sparkDir * 0.1f	, new Color4(200,150,100,1), 3, 100f, 3f );
@@ -55,9 +55,11 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 			SetupMotion		( ref p, pos, vel, -vel*1.5f );
 			SetupAngles		( ref p, 10 );
-			SetupColor		( ref p, 5, 5, 0, 1.0f );
+			SetupColor		( ref p, 0.1f, 0.1f, 0, 0.7f );
 			SetupTiming		( ref p, time, 0.1f, 0.2f );
 			SetupSize		( ref p, 1.2f, 1.2f );
+
+			p.Effects	=	ParticleFX.LitShadow;
 		}
 
 
