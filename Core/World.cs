@@ -10,6 +10,7 @@ using Fusion.Engine.Common;
 using Fusion.Core.Content;
 using Fusion.Engine.Server;
 using Fusion.Engine.Client;
+using Fusion.Core.Extensions;
 using ShooterDemo.SFX;
 
 namespace ShooterDemo.Core {

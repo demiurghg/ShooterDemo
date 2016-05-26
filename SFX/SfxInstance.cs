@@ -8,6 +8,7 @@ using Fusion;
 using Fusion.Core;
 using Fusion.Core.Content;
 using Fusion.Core.Mathematics;
+using Fusion.Core.Extensions;
 using Fusion.Engine.Common;
 using Fusion.Engine.Input;
 using Fusion.Engine.Client;

@@ -19,10 +19,6 @@ namespace ShooterDemo {
 
 	class ShooterInterface : Fusion.Engine.Common.UserInterface {
 
-		[GameModule( "Console", "con", InitOrder.Before )]
-		public GameConsole Console { get { return console; } }
-		public GameConsole console;
-
 		DiscTexture	background;
 		SpriteLayer uiLayer;
 		SpriteFont	headerFont;
@@ -37,7 +33,6 @@ namespace ShooterDemo {
 		public ShooterInterface ( Game game )
 			: base( game )
 		{
-			console = new GameConsole( game, "conchars" );
 			ShowMenu	=	true;
 		}
 
@@ -51,8 +46,7 @@ namespace ShooterDemo {
 			uiLayer	=	new SpriteLayer(Game.RenderSystem, 1024);
 
 			//	add console sprite layer to master view layer :
-			Game.RenderSystem.RenderWorld.SpriteLayers.Add( uiLayer );
-			Game.RenderSystem.RenderWorld.SpriteLayers.Add( console.ConsoleSpriteLayer );
+			Game.RenderSystem.SpriteLayers.Add( uiLayer );
 
 
 			LoadContent();
@@ -65,7 +59,7 @@ namespace ShooterDemo {
 		
 		void GameClient_ClientStateChanged ( object sender, GameClient.ClientEventArgs e )
 		{
-			console.Show = false;
+			Game.Console.Show = false;
 		}
 
 
@@ -100,7 +94,7 @@ namespace ShooterDemo {
 		public override void Update ( GameTime gameTime )
 		{
 			//	update console :
-			console.Update( gameTime );
+			Game.Console.Update( gameTime );
 
 			uiLayer.Clear();
 
@@ -124,7 +118,7 @@ namespace ShooterDemo {
 
 			} else {
 
-				if (!console.Show) {
+				if (!Game.Console.Show) {
 					Game.Keyboard.ScanKeyboard	=	true;
 					Game.Mouse.IsMouseCentered	=	true;
 					Game.Mouse.IsMouseClipped	=	true;

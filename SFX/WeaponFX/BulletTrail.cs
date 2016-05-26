@@ -7,6 +7,7 @@ using Fusion;
 using Fusion.Core;
 using Fusion.Core.Content;
 using Fusion.Core.Mathematics;
+using Fusion.Core.Extensions;
 using ShooterDemo;
 using ShooterDemo.Core;
 using Fusion.Engine.Graphics;

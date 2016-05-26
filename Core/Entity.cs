@@ -7,6 +7,7 @@ using Fusion;
 using Fusion.Core;
 using Fusion.Core.Utils;
 using Fusion.Core.Mathematics;
+using Fusion.Core.Extensions;
 using System.IO;
 
 namespace ShooterDemo.Core {

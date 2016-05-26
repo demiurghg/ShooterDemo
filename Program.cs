@@ -44,15 +44,16 @@ namespace ShooterDemo {
 				//	create SV, CL and UI instances :
 				game.GameServer = new ShooterServer( game );
 				game.GameClient = new ShooterClient( game );
-				game.GameInterface = new ShooterInterface( game );
+				game.UserInterface = new ShooterInterface( game );
 
 				//	load configuration.
 				//	first run will cause warning, 
 				//	because configuration file still does not exist.
-				game.LoadConfiguration( "Config.ini" );
+				game.Config.Load( "Config.ini" );
 
 				//	enable and disable debug direct3d device :
 				game.RenderSystem.UseDebugDevice = false;
+				game.RenderSystem.Fullscreen	= false;
 
 				//	enable and disable object tracking :
 				game.TrackObjects = false;
@@ -67,7 +68,7 @@ namespace ShooterDemo {
 				game.Run();
 
 				//	save configuration :
-				game.SaveConfiguration( "Config.ini" );
+				game.Config.Save( "Config.ini" );
 			}
 
 			return 0;

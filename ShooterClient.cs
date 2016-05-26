@@ -53,7 +53,7 @@ namespace ShooterDemo {
 		public override void Initialize ()
 		{
 			hudLayer	=	new SpriteLayer( Game.RenderSystem, 1024 );
-			Game.RenderSystem.RenderWorld.SpriteLayers.Add( hudLayer );
+			Game.RenderSystem.SpriteLayers.Add( hudLayer );
 
 			Game.Keyboard.KeyDown += Keyboard_KeyDown;
 
@@ -153,7 +153,7 @@ namespace ShooterDemo {
 			Log.Message("Capturing radiance...");
 			rw.RenderRadiance();
 
-			Game.GetModule<ShooterInterface>().ShowMenu = false;
+			(Game.UserInterface as ShooterInterface).ShowMenu = false;
 
 			Log.Message("---- Loading game completed ----");
 			Log.Message("");
@@ -176,7 +176,7 @@ namespace ShooterDemo {
 			Game.RenderSystem.RenderWorld.ClearWorld();
 
 			Content.Unload();
-			Game.GetModule<ShooterInterface>().ShowMenu = true;
+			(Game.UserInterface as ShooterInterface).ShowMenu = true;
 		}
 
 
@@ -348,10 +348,10 @@ namespace ShooterDemo {
 			//	http://eliteownage.com/mousesensitivity.html 
 			//	Q3A: 16200 dot per 360 turn:
 			var vp		=	Game.RenderSystem.DisplayBounds;
-			var ui		=	Game.GameInterface as ShooterInterface;
+			var ui		=	Game.UserInterface as ShooterInterface;
 			var cam		=	World.GetView<CameraView>();
 
-			if (!ui.Console.Show) {
+			if (!Game.Console.Show) {
 				UserCommand.CtrlFlags	=	flags | weaponControl;
 				UserCommand.Yaw			-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
 				UserCommand.Pitch		-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( InvertMouse ? -1 : 1 );
