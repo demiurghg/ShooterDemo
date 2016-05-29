@@ -86,6 +86,9 @@ namespace ShooterDemo {
 		}
 
 
+		float dofFactor = 0;
+
+
 
 		/// <summary>
 		/// Called when the game has determined that UI logic needs to be processed.
@@ -99,6 +102,15 @@ namespace ShooterDemo {
 			uiLayer.Clear();
 
 			var clientState	=	Game.GameClient.ClientState;
+
+			dofFactor	=	MathUtil.Lerp( (float)dofFactor, Game.Keyboard.IsKeyDown(Keys.Q) ? 1.0f : 0.0f, 0.1f );
+
+			Game.RenderSystem.RenderWorld.DofSettings.PlaneInFocus	=	7;
+			Game.RenderSystem.RenderWorld.DofSettings.FocalLength	=	0.1f;
+			Game.RenderSystem.RenderWorld.DofSettings.Enabled		=	dofFactor > 0.01f;
+			Game.RenderSystem.RenderWorld.DofSettings.Aperture		=	dofFactor * 20;
+
+
 
 			switch (clientState) {
 				case ClientState.StandBy		: DrawStandByScreen(); break;
