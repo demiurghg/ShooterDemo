@@ -63,7 +63,7 @@ namespace ShooterDemo.SFX.WeaponFX {
 
 			SetupMotion		( ref p, pos, vel, Vector3.Zero, 0, -0.05f );
 			SetupAngles		( ref p, 10 );
-			SetupColor		( ref p, 1, 1, 0, 1.0f );
+			SetupColor		( ref p, 1, 1, 0, 0.2f );
 			SetupTiming		( ref p, 1.5f, 0.1f, 0.1f );
 			SetupSize		( ref p, 0.30f, 0.9f );
 
