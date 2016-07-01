@@ -53,7 +53,6 @@ namespace ShooterDemo {
 			scene.ComputeAbsoluteTransforms( transforms );
 			
 			//	load materials if necessary :
-			var materials	= new MaterialInstance[0];
 
 			if (createRendMeshes) {
 				var defMtrl	=	content.Game.RenderSystem.DefaultMaterial;

@@ -59,7 +59,7 @@ namespace ShooterDemo {
 		
 		void GameClient_ClientStateChanged ( object sender, GameClient.ClientEventArgs e )
 		{
-			Game.Console.Show = false;
+			Game.Console.Hide();
 		}
 
 
@@ -130,7 +130,7 @@ namespace ShooterDemo {
 
 			} else {
 
-				if (!Game.Console.Show) {
+				if (!Game.Console.IsShown) {
 					Game.Keyboard.ScanKeyboard	=	true;
 					Game.Mouse.IsMouseCentered	=	true;
 					Game.Mouse.IsMouseClipped	=	true;

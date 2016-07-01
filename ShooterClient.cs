@@ -351,7 +351,7 @@ namespace ShooterDemo {
 			var ui		=	Game.UserInterface as ShooterInterface;
 			var cam		=	World.GetView<CameraView>();
 
-			if (!Game.Console.Show) {
+			if (!Game.Console.IsShown) {
 				UserCommand.CtrlFlags	=	flags | weaponControl;
 				UserCommand.Yaw			-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.X / 16200.0f;
 				UserCommand.Pitch		-=	2 * MathUtil.Pi * cam.Sensitivity * Game.Mouse.PositionDelta.Y / 16200.0f * ( InvertMouse ? -1 : 1 );
