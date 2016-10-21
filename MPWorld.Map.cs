@@ -52,13 +52,6 @@ namespace ShooterDemo {
 			var transforms	= new Matrix[ scene.Nodes.Count ];
 			scene.ComputeAbsoluteTransforms( transforms );
 			
-			//	load materials if necessary :
-
-			if (createRendMeshes) {
-				var defMtrl	=	content.Game.RenderSystem.DefaultMaterial;
-				materials	=	scene.Materials.Select( m => content.Load<MaterialInstance>( m.Name, defMtrl ) ).ToArray();
-			}
-
 
 			//	iterate through the scene's nodes :
 			for ( int i=0; i<scene.Nodes.Count; i++) {
@@ -83,7 +76,7 @@ namespace ShooterDemo {
 					AddStaticCollisionMesh( mesh, world );
 
 					if (createRendMeshes) {
-						var mi		= new MeshInstance( content.Game.RenderSystem, scene, mesh, materials );
+						var mi		= new MeshInstance( content.Game.RenderSystem, scene, mesh );
 						mi.World	= world;
 
 						instances.Add( mi );

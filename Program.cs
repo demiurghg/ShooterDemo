@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Fusion;
 using Fusion.Build;
-using Fusion.Core.Development;
+using Fusion.Development;
 using Fusion.Engine.Common;
 using Fusion.Core.Shell;
 using Fusion.Core.Utils;
@@ -64,7 +64,7 @@ namespace ShooterDemo {
 
 				//	apply command-line options here:
 				//	...
-				if (!LaunchBox.Show(game, "Config.ini")) {
+				if (!LaunchBox.ShowDialog(game, "Config.ini")) {
 					return 0;
 				}
 

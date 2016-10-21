@@ -23,14 +23,8 @@ HKEY_CURRENT_USER\Software\FusionEngine@ContentDir
 [Fonts]
 *.bmfc
 
-[Shaders]
-*.hlsl
-
 [Scenes]
 *.fbx /geom
-
-[Materials]
-*.material
 
 [Sounds]
 *.wav

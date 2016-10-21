@@ -80,10 +80,7 @@ namespace ShooterDemo.Views {
 
 			var mesh		=	scene.Meshes[node.MeshIndex];
 
-			var defMtrl		=	rs.DefaultMaterial;
-			var materials	=	scene.Materials.Select( m => content.Load<MaterialInstance>( m.Name, defMtrl ) ).ToArray();
-
-			meshInstance		= new MeshInstance( rs, scene, mesh, materials );
+			meshInstance		= new MeshInstance( rs, scene, mesh );
 
 			rs.RenderWorld.Instances.Add( meshInstance );
 		}
