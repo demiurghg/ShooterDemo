@@ -107,8 +107,8 @@ namespace ShooterDemo {
 
 			gameWorld.FinalizeLoad();
 
-			gameWorld.ReplicaSpawned += (s,e) => { 
-				if (e.Entity.UserGuid==Guid) {
+			gameWorld.ReplicaSpawned += ( s, e ) => {
+					if ( e.Entity.UserGuid==Guid) {
 					UserCommand.Yaw			=	0;
 					UserCommand.Pitch		=	0;
 					UserCommand.Roll		=	0;
@@ -119,13 +119,15 @@ namespace ShooterDemo {
 
 			var rw = Game.RenderSystem.RenderWorld;
 
-			rw.HdrSettings.BloomAmount	= 0.1f;
-			rw.HdrSettings.DirtAmount	= 0.0f;
-			rw.HdrSettings.KeyValue		= 0.18f;
+			rw.VirtualTexture = Content.Load<VirtualTexture>( "test" );
 
-			rw.SkySettings.SunPosition			=	new Vector3(1.2f,1.4f,1.3f);
-			rw.SkySettings.SunLightIntensity	=	100;
-			rw.SkySettings.SkyTurbidity			=	8;
+			rw.HdrSettings.BloomAmount  = 0.1f;
+			rw.HdrSettings.DirtAmount   = 0.0f;
+			rw.HdrSettings.KeyValue     = 0.18f;
+
+			rw.SkySettings.SunPosition			= new Vector3( 1.2f, 1.4f, 1.3f );
+			rw.SkySettings.SunLightIntensity	= 100;
+			rw.SkySettings.SkyTurbidity			= 8;
 
 			rw.LightSet.DirectLight.Direction	=	rw.SkySettings.SunLightDirection;
 			rw.LightSet.DirectLight.Intensity	=	rw.SkySettings.SunLightColor;
@@ -135,11 +137,11 @@ namespace ShooterDemo {
 
 			for (int i=0; i<1; i++) {
 				var spot = new SpotLight();
-				spot.SpotView		=	Matrix.LookAtRH( new Vector3(8,10,7), Vector3.Zero, Vector3.Up );
-				spot.Intensity		=	new Color4(500,500,500,1);
-				spot.Projection		=	Matrix.PerspectiveRH(0.1f, 0.1f, 0.1f, 100 );
-				spot.RadiusOuter	=	100;
-				spot.TextureIndex	=	0;
+				spot.SpotView       =   Matrix.LookAtRH( new Vector3( 8, 10, 7 ), Vector3.Zero, Vector3.Up );
+				spot.Intensity      =   new Color4( 500, 500, 500, 1 );
+				spot.Projection     =   Matrix.PerspectiveRH( 0.1f, 0.1f, 0.1f, 100 );
+				spot.RadiusOuter    =   100;
+				spot.TextureIndex   =   0;
 				rw.LightSet.SpotLights.Add( spot );
 			}
 
