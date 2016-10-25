@@ -78,6 +78,7 @@ namespace ShooterDemo {
 		}
 
 
+
 		/// <summary>
 		/// Called when connection request accepted by server.
 		/// Client could start loading models, textures, models etc.
@@ -92,6 +93,7 @@ namespace ShooterDemo {
 
 			return new ShooterLoader( this, serverInfo );
 		}
+
 
 
 		/// <summary>

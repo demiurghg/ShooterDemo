@@ -24,7 +24,7 @@ HKEY_CURRENT_USER\Software\FusionEngine@ContentDir
 *.bmfc
 
 [Scenes]
-*.fbx /geom
+*.fbx /geom 
 
 [Sounds]
 *.wav
