@@ -137,7 +137,7 @@ namespace ShooterDemo {
 			rw.LightSet.AmbientLevel	=	rw.SkySettings.AmbientLevel;
 			rw.LightSet.SpotAtlas		=	Content.Load<TextureAtlas>(@"spots\spots");
 
-			for (int i=0; i<1; i++) {
+			/*for (int i=0; i<1; i++) {
 				var spot = new SpotLight();
 				spot.SpotView       =   Matrix.LookAtRH( new Vector3( 8, 10, 7 ), Vector3.Zero, Vector3.Up );
 				spot.Intensity      =   new Color4( 500, 500, 500, 1 );
@@ -145,14 +145,14 @@ namespace ShooterDemo {
 				spot.RadiusOuter    =   100;
 				spot.TextureIndex   =   0;
 				rw.LightSet.SpotLights.Add( spot );
-			}
+			} */
 
-			rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(0,4,0), 1, 500 ) );
-			for (float x=-32; x<=32; x+=16 ) {
+			//rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(0,4,0), 1, 500 ) );
+			/*for (float x=-32; x<=32; x+=16 ) {
 				for (float y=-32; y<=32; y+=16 ) {
 					rw.LightSet.EnvLights.Add( new EnvLight( new Vector3(x,4,y), 1, 16 ) );
 				}
-			}
+			} */
 
 			Log.Message("Capturing radiance...");
 			rw.RenderRadiance();

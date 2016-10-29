@@ -3,6 +3,7 @@
 *.psd
 spots/*.tga
 sprites/*.tga
+scenes/*.tga
 
 [BinaryDirectories]
 HKEY_CURRENT_USER\Software\FusionEngine@ToolsDir
